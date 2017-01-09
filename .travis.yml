@@ -1,0 +1,28 @@
+language: python
+
+python:
+  - "3.5"
+  - "2.7"
+  - "pypy"
+
+env:
+  - "$DJANGO='django<1.9'"
+  - "$DJANGO='django<1.10'"
+
+# command to install dependencies
+install:
+  - pip install $DJANGO
+  - pip install -r backend/requirements-dev.txt
+  - pip install coveralls
+
+  - nvm install 6
+  - npm install
+
+# command to run tests
+script:
+  - python backend/manage.py test
+  - npm test
+
+before_script: flake8 backend --config=backend/flake8
+
+after_success: coveralls
