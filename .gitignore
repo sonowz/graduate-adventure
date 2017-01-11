@@ -53,6 +53,9 @@ docs/_build
 # DB
 *.sqlite3
 
+# Virtualenv
+.venv
+
 # npm
 node_modules
 
