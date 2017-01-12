@@ -23,6 +23,11 @@ script:
   - python backend/manage.py test
   - npm test
 
+cache:
+  pip: true
+  directories:
+    - node_modules  # NPM pachages
+
 before_script: flake8 backend --config=backend/flake8
 
 after_success: coveralls
