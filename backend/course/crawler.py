@@ -40,13 +40,16 @@ class Crawler:
         'srchTlsnAplyCapaCntMax': '',
         'srchTlsnRcntMin': '',
         'srchTlsnRcntMax': '',
-        'srchOpenSbjtTmNm':'',
+        'srchOpenSbjtTmNm': '',
         'srchOpenSbjtTm': '',
         'srchOpenSbjtTmVal': '',
         'srchLsnProgType': '',
         'srchMrksGvMthd': '',
         'srchFlag': '',
     }
+
+    def parse_option_tag(op):
+            return {'code': op['value'], 'name': op.text.strip()}
 
     def get_areas(self, year, semester):
         form_data = self.form_data.copy()
@@ -56,10 +59,8 @@ class Crawler:
         soup = bs(search_page.text, 'html5lib')
         select = soup.find('select', {'name': 'srchOpenUpSbjtFldCd'})
         options = select.find_all('option')
-        def f(op):
-            return {'code': op['value'], 'name': op.text.strip()}
-        areas = list(map(f, options))
-        return list(filter(lambda s: s['code']!='', areas))
+        areas = list(map(parse_option_tag, options))
+        return list(filter(lambda s: s['code'] != '', areas))
 
     def get_subareas(self, year, semester, area):
         form_data = self.form_data.copy()
@@ -70,9 +71,7 @@ class Crawler:
         soup = bs(search_page.text, 'html5lib')
         select = soup.find('select', {'name': 'srchOpenSbjtFldCd'})
         options = select.find_all('option')
-        def f(op):
-            return {'code': op['value'], 'name': op.text.strip()}
-        subareas = list(map(f, options))
+        subareas = list(map(parse_option_tag, options))
         return list(filter(lambda s: s['code'] != '', subareas))
 
     def get_courses(self, year, semester, area, subarea):
@@ -103,7 +102,7 @@ class Crawler:
                 'subarea': subarea['name'],
                 'collage': sheet.cell_value(row, 1),
                 'dept': sheet.cell_value(row, 2)
-                }
+            }
             res.append(course)
         return res
 
