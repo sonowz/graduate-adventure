@@ -108,7 +108,9 @@ class Crawler:
             res.append(course)
         return res
 
-    def crawl_courses(self, start, end):
+    def crawl_courses(self, start, end=None):
+        if end == None:
+            end = start + 1
         courses = []
         for year in range(start, end):
             for semester in list(self.semester_name.keys()):
@@ -118,3 +120,4 @@ class Crawler:
                     for subarea in subareas:
                         cs = self.get_courses(year, semester, area, subarea)
                         courses.extend(cs)
+        return courses
