@@ -48,7 +48,7 @@ class Crawler:
         'srchFlag': '',
     }
 
-    def parse_option_tag(op):
+    def parse_option_tag(self, op):
             return {'code': op['value'], 'name': op.text.strip()}
 
     def get_areas(self, year, semester):
@@ -59,7 +59,7 @@ class Crawler:
         soup = bs(search_page.text, 'html5lib')
         select = soup.find('select', {'name': 'srchOpenUpSbjtFldCd'})
         options = select.find_all('option')
-        areas = list(map(parse_option_tag, options))
+        areas = list(map(self.parse_option_tag, options))
         return list(filter(lambda s: s['code'] != '', areas))
 
     def get_subareas(self, year, semester, area):
@@ -71,7 +71,7 @@ class Crawler:
         soup = bs(search_page.text, 'html5lib')
         select = soup.find('select', {'name': 'srchOpenSbjtFldCd'})
         options = select.find_all('option')
-        subareas = list(map(parse_option_tag, options))
+        subareas = list(map(self.parse_option_tag, options))
         return list(filter(lambda s: s['code'] != '', subareas))
 
     def get_courses(self, year, semester, area, subarea):
