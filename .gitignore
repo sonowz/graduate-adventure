@@ -61,3 +61,6 @@ node_modules
 
 frontend/dist/
 **/elm-stuff/
+
+# Elm debug output
+Elm-debug.html

@@ -4,7 +4,8 @@
   "repository": "https://github.com/LastOne817/graduate-adventure.git",
   "license": "MIT",
   "source-directories": [
-    "src/elm"
+    "frontend/src/elm",
+    "frontend/src/elm/Components"
   ],
   "exposed-modules": [],
   "dependencies": {
