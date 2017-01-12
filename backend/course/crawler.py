@@ -77,37 +77,12 @@ class Crawler:
         return list(filter(lambda s: s['code']!='', subareas))
 
     def get_courses(self, year, semester, area, subarea):
-        excel = requests.post(self.excel_url, data={
-            'srchOpenSchyy': str(year),
-            'srchOpenShtm': semester,
-            'srchOpenUpSbjtFldCd':area['code'],
-            'srchOpenSbjtFldCd':subarea['code'],
-            'srchCond':'1',
-            'srchCptnCorsFg':'',
-            'srchOpenShyr':'',
-            'srchSbjtCd':'',
-            'srchSbjtNm':'',
-            'srchOpenUpDeptCd':'',
-            'srchOpenDeptCd':'',
-            'srchOpenMjCd':'',
-            'srchOpenSubmattCorsFg':'',
-            'srchOpenSubmattFgCd':'',
-            'srchOpenPntMin':'',
-            'srchOpenPntMax':'',
-            'srchCamp':'',
-            'srchBdNo':'',
-            'srchProfNm':'',
-            'srchTlsnAplyCapaCntMin':'',
-            'srchTlsnAplyCapaCntMax':'',
-            'srchTlsnRcntMin':'',
-            'srchTlsnRcntMax':'',
-            'srchOpenSbjtTmNm':'',
-            'srchOpenSbjtTm':'',
-            'srchOpenSbjtTmVal':'',
-            'srchLsnProgType':'',
-            'srchMrksGvMthd':'',
-            'srchFlag':'',
-            })
+        form_data = self.form_data.copy()
+        form_data['srchOpenSchyy'] = str(year),
+        form_data['srchOpenShtm'] = semester,
+        form_data['srchOpenUpSbjtFldCd'] = area['code'],
+        form_data['srchOpenSbjtFldCd'] = subarea['code'],
+        excel = requests.post(self.excel_url, form_data)
         try:
             workbook = xlrd.open_workbook(file_contents=excel.content)
         except Exception as e:
@@ -133,9 +108,9 @@ class Crawler:
             res.append(course)
         return res
 
-    def crawl_courses(self):
+    def crawl_courses(self, start, end):
         courses = []
-        for year in range(2008, 2009):
+        for year in range(start, end):
             for semester in list(self.semester_name.keys()):
                 areas = self.get_areas(year, semester)
                 for area in areas:
