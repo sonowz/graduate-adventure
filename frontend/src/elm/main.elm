@@ -1,26 +1,13 @@
-import Html exposing (..)
+import Html
+import Pages.Prototype.Main as PMain
 
+-- Currently using 'prototype' page as main
 
--- APP
-main : Program Never Model Msg
+main : Program Never PMain.Model PMain.Msg
 main =
-  Html.beginnerProgram { model = model, view = view, update = update }
-
-
--- MODEL
-type Model = Empty
-
-model : Model
-model = Empty
-
-
--- UPDATE
-type Msg = None
-
-update : Msg -> Model -> Model
-update msg model = Empty
-
--- VIEW
-view : Model -> Html Msg
-view model =
-  div [] []
+  Html.program
+    { init = PMain.init
+    , view = PMain.view
+    , update = PMain.update
+    , subscriptions = PMain.subscriptions
+    }
