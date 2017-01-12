@@ -16,7 +16,8 @@ def crawl_course(username, password):
         'Accept': 'application/json, text/javascript, */*; q=0.01',
         'Origin': 'https://shine.snu.ac.kr',
         'X-Requested-With': 'XMLHttpRequest',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64)'
+                      ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36',
         'Content-Type': 'application/extJs+sua; charset=UTF-8',
         'Accept-Encoding': 'gzip, deflate',
         'Accept-Language': 'ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4',
@@ -24,8 +25,9 @@ def crawl_course(username, password):
     grade_list = br.post('https://shine.snu.ac.kr/uni/uni/scor/mrtr/findTabCumlMrksYyShtmClsfTtInq02.action',
                          params={'cscLocale': 'ko_KR', 'strPgmCd': 'S030302'},
                          headers=headers,
-                         json={"SUN": {"strSchyy": "2015", "strShtmFg": "U000200001", "strDetaShtmFg": "U000300001",
-                                       "strBdegrSystemFg": "U000100001", "strFlag": "all"}}
+                         json={"SUN": {"strSchyy": "2015", "strShtmFg": "U000200001",
+                                       "strDetaShtmFg": "U000300001", "strBdegrSystemFg": "U000100001",
+                                       "strFlag": "all"}}
                          ).json()['GRD_SCOR401']
 
     semester_serial = {
