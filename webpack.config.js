@@ -20,7 +20,7 @@ var commonConfig = {
 
   output: {
     path:       outputPath,
-    filename:   path.join( 'static/js/', outputFilename ),
+    filename:   outputFilename,
     publicPath: '/'
   },
 
