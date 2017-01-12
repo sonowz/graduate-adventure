@@ -20,45 +20,45 @@ class Crawler:
         'srchOpenUpSbjtFldCd': '',
         'srchOpenSbjtFldCd': '',
         'srchOpenShtm': '',
-        'srchCond':'1',
+        'srchCond': '1',
         'srchOpenSchyy': '',
-        'srchCptnCorsFg':'',
-        'srchOpenShyr':'',
-        'srchSbjtCd':'',
-        'srchSbjtNm':'',
-        'srchOpenUpDeptCd':'',
-        'srchOpenDeptCd':'',
-        'srchOpenMjCd':'',
-        'srchOpenSubmattCorsFg':'',
-        'srchOpenSubmattFgCd':'',
-        'srchOpenPntMin':'',
-        'srchOpenPntMax':'',
-        'srchCamp':'',
-        'srchBdNo':'',
-        'srchProfNm':'',
-        'srchTlsnAplyCapaCntMin':'',
-        'srchTlsnAplyCapaCntMax':'',
-        'srchTlsnRcntMin':'',
-        'srchTlsnRcntMax':'',
+        'srchCptnCorsFg': '',
+        'srchOpenShyr': '',
+        'srchSbjtCd': '',
+        'srchSbjtNm': '',
+        'srchOpenUpDeptCd': '',
+        'srchOpenDeptCd': '',
+        'srchOpenMjCd': '',
+        'srchOpenSubmattCorsFg': '',
+        'srchOpenSubmattFgCd': '',
+        'srchOpenPntMin': '',
+        'srchOpenPntMax': '',
+        'srchCamp': '',
+        'srchBdNo': '',
+        'srchProfNm': '',
+        'srchTlsnAplyCapaCntMin': '',
+        'srchTlsnAplyCapaCntMax': '',
+        'srchTlsnRcntMin': '',
+        'srchTlsnRcntMax': '',
         'srchOpenSbjtTmNm':'',
-        'srchOpenSbjtTm':'',
-        'srchOpenSbjtTmVal':'',
-        'srchLsnProgType':'',
-        'srchMrksGvMthd':'',
-        'srchFlag':'',
+        'srchOpenSbjtTm': '',
+        'srchOpenSbjtTmVal': '',
+        'srchLsnProgType': '',
+        'srchMrksGvMthd': '',
+        'srchFlag': '',
     }
+
     def get_areas(self, year, semester):
         form_data = self.form_data.copy()
         form_data['srchOpenSchyy'] = str(year)
         form_data['srchOpenShtm'] = semester
         search_page = requests.post(self.search_url, data=form_data)
         soup = bs(search_page.text, 'html5lib')
-        select = soup.find('select',{'name':'srchOpenUpSbjtFldCd'})
+        select = soup.find('select', {'name': 'srchOpenUpSbjtFldCd'})
         options = select.find_all('option')
-        areas = list(map(lambda op : {
-            'code': op['value'],
-            'name': op.text.strip()
-            }, options))
+        def f(op):
+            return {'code': op['value'], 'name': op.text.strip()}
+        areas = list(map(f, options))
         return list(filter(lambda s: s['code']!='', areas))
 
     def get_subareas(self, year, semester, area):
@@ -68,13 +68,12 @@ class Crawler:
         form_data['srchOpenUpSbjtFldCd'] = area['code']
         search_page = requests.post(self.search_url, data=form_data)
         soup = bs(search_page.text, 'html5lib')
-        select = soup.find('select',{'name':'srchOpenSbjtFldCd'})
+        select = soup.find('select', {'name': 'srchOpenSbjtFldCd'})
         options = select.find_all('option')
-        subareas = list(map(lambda op: {
-            'code': op['value'],
-            'name': op.text.strip()
-            }, options))
-        return list(filter(lambda s: s['code']!='', subareas))
+        def f(op):
+            return {'code': op['value'], 'name': op.text.strip()}
+        subareas = list(map(f, options))
+        return list(filter(lambda s: s['code'] != '', subareas))
 
     def get_courses(self, year, semester, area, subarea):
         form_data = self.form_data.copy()
@@ -92,19 +91,19 @@ class Crawler:
         res = []
         for row in range(3, sheet.nrows):
             course = {
-                    'year': year,
-                    'semester': self.semester_name[semester],
-                    'code': sheet.cell_value(row, 5),
-                    'number': sheet.cell_value(row, 6),
-                    'title': sheet.cell_value(row, 7),
-                    'credit': sheet.cell_value(row, 9),
-                    'category': sheet.cell_value(row, 0),
-                    'language': sheet.cell_value(row, 19),
-                    'area': area['name'],
-                    'subarea': subarea['name'],
-                    'collage': sheet.cell_value(row, 1),
-                    'dept': sheet.cell_value(row, 2)
-                    }
+                'year': year,
+                'semester': self.semester_name[semester],
+                'code': sheet.cell_value(row, 5),
+                'number': sheet.cell_value(row, 6),
+                'title': sheet.cell_value(row, 7),
+                'credit': sheet.cell_value(row, 9),
+                'category': sheet.cell_value(row, 0),
+                'language': sheet.cell_value(row, 19),
+                'area': area['name'],
+                'subarea': subarea['name'],
+                'collage': sheet.cell_value(row, 1),
+                'dept': sheet.cell_value(row, 2)
+                }
             res.append(course)
         return res
 
