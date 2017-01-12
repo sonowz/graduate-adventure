@@ -16,11 +16,11 @@ type alias Model =
 -- no defaultText
 init : Model
 init =
-  init2 ""
+  inittext ""
 
 -- has defaultText
-init2 : String -> Model
-init2 text =
+inittext : String -> Model
+inittext text =
   { text = ""
   , defaultText = text
   , password = False
@@ -30,7 +30,8 @@ init2 text =
 initpw : Model
 initpw =
   let
-    model = init2 ""
+    model =
+      inittext ""
   in
     { model | password = True }
 
