@@ -25,6 +25,7 @@
     "webpack-merge": "^0.16.0"
   },
   "scripts": {
+    "start": "webpack-dev-server --hot --inline --content-base frontend/src",
     "test": "webpack"
   },
   "repository": {
