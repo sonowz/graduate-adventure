@@ -1,0 +1,38 @@
+# appveyor file
+# http://www.appveyor.com/docs/appveyor-yml
+
+# what combinations to test
+environment:
+  PYTHONIOENCODING: "utf-8"
+  matrix:
+    - nodejs_version: 6
+      PYTHON: "C:\\Python27"
+      PYTHON_VERSION: "2.7"
+
+    - nodejs_version: 6
+      PYTHON: "C:/Python35"
+      PYTHON_VERSION: "3.5"
+
+skip_branch_with_pr: true
+
+init:
+  - git config --global core.autocrlf input
+
+install:
+  - ps: Install-Product node $env:nodejs_version
+  - cmd: npm install
+  - cmd: pip install -r requirements-dev.txt
+
+before_test:
+  - cmd: flake8 backend --config=backend/flake8
+
+build: off
+
+matrix:
+  fast_finish: true
+
+test_script:
+  - node --version
+  - npm --version
+  - python backend/manage.py test
+  - npm test
