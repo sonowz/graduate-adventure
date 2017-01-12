@@ -109,7 +109,7 @@ class Crawler:
         return res
 
     def crawl_courses(self, start, end=None):
-        if end == None:
+        if end is None:
             end = start + 1
         courses = []
         for year in range(start, end):
