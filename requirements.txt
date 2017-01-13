@@ -1,3 +1,7 @@
 django
 djangorestframework
 mechanicalsoup
+requests
+bs4
+xlrd
+html5lib
