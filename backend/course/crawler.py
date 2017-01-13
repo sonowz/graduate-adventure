@@ -38,11 +38,9 @@ class Crawler:
     def get_courses(self, year, semester, area, subarea):
         form = search_form(year, semester, area['code'], subarea['code'])
         excel = requests.post(self.excel_url, form)
-        try:
-            workbook = xlrd.open_workbook(file_contents=excel.content)
-        except Exception as e:
-            print(e)
+        if excel.content == b'':
             return []
+        workbook = xlrd.open_workbook(file_contents=excel.content)
         sheet = workbook.sheet_by_index(0)
         res = []
         for row in range(3, sheet.nrows):
