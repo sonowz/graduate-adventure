@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import xlrd
+from format import search_form
 
 
 class Crawler:
@@ -12,50 +13,13 @@ class Crawler:
         'U000200002U000300001': '2',
         'U000200002U000300002': 'W'
     }
-    # srchOpenSchyy : year
-    # srchOpenShtm : semester
-    # srchOpenUpSbjtFldCd : area
-    # srchOpenSbjtFldCd : subarea
-    form_data = {
-        'srchOpenUpSbjtFldCd': '',
-        'srchOpenSbjtFldCd': '',
-        'srchOpenShtm': '',
-        'srchCond': '1',
-        'srchOpenSchyy': '',
-        'srchCptnCorsFg': '',
-        'srchOpenShyr': '',
-        'srchSbjtCd': '',
-        'srchSbjtNm': '',
-        'srchOpenUpDeptCd': '',
-        'srchOpenDeptCd': '',
-        'srchOpenMjCd': '',
-        'srchOpenSubmattCorsFg': '',
-        'srchOpenSubmattFgCd': '',
-        'srchOpenPntMin': '',
-        'srchOpenPntMax': '',
-        'srchCamp': '',
-        'srchBdNo': '',
-        'srchProfNm': '',
-        'srchTlsnAplyCapaCntMin': '',
-        'srchTlsnAplyCapaCntMax': '',
-        'srchTlsnRcntMin': '',
-        'srchTlsnRcntMax': '',
-        'srchOpenSbjtTmNm': '',
-        'srchOpenSbjtTm': '',
-        'srchOpenSbjtTmVal': '',
-        'srchLsnProgType': '',
-        'srchMrksGvMthd': '',
-        'srchFlag': '',
-    }
 
     def parse_option_tag(self, op):
             return {'code': op['value'], 'name': op.text.strip()}
 
     def get_areas(self, year, semester):
-        form_data = self.form_data.copy()
-        form_data['srchOpenSchyy'] = str(year)
-        form_data['srchOpenShtm'] = semester
-        search_page = requests.post(self.search_url, data=form_data)
+        form = search_form(year, semester)
+        search_page = requests.post(self.search_url, data=form)
         soup = bs(search_page.text, 'html5lib')
         select = soup.find('select', {'name': 'srchOpenUpSbjtFldCd'})
         options = select.find_all('option')
@@ -63,11 +27,8 @@ class Crawler:
         return list(filter(lambda s: s['code'] != '', areas))
 
     def get_subareas(self, year, semester, area):
-        form_data = self.form_data.copy()
-        form_data['srchOpenSchyy'] = str(year)
-        form_data['srchOpenShtm'] = semester
-        form_data['srchOpenUpSbjtFldCd'] = area['code']
-        search_page = requests.post(self.search_url, data=form_data)
+        form = search_form(year, semester, area['code'])
+        search_page = requests.post(self.search_url, data=form)
         soup = bs(search_page.text, 'html5lib')
         select = soup.find('select', {'name': 'srchOpenSbjtFldCd'})
         options = select.find_all('option')
@@ -75,12 +36,8 @@ class Crawler:
         return list(filter(lambda s: s['code'] != '', subareas))
 
     def get_courses(self, year, semester, area, subarea):
-        form_data = self.form_data.copy()
-        form_data['srchOpenSchyy'] = str(year),
-        form_data['srchOpenShtm'] = semester,
-        form_data['srchOpenUpSbjtFldCd'] = area['code'],
-        form_data['srchOpenSbjtFldCd'] = subarea['code'],
-        excel = requests.post(self.excel_url, form_data)
+        form = search_form(year, semester, area['code'], subarea['code'])
+        excel = requests.post(self.excel_url, form)
         try:
             workbook = xlrd.open_workbook(file_contents=excel.content)
         except Exception as e:
