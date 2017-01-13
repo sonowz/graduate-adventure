@@ -59,7 +59,3 @@ def crawl_course(username, password):
         new_grade_list.append(processed_item)
 
     return new_grade_list
-
-
-if __name__ == '__main__':
-    pass

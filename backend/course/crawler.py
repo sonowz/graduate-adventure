@@ -15,7 +15,7 @@ class Crawler:
     }
 
     def parse_option_tag(self, op):
-            return {'code': op['value'], 'name': op.text.strip()}
+        return {'code': op['value'], 'name': op.text.strip()}
 
     def get_areas(self, year, semester):
         form = search_form(year, semester)
