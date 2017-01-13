@@ -2,6 +2,12 @@ import requests
 from bs4 import BeautifulSoup as bs
 import xlrd
 from format import search_form
+import logging
+import os
+
+
+os.makedirs(os.getcwd() + '/log', exist_ok=True)
+logging.basicConfig(filename=os.getcwd() + '/log/course_crawler.log', level=logging.INFO)
 
 
 class Crawler:
@@ -36,8 +42,14 @@ class Crawler:
         return list(filter(lambda s: s['code'] != '', subareas))
 
     def get_courses(self, year, semester, area, subarea):
+        logging.debug('Crawling %s-%s %s-%s' % (
+                      str(year), self.semester_name[semester],
+                      '(%s, %s)' % (area['code'], area['name']),
+                      '(%s, %s)' % (subarea['code'], subarea['name'])
+                      ))
         form = search_form(year, semester, area['code'], subarea['code'])
         excel = requests.post(self.excel_url, form)
+        excel.raise_for_status()
         if excel.content == b'':
             return []
         workbook = xlrd.open_workbook(file_contents=excel.content)
