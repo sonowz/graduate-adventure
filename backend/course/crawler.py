@@ -42,10 +42,13 @@ class Crawler:
         return list(filter(lambda s: s['code'] != '', subareas))
 
     def get_courses(self, year, semester, area, subarea):
-        logging.debug('Crawling %s-%s %s-%s' % (
-                      str(year), self.semester_name[semester],
-                      '(%s, %s)' % (area['code'], area['name']),
-                      '(%s, %s)' % (subarea['code'], subarea['name'])
+        logging.debug('Crawling {year}-{semester} ({area_code}, {area_name})-({subarea_code}, {subarea_name})'.format(
+                      year=year,
+                      semester=self.semester_name[semester],
+                      area_code=area['code'],
+                      area_name=area['name'],
+                      subarea_code=subarea['code'],
+                      subarea_name=subarea['name'],
                       ))
         form = search_form(year, semester, area['code'], subarea['code'])
         excel = requests.post(self.excel_url, form)
