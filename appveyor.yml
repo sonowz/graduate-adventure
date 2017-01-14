@@ -25,6 +25,7 @@ install:
 
 before_test:
   - cmd: flake8 backend --config=backend/flake8
+  - cmd: python backend/manage.py migrate
 
 build: off
 
