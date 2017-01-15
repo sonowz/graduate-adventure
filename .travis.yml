@@ -28,6 +28,8 @@ cache:
   directories:
     - node_modules  # NPM pachages
 
-before_script: flake8 backend --config=backend/flake8
+before_script:
+  - flake8 backend --config=backend/flake8
+  - python backend/manage.py migrate
 
 after_success: coveralls
