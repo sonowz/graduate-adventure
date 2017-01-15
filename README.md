@@ -2,6 +2,7 @@ Graduate Simulator
 ==================
 
 [![Build Status](https://travis-ci.org/LastOne817/graduate-adventure.svg)](https://travis-ci.org/LastOne817/graduate-adventure)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/LastOne817/graduate-adventure?branch=master&svg=true)](https://ci.appveyor.com/project/LastOne817/graduate-adventure)
 
 Graduate simulator for SNU students
 
