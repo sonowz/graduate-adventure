@@ -12,6 +12,7 @@
     "css-loader": "^0.25.0",
     "elm": "^0.18.0",
     "elm-hot-loader": "^0.5.4",
+    "elm-test": "^0.18.2",
     "elm-webpack-loader": "^4.2.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
@@ -26,7 +27,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base frontend/src",
-    "test": "webpack"
+    "test": "webpack; elm-test frontend/src/elm/Tests/Main.elm"
   },
   "repository": {
     "type": "git",
