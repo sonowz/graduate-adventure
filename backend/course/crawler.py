@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as bs
 import xlrd
-from format import search_form
+from .format import search_form
 import logging
 import os
 
