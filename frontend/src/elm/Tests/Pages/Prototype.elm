@@ -1,7 +1,7 @@
 module Tests.Pages.Prototype exposing (tests)
 
-import Test exposing(Test, describe, test)
-import Expect exposing(..)
+import Test exposing (Test, describe, test)
+import Expect exposing (equal)
 import Tests.Util as Util
 import Pages.Prototype.Main as Main
 
