@@ -3,13 +3,15 @@ port module Tests.Main exposing (..)
 import Test exposing (Test, describe)
 import Test.Runner.Node exposing (run, TestProgram)
 import Json.Encode exposing (Value)
-import Tests.Components.Test
+import Tests.Components.Test as Components
+import Tests.Pages.Test as Pages
 
 
 tests : Test
 tests = 
   describe "Tests"
-    [ Tests.Components.Test.tests
+    [ Components.tests
+    , Pages.tests
     ]
 
 

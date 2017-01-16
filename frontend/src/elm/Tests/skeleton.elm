@@ -35,7 +35,7 @@ tests =
       [ test "update to msgText properly" <|
         \_ ->
           let
-            ( updatedModel, cmd ) =
+            ( updatedModel, _ ) =
               update testMsg testModel
           in
             updatedModel.text

@@ -4,7 +4,7 @@ import Html exposing (Html)
 
 
 {--
-  This function do 'Html.toString' to get string.
+  This function calls 'toString' of 'Html a'.
   example output :
     toString ( div [] [ text "aaa" ] ) ==
 
