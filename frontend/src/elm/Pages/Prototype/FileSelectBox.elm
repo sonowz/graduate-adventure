@@ -76,5 +76,6 @@ view model =
           [ input [ type_ "submit" ] [] ]
         ]
     --, text ( "Debug : " ++ (Maybe.withDefault "nofile" model.file) )
+      , text ( toString (div[] [text "aaa"]))
       ]
         
