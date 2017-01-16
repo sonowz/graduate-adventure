@@ -9,8 +9,21 @@ class Course(models.Model):
     title = models.CharField(max_length=40)
     credit = models.SmallIntegerField()
     category = models.CharField(max_length=10)
-    language = models.SmallIntegerField()
+    language = models.CharField(max_length=20)
     area = models.CharField(max_length=30)
     subarea = models.CharField(max_length=30)
     collage = models.CharField(max_length=20)
     dept = models.CharField(max_length=20)
+
+    class Meta:
+        unique_together = (('year', 'semester', 'code', 'number'),)
+
+    def __str__(self):
+        return '{code} {title} - {number} ({year}) / {area}-{subarea}'.format(
+            code=self.code,
+            title=self.title,
+            number=self.number,
+            year=self.year,
+            area=self.area,
+            subarea=self.subarea,
+        )
