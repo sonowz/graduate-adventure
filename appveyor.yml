@@ -13,6 +13,10 @@ environment:
       PYTHON: "C:/Python35"
       PYTHON_VERSION: "3.5"
 
+platform:
+  - x86
+  - x64
+
 skip_branch_with_pr: true
 
 init:
