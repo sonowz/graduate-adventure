@@ -1,9 +1,10 @@
 
 
-def search_form(year, semester, area='', subarea=''):
+def search_form(year, semester, category='', area='', subarea=''):
     return {
         'srchOpenSchyy': str(year),
         'srchOpenShtm': semester,
+        'srchOpenSubmattFgCd': category,
         'srchOpenUpSbjtFldCd': area,
         'srchOpenSbjtFldCd': subarea,
         'srchCond': '1',
@@ -15,7 +16,6 @@ def search_form(year, semester, area='', subarea=''):
         'srchOpenDeptCd': '',
         'srchOpenMjCd': '',
         'srchOpenSubmattCorsFg': '',
-        'srchOpenSubmattFgCd': '',
         'srchOpenPntMin': '',
         'srchOpenPntMax': '',
         'srchCamp': '',
