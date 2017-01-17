@@ -1,5 +1,10 @@
 import yaml
-from core.rule.functions import *
+from core.rule.functions import and_func, make_func
+import os
+import logging
+
+os.makedirs(os.getcwd() + '/log', exist_ok=True)
+logging.basicConfig(filename=os.getcwd() + '/log/tree.log', level=logging.INFO)
 
 
 class TreeLoader(object):
@@ -13,7 +18,7 @@ class TreeLoader(object):
 
     def load_tree(self, current_tree, previous_node): # current_tree는 리스트!
         for course in current_tree:
-            if type(course) is str:
+            if isinstance(course, str):
                 previous_node.add_children(TreeNode(course, None, self.sugang_list))
             elif type(course) is dict:
                 args = course.get('args', [])
@@ -30,13 +35,11 @@ class TreeNode(object):
     def __init__(self, data, func, *args):
         self.data = data
         self.func = func
-        self.is_course = False
-        if type(data) is str:
-            self.is_course = True
-        if self.is_course is False:
-            self.children = list(args)
-        else:
+        self.is_course = isinstance(data, str)
+        if self.is_course:
             self.children = args[0]
+        else:
+            self.children = list(args)
 
     def __str__(self):
         return str(self.data)
@@ -49,12 +52,15 @@ class TreeNode(object):
 
     def eval_children(self):
         for i, child in enumerate(self.children):
-            if isinstance(child, TreeNode) is True:
+            if isinstance(child, TreeNode):
                 child.eval_children()
                 self.children[i] = child.data
 
         if self.is_course is False:
-            print(self.func.__name__, '을 통해 ', str(self.children))
+            logging.debug('{children} passed through {func}'.format(
+                children=str(self.children),
+                func=self.func.__name__,
+            ))
             self.data = self.func(*self.children)
         else:
             sugang_list = self.children
@@ -62,11 +68,10 @@ class TreeNode(object):
             for i, course in enumerate(sugang_list):
                 code = course['code']
                 if code == self.data:
-                    print(str(self.data) + ' 수강함. True')
+                    logging.debug('{data} returns True'.format(data=self.data))
                     self.data = True
-                    # del sugang_list[i]
                     is_exists = True
                     break
-            if is_exists is False:
-                print(str(self.data) + ' 수강하지 않음. False')
+            if not is_exists:
+                logging.debug('{data} returns False'.format(data=self.data))
                 self.data = False

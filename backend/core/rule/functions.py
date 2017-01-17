@@ -6,31 +6,29 @@ def make_func(function_name):
         return or_func
     elif function_name == 'part':
         return part_func
+    else:
+        return void_func
+
+
+def void_func(*pos):
+    def closure_void_func(*args):
+        return True
+    return closure_void_func
 
 
 def and_func(*pos):
     def closure_and_func(*args):
-        c = True
-        for arg in args:
-            c = c and arg
-        return c
+        return all(args)
     return closure_and_func
 
 
 def or_func(*pos):
     def closure_or_func(*args):
-        c = False
-        for arg in args:
-            c = c or arg
-        return c
+        return any(args)
     return closure_or_func
 
 
 def part_func(*pos):
     def closure_part_func(*args):
-        cnt = 0
-        for arg in args:
-            if arg is True:
-                cnt += 1
-        return pos[0] <= cnt
+        return pos[0] <= args.count(True)
     return closure_part_func
