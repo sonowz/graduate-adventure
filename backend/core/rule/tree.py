@@ -16,7 +16,7 @@ class TreeLoader(object):
         self.base_node = TreeNode(None, and_func())
         self.load_tree(self.tree, self.base_node)
 
-    def load_tree(self, current_tree, previous_node): # current_tree는 리스트!
+    def load_tree(self, current_tree, previous_node):  # current_tree는 리스트!
         for course in current_tree:
             if isinstance(course, str):
                 previous_node.add_children(TreeNode(course, None, self.sugang_list))
