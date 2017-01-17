@@ -43,32 +43,23 @@ def crawl_credit(username, password):
     grade_response.raise_for_status()
     grade_list = grade_response.json()['GRD_SCOR401']
 
-    semester_serial = {
-        '1학기': '1',
-        '2학기': '2',
-        '여름학기': 'S',
-        '겨울학기': 'W',
+    semester_name = {
+        'U000200001U000300001': '1',
+        'U000200001U000300002': 'S',
+        'U000200002U000300001': '2',
+        'U000200002U000300002': 'W',
     }
 
-    for i, item in enumerate(grade_list):
-        item['shtmDetaShtm'] = semester_serial[item['shtmDetaShtm']]
-        grade_list[i] = item
+    def refine(raw):
+        return {
+            'year': int(raw['schyy']),
+            'semester': semester_name[raw['shtmFg'] + raw['detaShtmFg']],
+            'code': raw['sbjtCd'],
+            'number': raw['ltNo'],
+            'title': raw['sbjtNm'],
+            'credit': raw['acqPnt'],
+            'grade': raw['mrksGrdCd'],
+            'category': raw['cptnSubmattFgCdNm']
+        }
 
-    rename_list = {
-        'schyy': 'year',
-        'shtmDetaShtm': 'semester',
-        'sbjtNm': 'title',
-        'sbjtCd': 'code',
-        'ltNo': 'number',
-        'acqPnt': 'credit',
-        'mrksGrdCd': 'grade',
-        'cptnSubmattFgCdNm': 'category',
-    }
-
-    new_grade_list = []
-
-    for item in grade_list:
-        processed_item = {rename_list[x]: item[x] for x in rename_list.keys()}
-        new_grade_list.append(processed_item)
-
-    return new_grade_list
+    return [refine(raw) for raw in grade_list]
