@@ -5,3 +5,4 @@ requests
 bs4
 xlrd
 html5lib
+pyyaml
