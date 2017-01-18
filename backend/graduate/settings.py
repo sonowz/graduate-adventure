@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+
     'core',
+    'login',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +77,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'graduate.wsgi.application'
+
+# REST framework settings
+
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 10
+}
 
 
 # Database
