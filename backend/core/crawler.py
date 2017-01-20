@@ -63,3 +63,7 @@ def crawl_credit(username, password):
         }
 
     return [refine(raw) for raw in grade_list]
+
+
+def crawl_major(username, password):
+    return ['False', '컴퓨터공학부', 'none']
