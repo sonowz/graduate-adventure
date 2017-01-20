@@ -1,4 +1,5 @@
-from django.http.response import HttpResponse, JsonResponse
+# -*- coding: utf-8 -*-
+from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from rest_framework.views import APIView
 from core.crawler import crawl_credit, crawl_major
@@ -32,7 +33,8 @@ class LoginRequest(APIView):
 
         try:
             rule = self.get_rule(request)
-            tree = TreeLoader(rule, sugang_list)
+            # tree =
+            TreeLoader(rule, sugang_list)
             # do something with 'tree' here
         except IOError:
             logging.error('No such file: ' + rule)

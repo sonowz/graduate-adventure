@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import mechanicalsoup
 import logging
 import logging.config
