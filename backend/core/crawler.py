@@ -1,10 +1,10 @@
 import mechanicalsoup
 import logging
-import os
+import logging.config
+from django.conf import settings
 
-
-os.makedirs(os.getcwd() + '/log', exist_ok=True)
-logging.basicConfig(filename=os.getcwd() + '/log/crawler.log', level=logging.INFO)
+logging.config.dictConfig(settings.LOGGING)
+logger = logging.getLogger('backend')
 
 
 def crawl_credit(username, password):
@@ -18,7 +18,7 @@ def crawl_credit(username, password):
     try:
         redirect_form = redirect_page.soup.select('form')[0]
     except IndexError:
-        logging.error('Invalid account information. Could not login')
+        logger.error('Invalid account information. Could not login.')
         return []
     br.submit(redirect_form, 'http://sso.snu.ac.kr/nls3/fcs')
     br.get('https://shine.snu.ac.kr/com/ssoLoginForSWAction.action')

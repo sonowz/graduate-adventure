@@ -124,3 +124,41 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Logging
+# LOG_DIR = os.path.join(BASE_DIR, 'log')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s - %(name)s - %(levelname)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'backend': {
+            'class': 'logging.FileHandler',
+            'level': 'INFO',
+            'formatter': 'simple',
+            'filename': os.path.join(BASE_DIR, 'backend.log'),
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'INFO',
+            'formatter': 'simple',
+            'stream': 'ext://sys.stdout',
+        },
+    },
+    'loggers': {
+        'backend': {
+            'level': 'INFO',
+            'handlers': ['backend', 'console'],
+        },
+    },
+    'root': {
+        'level': 'INFO',
+        'handler': ['backend', 'console'],
+    },
+}
