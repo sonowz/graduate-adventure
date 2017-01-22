@@ -66,7 +66,11 @@ class Crawler:
         excel.raise_for_status()
         if excel.content == b'':
             return []
-        workbook = xlrd.open_workbook(file_contents=excel.content)
+        try:
+            workbook = xlrd.open_workbook(file_contents=excel.content)
+        except xlrd.XLRDError:
+            logger.error('Cannot open file: maybe this is not accessable semester.')
+            return []
         sheet = workbook.sheet_by_index(0)
         res = []
         for row in range(3, sheet.nrows):
