@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 import yaml
 from core.rule.functions import and_func, make_func, if_func
 import os
-import logging
+import logging.config
+from django.conf import settings
 
-os.makedirs(os.getcwd() + '/log', exist_ok=True)
-logging.basicConfig(filename=os.getcwd() + '/log/tree.log', level=logging.INFO)
+logging.config.dictConfig(settings.LOGGING)
+logger = logging.getLogger('backend')
 
 
 class TreeLoader(object):
@@ -92,7 +94,7 @@ class TreeNode(object):
                 child.eval_children()
 
         if self.is_course is False:
-            logging.debug('{children} passed through {func}'.format(
+            logger.debug('{children} passed through {func}'.format(
                 children=str(self.children),
                 func=self.func.__name__,
             ))
@@ -103,10 +105,10 @@ class TreeNode(object):
             for i, course in enumerate(sugang_list):
                 code = course['code']
                 if code == self.data:
-                    logging.debug('{data} returns True'.format(data=self.data))
+                    logger.debug('{data} returns True'.format(data=self.data))
                     self.data = True
                     is_satisfied = True
                     break
             if not is_satisfied:
-                logging.debug('{data} returns False'.format(data=self.data))
+                logger.debug('{data} returns False'.format(data=self.data))
                 self.data = False
