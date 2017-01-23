@@ -3,11 +3,11 @@ from bs4 import BeautifulSoup as bs
 import xlrd
 from .format import search_form
 import logging
-import os
+import logging.config
+from django.conf import settings
 
-
-os.makedirs(os.getcwd() + '/log', exist_ok=True)
-logging.basicConfig(filename=os.getcwd() + '/log/course_crawler.log', level=logging.INFO)
+logging.config.dictConfig(settings.LOGGING)
+logger = logging.getLogger('backend')
 
 
 class Crawler:
@@ -54,19 +54,23 @@ class Crawler:
         return list(filter(lambda subarea: subarea['code'] != '', subareas))
 
     def get_courses(self, year, semester, category, area, subarea):
-        logging.debug('Crawling {year}-{semester} {category}-{area}-{subarea}'.format(
-                      year=year,
-                      semester=self.semester_name[semester],
-                      category=self.category_name[category],
-                      area="('{code}', '{name}')".format(code=area['code'], name=area['name']),
-                      subarea="('{code}', '{name}')".format(code=subarea['code'], name=subarea['name'])
-                      ))
+        logger.debug('Crawling {year}-{semester} {category}-{area}-{subarea}'.format(
+                     year=year,
+                     semester=self.semester_name[semester],
+                     category=self.category_name[category],
+                     area="('{code}', '{name}')".format(code=area['code'], name=area['name']),
+                     subarea="('{code}', '{name}')".format(code=subarea['code'], name=subarea['name'])
+                     ))
         form = search_form(year, semester, category, area['code'], subarea['code'])
         excel = requests.post(self.excel_url, form)
         excel.raise_for_status()
         if excel.content == b'':
             return []
-        workbook = xlrd.open_workbook(file_contents=excel.content)
+        try:
+            workbook = xlrd.open_workbook(file_contents=excel.content)
+        except xlrd.XLRDError:
+            logger.error('Cannot open file: maybe this is not accessable semester.')
+            return []
         sheet = workbook.sheet_by_index(0)
         res = []
         for row in range(3, sheet.nrows):
