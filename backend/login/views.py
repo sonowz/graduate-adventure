@@ -26,7 +26,7 @@ class LoginRequest(APIView):
 
     # For debugging purpose :
     #   - Used GET method instead of POST
-    #   - Redirect to '/login/test' instead of '/main'
+    #   - Return sugang_list instead of redirecting to '/main'
     def get(self, request, *args, **kwargs):
         logger.debug('mySNU login request with sessionid: ' + str(request.session.session_key))
         user_id = request.GET.get('user_id', 'nid')
@@ -50,7 +50,7 @@ class LoginRequest(APIView):
 
         request.session['list'] = sugang_list
         request.session.set_expiry(600)
-        return redirect('/login/test')
+        return HttpResponse(str(request.session['list']))
 
     def get_rule(self, request):
         has_major = request.GET.get('major_info', False)
@@ -69,7 +69,3 @@ class LoginRequest(APIView):
             password = request.GET.get('password', 'npw')
             major_info = crawl_major(user_id, password)
         return find_rule(major_info)
-
-
-def test(request):
-    return HttpResponse(str(request.session['list']))
