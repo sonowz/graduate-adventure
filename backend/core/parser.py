@@ -1,3 +1,8 @@
+# <mySNU encoding representation> : <real encoding>
+# - ANSI : euc-kr
+# - unicode : utf-16_le
+
+
 def parse_credit(text):
     semester_name = {
         'U000200001U000300001': '1',
@@ -18,7 +23,7 @@ def parse_credit(text):
         # 26 : course taking info
         # 13 : semester info
         # 9 : total info
-        if dic.haskey('SBJT_CD'):
+        if 'SBJT_CD' in dic:
             taking_info = {
                 'year': int(dic['SCHYY']),
                 'semester': semester_name[dic['SHTM_FG'] + dic['DETA_SHTM_FG']],

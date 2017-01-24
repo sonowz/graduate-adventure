@@ -3,7 +3,9 @@ from django.http.response import HttpResponse
 from django.shortcuts import redirect
 from django.conf import settings
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FileUploadParser, FormParser
 from core.crawler import crawl_credit, crawl_major
+from core.parser import parse_credit
 from core.rule.tree import TreeLoader
 from core.rule.util import find_rule
 import logging.config
@@ -23,19 +25,31 @@ def login_page(request):
 
 
 class LoginRequest(APIView):
+    parser_classes = (MultiPartParser, FormParser,)
 
     # For debugging purpose :
-    #   - Used GET method instead of POST
     #   - Return sugang_list instead of redirecting to '/main'
-    def get(self, request, *args, **kwargs):
-        logger.debug('mySNU login request with sessionid: ' + str(request.session.session_key))
-        user_id = request.GET.get('user_id', 'nid')
-        password = request.GET.get('password', 'npw')
-
+    def post(self, request, option, *args, **kwargs):
         try:
-            sugang_list = crawl_credit(user_id, password)
-            if len(sugang_list) == 0:
-                raise ClientRenderedException('로그인에 실패했습니다.')
+            if option == 'mysnu':
+                logger.debug('mySNU login request with sessionid: ' + str(request.session.session_key))
+                user_id = request.data.get('user_id', 'nid')
+                password = request.data.get('password', 'npw')
+                sugang_list = crawl_credit(user_id, password)
+                if len(sugang_list) == 0:
+                    raise ClientRenderedException('로그인에 실패했습니다.')
+            else:  # option == 'file':
+                logger.debug('File login request with sessionid: ' + str(request.session.session_key))
+                request.data['major_info'] = True
+                filename = request.data.get('filename', 'nofile')
+                file = request.data.get(filename, None)
+                if file is None:
+                    raise ClientRenderedException('파일이 올바르지 않습니다.')
+                text = file.read()
+                file.close()
+                text = text.decode('euc-kr', errors='ignore')
+                sugang_list = parse_credit(text)
+
             rule = self.get_rule(request)
             # tree =
             TreeLoader(rule, sugang_list, [])
@@ -53,7 +67,7 @@ class LoginRequest(APIView):
         return HttpResponse(str(request.session['list']))
 
     def get_rule(self, request):
-        has_major = request.GET.get('major_info', False)
+        has_major = request.data.get('major_info', False)
         if has_major:
             try:
                 arg = [
@@ -61,11 +75,11 @@ class LoginRequest(APIView):
                     'major',
                     'minor',
                 ]
-                major_info = {x: request.GET[x] for x in arg}
+                major_info = {x: request.data[x] for x in arg}
             except KeyError:
                 raise ClientRenderedException('전공 정보가 없습니다.')
         else:
-            user_id = request.GET.get('user_id', 'nid')
-            password = request.GET.get('password', 'npw')
+            user_id = request.data.get('user_id', 'nid')
+            password = request.data.get('password', 'npw')
             major_info = crawl_major(user_id, password)
         return find_rule(major_info)
