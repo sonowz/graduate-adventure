@@ -24,6 +24,7 @@ class Command(BaseCommand):
         courses = courselist.crawl_years(start, end)
 
         new_count, already_exists_count, error_count = 0, 0, 0
+        error_lines = '\n'
 
         for course in courses:
             new_course = Course(**course)
@@ -37,17 +38,23 @@ class Command(BaseCommand):
                 ))
                 new_count += 1
             except (ValidationError, IntegrityError):
-                self.stdout.write('! course "{code} {title} - {number}" already exists.'.format(
-                    code=course['code'],
-                    title=course['title'],
-                    number=course['number'],
-                ))
-                already_exists_count += 1
+                try:
+                    self.stdout.write('! course "{code} {title} - {number}" already exists.'.format(
+                        code=course['code'],
+                        title=course['title'],
+                        number=course['number'],
+                    ))
+                    already_exists_count += 1
+                except UnicodeEncodeError:
+                    error_count += 1
+                    continue
             except Exception as err:
                 self.stderr.write(str(err))
+                error_lines += str(err) + '\n'
                 error_count += 1
 
         self.stdout.write('\ncourse crawling process Done!')
         self.stdout.write('\t* newly added - {0}\n\t* already_exists - {1}\n\t* error - {2}'.format(
             new_count, already_exists_count, error_count
         ))
+        self.stdout.write(error_lines)
