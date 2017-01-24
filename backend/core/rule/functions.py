@@ -68,3 +68,10 @@ def if_less_func(*pos, **metadata):
     except KeyError:
         return False
     return meta >= arg
+
+if_func_list = {
+    'if': if_func,
+    'if_not': if_not_func,
+    'if_greater': if_greater_func,
+    'if_less': if_less_func,
+}

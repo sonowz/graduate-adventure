@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import yaml
-from core.rule.functions import and_func, make_func, if_func, if_not_func, if_greater_func, if_less_func
+from core.rule.functions import and_func, make_func, if_func_list
 import os
 import logging.config
 from django.conf import settings
@@ -9,11 +9,24 @@ logging.config.dictConfig(settings.LOGGING)
 logger = logging.getLogger('backend')
 
 
+class Loader(yaml.Loader):
+    def __init__(self, stream):
+        self._root = os.path.split(stream.name)[0]
+        super(Loader, self).__init__(stream)
+
+    def include(self, node):
+        filename = os.path.join(self._root, self.construct_scalar(node))
+        with open(filename, 'r') as f:
+            return yaml.load(f, Loader)
+
+Loader.add_constructor('!include', Loader.include)
+
+
 class TreeLoader(object):
     def __init__(self, rule_name, sugang_list, metadata, course_model):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         f = open(os.path.join(base_dir, 'rules', rule_name + '.yml'), 'r', encoding='utf-8')
-        self.tree = yaml.load(f)
+        self.tree = yaml.load(f, Loader)
         f.close()
         self.sugang_list = sugang_list
         self.metadata = metadata
@@ -27,8 +40,21 @@ class TreeLoader(object):
             if isinstance(course, str):
                 if course.startswith('$'):
                     subarea = course[1:]
-                    subarea_code_list = [item.code for item in self.course_model.objects.filter(subarea=subarea)]
-                    code_set = set(subarea_code_list)
+                    code_list = [item.code for item in self.course_model.objects.filter(subarea=subarea)]
+                    code_set = set(code_list)
+                    for code in code_set:
+                        previous_node.add_children(
+                            TreeNode(code, None, None, self.metadata, self.course_model,
+                                     [0, 0, False], False, False, self.sugang_list))
+                elif course.startswith('@'):
+                    t = course.split('@')
+                    dept, category, year = t[1], t[2], int(t[3])
+                    code_list = [item.code for item in self.course_model.objects.filter(
+                        dept=dept,
+                        category=category,
+                        year=year,
+                    )]
+                    code_set = set(code_list)
                     for code in code_set:
                         previous_node.add_children(
                             TreeNode(code, None, None, self.metadata, self.course_model,
@@ -43,32 +69,27 @@ class TreeLoader(object):
                 required_credit = course.get('required_credit', 0)
                 sum_false = course.get('sum_false', False)
                 delete_used = course.get('delete_used', False)
+
+                properties = {
+                    'course_model': self.course_model,
+                    'hide_false': hide_false,
+                    'credit_info': [0, required_credit, sum_false],
+                    'delete_used': delete_used,
+                }
+
                 current_func = course['func']
-                if current_func == 'if':
-                    if not if_func(*args, **self.metadata):
-                        continue
-                    self.load_tree(course['then'], previous_node)
-                elif current_func == 'if_not':
-                    if not if_not_func(*args, **self.metadata):
-                        continue
-                    self.load_tree(course['then'], previous_node)
-                elif current_func == 'if_greater':
-                    if not if_greater_func(*args, **self.metadata):
-                        continue
-                    self.load_tree(course['then'], previous_node)
-                elif current_func == 'if_less':
-                    if not if_less_func(*args, **self.metadata):
+                if current_func in if_func_list:
+                    current_if_func = if_func_list[current_func]
+                    if not current_if_func(*args, **self.metadata):
                         continue
                     self.load_tree(course['then'], previous_node)
                 else:
                     current_node = TreeNode(None,
                                             make_func(current_func)(*args),
                                             course['name'],
+                                            properties,
                                             self.metadata,
-                                            self.course_model,
-                                            [0, required_credit, sum_false],
-                                            hide_false,
-                                            delete_used)
+                                            )
                     self.load_tree(course['courses'], current_node)
                     previous_node.add_children(current_node)
 
@@ -84,23 +105,22 @@ class TreeLoader(object):
 
 
 class TreeNode(object):
-    def __init__(self, data, func, namespace, metadata, course_model,
-                 credit_info, hide_false=False, delete_used=False, *args):
+    def __init__(self, data, func, namespace, properties, metadata, *args):
         self.data = data
         self.func = func
         self.namespace = namespace
         self.metadata = metadata
-        self.credit = credit_info[0]
-        self.required_credit = credit_info[1]
-        self.sum_false = credit_info[2]
-        self.hide_false = hide_false
-        self.delete_used = delete_used
+        self.credit = properties['credit_info'][0]
+        self.required_credit = properties['credit_info'][1]
+        self.sum_false = properties['credit_info'][2]
+        self.hide_false = properties['hide_false']
+        self.delete_used = properties['delete_used']
         self.false_reason = ''
         self.is_course = isinstance(data, str)
         if self.is_course:
             self.children = args[0]
             try:
-                filtered_course = course_model.objects.filter(code=self.data)[0]
+                filtered_course = properties['course_model'].objects.filter(code=self.data)[0]
                 self.namespace = filtered_course.title
                 self.credit = filtered_course.credit
             except IndexError:
