@@ -19,6 +19,7 @@ class Loader(yaml.Loader):
         with open(filename, 'r') as f:
             return yaml.load(f, Loader)
 
+
 Loader.add_constructor('!include', Loader.include)
 
 
@@ -31,21 +32,29 @@ class TreeLoader(object):
         self.sugang_list = sugang_list
         self.metadata = metadata
         self.course_model = course_model
-        self.base_node = TreeNode(None, and_func(), '!GRADUATE', self.metadata, course_model,
-                                  [0, 0, False], False, False)
+        properties = {
+            'course_model': self.course_model,
+            'hide_false': False,
+            'credit_info': [0, 0, False],
+        }
+        self.base_node = TreeNode(None, and_func(), '!GRADUATE', properties, self.metadata)
         self.load_tree(self.tree, self.base_node)
 
     def load_tree(self, current_tree, previous_node):
         for course in current_tree:
             if isinstance(course, str):
+                properties = {
+                    'course_model': self.course_model,
+                    'hide_false': False,
+                    'credit_info': [0, 0, False],
+                }
                 if course.startswith('$'):
                     subarea = course[1:]
                     code_list = [item.code for item in self.course_model.objects.filter(subarea=subarea)]
                     code_set = set(code_list)
                     for code in code_set:
                         previous_node.add_children(
-                            TreeNode(code, None, None, self.metadata, self.course_model,
-                                     [0, 0, False], False, False, self.sugang_list))
+                            TreeNode(code, None, None, properties, self.metadata, self.sugang_list))
                 elif course.startswith('@'):
                     t = course.split('@')
                     dept, category, year = t[1], t[2], int(t[3])
@@ -57,24 +66,20 @@ class TreeLoader(object):
                     code_set = set(code_list)
                     for code in code_set:
                         previous_node.add_children(
-                            TreeNode(code, None, None, self.metadata, self.course_model,
-                                     [0, 0, False], False, False, self.sugang_list))
+                            TreeNode(code, None, None, properties, self.metadata, self.sugang_list))
                 else:
                     previous_node.add_children(
-                        TreeNode(course, None, None, self.metadata, self.course_model,
-                                 [0, 0, False], False, False, self.sugang_list))
+                        TreeNode(course, None, None, properties, self.metadata, self.sugang_list))
             elif type(course) is dict:
                 args = course.get('args', [])
                 hide_false = course.get('hide_false', False)
                 required_credit = course.get('required_credit', 0)
                 sum_false = course.get('sum_false', False)
-                delete_used = course.get('delete_used', False)
 
                 properties = {
                     'course_model': self.course_model,
                     'hide_false': hide_false,
                     'credit_info': [0, required_credit, sum_false],
-                    'delete_used': delete_used,
                 }
 
                 current_func = course['func']
@@ -114,7 +119,6 @@ class TreeNode(object):
         self.required_credit = properties['credit_info'][1]
         self.sum_false = properties['credit_info'][2]
         self.hide_false = properties['hide_false']
-        self.delete_used = properties['delete_used']
         self.false_reason = ''
         self.is_course = isinstance(data, str)
         if self.is_course:
@@ -171,10 +175,10 @@ class TreeNode(object):
     def add_children(self, obj):
         self.children.append(obj)
 
-    def eval_children(self, delete_used=False):
+    def eval_children(self):
         for i, child in enumerate(self.children):
             if isinstance(child, TreeNode):
-                child.eval_children(self.delete_used)
+                child.eval_children()
         if not self.is_course:
             logger.debug('{children} passed through {func}'.format(
                 children=str(self.children),
@@ -200,8 +204,7 @@ class TreeNode(object):
                     logger.debug('{data} returns True'.format(data=self.data))
                     self.data = True
                     is_satisfied = True
-                    if delete_used:
-                        del sugang_list[i]
+                    del sugang_list[i]
                     break
             if not is_satisfied:
                 logger.debug('{data} returns False'.format(data=self.data))
