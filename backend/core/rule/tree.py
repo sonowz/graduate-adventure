@@ -7,6 +7,7 @@ from django.conf import settings
 
 logging.config.dictConfig(settings.LOGGING)
 logger = logging.getLogger('backend')
+# http://stackoverflow.com/questions/528281/how-can-i-include-an-yaml-file-inside-another
 
 
 class Loader(yaml.Loader):
@@ -32,29 +33,24 @@ class TreeLoader(object):
         self.sugang_list = sugang_list
         self.metadata = metadata
         self.course_model = course_model
-        properties = {
+        self.default_properties = {
             'course_model': self.course_model,
             'hide_false': False,
             'credit_info': [0, 0, False],
         }
-        self.base_node = TreeNode(None, and_func(), '!GRADUATE', properties, self.metadata)
+        self.base_node = TreeNode(None, and_func(), '!GRADUATE', self.default_properties, self.metadata)
         self.load_tree(self.tree, self.base_node)
 
     def load_tree(self, current_tree, previous_node):
         for course in current_tree:
             if isinstance(course, str):
-                properties = {
-                    'course_model': self.course_model,
-                    'hide_false': False,
-                    'credit_info': [0, 0, False],
-                }
                 if course.startswith('$'):
                     subarea = course[1:]
                     code_list = [item.code for item in self.course_model.objects.filter(subarea=subarea)]
                     code_set = set(code_list)
                     for code in code_set:
                         previous_node.add_children(
-                            TreeNode(code, None, None, properties, self.metadata, self.sugang_list))
+                            TreeNode(code, None, None, self.default_properties, self.metadata, self.sugang_list))
                 elif course.startswith('@'):
                     t = course.split('@')
                     dept, category, year = t[1], t[2], int(t[3])
@@ -66,10 +62,10 @@ class TreeLoader(object):
                     code_set = set(code_list)
                     for code in code_set:
                         previous_node.add_children(
-                            TreeNode(code, None, None, properties, self.metadata, self.sugang_list))
+                            TreeNode(code, None, None, self.default_properties, self.metadata, self.sugang_list))
                 else:
                     previous_node.add_children(
-                        TreeNode(course, None, None, properties, self.metadata, self.sugang_list))
+                        TreeNode(course, None, None, self.default_properties, self.metadata, self.sugang_list))
             elif type(course) is dict:
                 args = course.get('args', [])
                 hide_false = course.get('hide_false', False)
@@ -85,9 +81,8 @@ class TreeLoader(object):
                 current_func = course['func']
                 if current_func in if_func_list:
                     current_if_func = if_func_list[current_func]
-                    if not current_if_func(*args, **self.metadata):
-                        continue
-                    self.load_tree(course['then'], previous_node)
+                    if current_if_func(*args, **self.metadata):
+                        self.load_tree(course['then'], previous_node)
                 else:
                     current_node = TreeNode(None,
                                             make_func(current_func)(*args),
