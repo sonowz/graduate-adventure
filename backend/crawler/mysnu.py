@@ -79,11 +79,20 @@ def crawl_credit(userid, password):
                 'category': raw['cptnSubmattFgCdNm']
             }
 
-        return [refine(raw) for raw in grade_list]
+    return [refine(raw) for raw in grade_list]
 
 
-def crawl_major(username, password):
-    return ['False', '컴퓨터공학부', 'none']
+def crawl_major(userid, password):
+    session = login(userid, password)
+    if session is None:
+        return None
+    with session as s:
+        url = 'https://shine.snu.ac.kr/uni/uni/port/stup/findMyMjInfo.action'
+        params = {'cscLocale': 'ko_KR', 'strPgmCd': 'S010101'}
+        headers = {'Content-Type': 'application/extJs+sua; charset=UTF-8'}
+        res = s.post(url, params=params, headers=headers)
+    # TODO: modify info for backend API
+    return res.json()['GRD_SREG524']
 
 
 def crawl_same_replace(userid, password):
@@ -116,4 +125,4 @@ def crawl_same_replace(userid, password):
         replace_res = s.post(replace_url, params=params, headers=headers, data=json.dumps(payload))
         replace_courses = replace_res.json()['GRD_COUR102']
         replace = [{'code_from': c['sbjtCd'], 'code_to': c['substSbjtCd']} for c in replace_courses]
-        return {'same': same, 'replace': replace}
+    return {'same': same, 'replace': replace}
