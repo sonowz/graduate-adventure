@@ -7,6 +7,7 @@ from django.conf import settings
 
 logging.config.dictConfig(settings.LOGGING)
 logger = logging.getLogger('backend')
+
 # http://stackoverflow.com/questions/528281/how-can-i-include-an-yaml-file-inside-another
 
 
@@ -25,12 +26,12 @@ Loader.add_constructor('!include', Loader.include)
 
 
 class TreeLoader(object):
-    def __init__(self, rule_name, sugang_list, metadata, course_model):
+    def __init__(self, rule_name, taken_list, metadata, course_model):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         f = open(os.path.join(base_dir, 'rules', rule_name + '.yml'), 'r', encoding='utf-8')
         self.tree = yaml.load(f, Loader)
         f.close()
-        self.sugang_list = sugang_list
+        self.taken_list = taken_list
         self.metadata = metadata
         self.course_model = course_model
         self.default_properties = {
@@ -50,7 +51,7 @@ class TreeLoader(object):
                     code_set = set(code_list)
                     for code in code_set:
                         previous_node.add_children(
-                            TreeNode(code, None, None, self.default_properties, self.metadata, self.sugang_list))
+                            TreeNode(code, None, None, self.default_properties, self.metadata, self.taken_list))
                 elif course.startswith('@'):
                     t = course.split('@')
                     dept, category, year = t[1], t[2], int(t[3])
@@ -62,10 +63,10 @@ class TreeLoader(object):
                     code_set = set(code_list)
                     for code in code_set:
                         previous_node.add_children(
-                            TreeNode(code, None, None, self.default_properties, self.metadata, self.sugang_list))
+                            TreeNode(code, None, None, self.default_properties, self.metadata, self.taken_list))
                 else:
                     previous_node.add_children(
-                        TreeNode(course, None, None, self.default_properties, self.metadata, self.sugang_list))
+                        TreeNode(course, None, None, self.default_properties, self.metadata, self.taken_list))
             elif type(course) is dict:
                 args = course.get('args', [])
                 hide_false = course.get('hide_false', False)
@@ -191,15 +192,15 @@ class TreeNode(object):
                     self.data = False
                     self.false_reason = 'not enough credit'
         else:
-            sugang_list = self.children
+            taken_list = self.children
             is_satisfied = False
-            for i, course in enumerate(sugang_list):
+            for i, course in enumerate(taken_list):
                 code = course['code']
                 if code == self.data:
                     logger.debug('{data} returns True'.format(data=self.data))
                     self.data = True
                     is_satisfied = True
-                    del sugang_list[i]
+                    del taken_list[i]
                     break
             if not is_satisfied:
                 logger.debug('{data} returns False'.format(data=self.data))

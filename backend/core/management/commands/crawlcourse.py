@@ -3,6 +3,12 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from core.models import Course
 from crawler import courselist
+import logging
+import logging.config
+from django.conf import settings
+
+logging.config.dictConfig(settings.LOGGING)
+logger = logging.getLogger('crawlcourse')
 
 
 class Command(BaseCommand):
@@ -24,7 +30,6 @@ class Command(BaseCommand):
         courses = courselist.crawl_years(start, end)
 
         new_count, already_exists_count, error_count = 0, 0, 0
-        error_lines = '\n'
 
         for course in courses:
             new_course = Course(**course)
@@ -46,15 +51,13 @@ class Command(BaseCommand):
                     ))
                     already_exists_count += 1
                 except UnicodeEncodeError:
-                    error_count += 1
+                    logger.exception('UnicodeEncodeError')
                     continue
             except Exception as err:
-                self.stderr.write(str(err))
-                error_lines += str(err) + '\n'
+                logger.exception(err, err.args)
                 error_count += 1
 
         self.stdout.write('\ncourse crawling process Done!')
         self.stdout.write('\t* newly added - {0}\n\t* already_exists - {1}\n\t* error - {2}'.format(
             new_count, already_exists_count, error_count
         ))
-        self.stdout.write(error_lines)
