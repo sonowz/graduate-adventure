@@ -21,7 +21,7 @@ var commonConfig = {
   output: {
     path:       outputPath,
     filename:   outputFilename,
-    publicPath: '/'
+    publicPath: '/static/'
   },
 
   resolve: {
