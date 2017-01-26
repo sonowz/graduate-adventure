@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from core.models import Course
-from course.crawler import Crawler
+from crawler import courselist
 
 
 class Command(BaseCommand):
@@ -21,8 +21,7 @@ class Command(BaseCommand):
 
         self.stdout.write('starting course crawler...')
 
-        crawler = Crawler()
-        courses = crawler.crawl_courses(start, end)
+        courses = courselist.crawl_years(start, end)
 
         new_count, already_exists_count, error_count = 0, 0, 0
 

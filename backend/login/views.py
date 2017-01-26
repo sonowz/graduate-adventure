@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FileUploadParser, FormParser
-from core.crawler import crawl_credit, crawl_major
+from crawler import mysnu
 from core.parser import parse_credit
 from core.rule.tree import TreeLoader
 from core.rule.util import find_rule
@@ -35,7 +35,7 @@ class LoginRequest(APIView):
                 logger.debug('mySNU login request with sessionid: ' + str(request.session.session_key))
                 user_id = request.data.get('user_id', 'nid')
                 password = request.data.get('password', 'npw')
-                sugang_list = crawl_credit(user_id, password)
+                sugang_list = mysnu.crawl_credit(user_id, password)
                 if len(sugang_list) == 0:
                     raise ClientRenderedException('로그인에 실패했습니다.')
             else:  # option == 'file':
@@ -81,5 +81,5 @@ class LoginRequest(APIView):
         else:
             user_id = request.data.get('user_id', 'nid')
             password = request.data.get('password', 'npw')
-            major_info = crawl_major(user_id, password)
+            major_info = mysnu.crawl_major(user_id, password)
         return find_rule(major_info)
