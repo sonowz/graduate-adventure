@@ -35,6 +35,44 @@ def part_func(*pos):
 
 
 def if_func(*pos, **metadata):
-    meta = metadata[pos[0]]
-    arg = pos[1]
+    try:
+        meta = metadata[pos[0]]
+        arg = pos[1]
+    except KeyError:
+        return False
     return meta == arg
+
+
+def if_not_func(*pos, **metadata):
+    try:
+        meta = metadata[pos[0]]
+        arg = pos[1]
+    except KeyError:
+        return False
+    return meta != arg
+
+
+def if_greater_func(*pos, **metadata):
+    try:
+        meta = metadata[pos[0]]
+        arg = pos[1]
+    except KeyError:
+        return False
+    return meta <= arg
+
+
+def if_less_func(*pos, **metadata):
+    try:
+        meta = metadata[pos[0]]
+        arg = pos[1]
+    except KeyError:
+        return False
+    return meta >= arg
+
+
+if_func_list = {
+    'if': if_func,
+    'if_not': if_not_func,
+    'if_greater': if_greater_func,
+    'if_less': if_less_func,
+}
