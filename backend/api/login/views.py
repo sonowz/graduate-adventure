@@ -51,7 +51,7 @@ class LoginRequest(APIView):
 
             rule = self.get_rule(request)
             # tree =
-            TreeLoader(rule, sugang_list, [])
+            TreeLoader(rule, sugang_list, None, [])
             # do something with 'tree' here
         # IOError should be handled within 'TreeLoader' later
         except IOError:

@@ -3,7 +3,9 @@ module Pages.Prototype.LoginBox exposing (..)
 import Html exposing (Html, div, text, button)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
+import Json.Decode as Json
 import Http
+import Maybe exposing (..)
 import Result exposing (Result(..))
 import TextBox
 import Utils.Http
@@ -33,7 +35,20 @@ type Msg
   = TextInput_ID TextBox.Msg
   | TextInput_pw TextBox.Msg
   | Submit
-  | Response (Result Http.Error String)
+  | Response (Result Http.Error JsonMsg)
+
+
+type alias JsonMsg = 
+  { success : Bool
+  , message : Maybe String
+  }
+
+
+decoder : Json.Decoder JsonMsg
+decoder = 
+  Json.map2 JsonMsg
+    ( Json.field "success" Json.bool )
+    ( Json.maybe <| Json.field "message" Json.string )
 
 
 -- UPDATE
@@ -58,7 +73,7 @@ update msg model =
     Submit ->
       let
         url =
-          URL.host ++ "login/mysnu/"
+          URL.host ++ "api/login/mysnu/"
         
         parameter =
           "user_id=" ++ model.textBox_ID.text ++ "&password=" ++ model.textBox_pw.text
@@ -67,15 +82,17 @@ update msg model =
           Http.stringBody "application/x-www-form-urlencoded" parameter
         
         request = 
-          Utils.Http.postString url body
+          Http.post url body decoder
       in
         ( model, Http.send Response request )
       
-    Response (Ok res) ->
-      if String.length res > 100 then   -- temporary code for testing
-        ( { model | responseText = "성공적으로 로그인했습니다." }, Cmd.none )
-      else
-        ( { model | responseText = res }, Cmd.none )
+    -- TODO: make request to main page when successful
+    Response (Ok jsonMsg) ->
+      let 
+        newText = 
+          withDefault "성공적으로 로그인했습니다." jsonMsg.message 
+      in
+        ( { model | responseText = newText }, Cmd.none )
     
     Response (Err error) ->
       ( { model | responseText = "Server not responding / Bad status" }, Cmd.none )
