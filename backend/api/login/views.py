@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from django.http.response import HttpResponse
-from django.shortcuts import redirect
+from django.http.response import HttpResponse, JsonResponse
 from django.conf import settings
 from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FileUploadParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser
 from crawler import mysnu
 from core.parser import parse_credit
 from core.rule.tree import TreeLoader
@@ -28,7 +27,7 @@ class LoginRequest(APIView):
     parser_classes = (MultiPartParser, FormParser,)
 
     # For debugging purpose :
-    #   - Return sugang_list instead of redirecting to '/main'
+    #   - Return sugang_list at success
     def post(self, request, option, *args, **kwargs):
         try:
             if option == 'mysnu':
@@ -36,7 +35,7 @@ class LoginRequest(APIView):
                 user_id = request.data.get('user_id', 'nid')
                 password = request.data.get('password', 'npw')
                 sugang_list = mysnu.crawl_credit(user_id, password)
-                if len(sugang_list) == 0:
+                if sugang_list is None:
                     raise ClientRenderedException('로그인에 실패했습니다.')
             else:  # option == 'file':
                 logger.debug('File login request with sessionid: ' + str(request.session.session_key))
@@ -60,11 +59,11 @@ class LoginRequest(APIView):
             pass
         except ClientRenderedException as e:
             logger.error(e.args[0])
-            return HttpResponse(e.args[0])
+            return JsonResponse({'success': False, 'message': e.args[0]})
 
         request.session['list'] = sugang_list
         request.session.set_expiry(600)
-        return HttpResponse(str(request.session['list']))
+        return JsonResponse({'success': True, 'message': str(request.session['list'])})
 
     def get_rule(self, request):
         has_major = request.data.get('major_info', False)
