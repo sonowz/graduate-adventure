@@ -1,27 +1,31 @@
 module Pages.Prototype.FileSelectBox exposing (..)
 
-import Html exposing (Html, div, text, br, input)
-import Html.Attributes exposing (style, type_)
+import Html exposing (Html, div, text, br, input, button, form)
+import Html.Attributes exposing (style, type_, id)
+import Html.Events exposing (onClick, onSubmit)
+import Pages.Prototype.Ports as Ports
 
 --TODO: get file info
 
 -- MODEL
 
 type alias Model =
-  { file : Maybe String
+  { text : String
   }
 
 
 init : Model
 init =
-  { file = Nothing
+  { text = "aaaa"
   }
 
 
 -- MESSAGES
 
 type Msg
-  = FileSelection String
+  = Submit
+  | Response String
+  | None
 
 
 -- UPDATE
@@ -29,8 +33,21 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    FileSelection newFile ->
-      ( { model | file = Just newFile }, Cmd.none )
+    Submit ->
+      ( model, Ports.fileRequest "filerequest" )
+    
+    Response str ->
+      ( { model | text = str }, Cmd.none )
+    
+    None ->
+      ( model, Cmd.none )
+
+
+-- SUBSCRIPTIONS
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Ports.fileResponse Response
 
 
 -- VIEW
@@ -69,12 +86,16 @@ view model =
     div
       [ mainBoxStyle ]
       [ div [] instructionText
-      , div [ fileBoxStyle ]
+      , form
+        [ fileBoxStyle
+        , id "filerequest"
+        , onSubmit None  -- Insert event.preventDefault()
+        ]
         [ div [ horizontalFloat ]
           [ input [ type_ "file" ] [] ]
         , div [ horizontalFloat ]
-          [ input [ type_ "submit" ] [] ]
+          [ button [ onClick Submit ] [] ]
         ]
-    --, text ( "Debug : " ++ (Maybe.withDefault "nofile" model.file) )
+      , text ( "Debug : " ++ model.text )
       ]
         

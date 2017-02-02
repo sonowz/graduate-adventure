@@ -27,7 +27,6 @@ from django.conf.urls.static import static
 import api.urls
 
 urlpatterns = [
-    #url(r'^rest-api/', include('rest_framework.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(api.urls.urlpatterns)),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

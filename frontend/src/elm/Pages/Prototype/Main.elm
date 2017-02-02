@@ -64,7 +64,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.none
+  Sub.batch
+    [ FileSelectBox.subscriptions model.fileSelectBox
+      |> Sub.map FileSelectBoxMsg
+    ]
 
 
 -- VIEW
