@@ -3,13 +3,10 @@ module Pages.Prototype.LoginBox exposing (..)
 import Html exposing (Html, div, text, button)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
-import Json.Decode as Json
 import Http
-import Maybe exposing (..)
 import Result exposing (Result(..))
+import Pages.Prototype.Response as Response
 import TextBox
-import Utils.Http
-import URL
 
 
 -- MODEL
@@ -35,20 +32,7 @@ type Msg
   = TextInput_ID TextBox.Msg
   | TextInput_pw TextBox.Msg
   | Submit
-  | Response (Result Http.Error JsonMsg)
-
-
-type alias JsonMsg = 
-  { success : Bool
-  , message : Maybe String
-  }
-
-
-decoder : Json.Decoder JsonMsg
-decoder = 
-  Json.map2 JsonMsg
-    ( Json.field "success" Json.bool )
-    ( Json.maybe <| Json.field "message" Json.string )
+  | Response (Result Http.Error Response.Decoded)
 
 
 -- UPDATE
@@ -73,7 +57,7 @@ update msg model =
     Submit ->
       let
         url =
-          URL.host ++ "api/login/mysnu/"
+          "/api/login/mysnu/"
         
         parameter =
           "user_id=" ++ model.textBox_ID.text ++ "&password=" ++ model.textBox_pw.text
@@ -82,20 +66,16 @@ update msg model =
           Http.stringBody "application/x-www-form-urlencoded" parameter
         
         request = 
-          Http.post url body decoder
+          Http.post url body Response.decoder
       in
         ( model, Http.send Response request )
       
     -- TODO: make request to main page when successful
-    Response (Ok jsonMsg) ->
-      let 
-        newText = 
-          withDefault "성공적으로 로그인했습니다." jsonMsg.message 
-      in
-        ( { model | responseText = newText }, Cmd.none )
+    Response (Ok decoded) ->
+      ( { model | responseText = Maybe.withDefault "" decoded.message }, Cmd.none )
     
     Response (Err error) ->
-      ( { model | responseText = "Server not responding / Bad status" }, Cmd.none )
+      ( { model | responseText = "Bad response" }, Cmd.none )
 
 
 -- VIEW

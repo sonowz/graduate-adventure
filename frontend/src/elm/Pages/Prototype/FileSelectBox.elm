@@ -1,22 +1,24 @@
 module Pages.Prototype.FileSelectBox exposing (..)
 
 import Html exposing (Html, div, text, br, input, button, form)
-import Html.Attributes exposing (style, type_, id)
+import Html.Attributes exposing (style, type_, id, name, value)
 import Html.Events exposing (onClick, onSubmit)
+import Json.Decode as Json
+import Result exposing (Result(..))
 import Pages.Prototype.Ports as Ports
+import Pages.Prototype.Response as Response
 
---TODO: get file info
 
 -- MODEL
 
 type alias Model =
-  { text : String
+  { responseText : String
   }
 
 
 init : Model
 init =
-  { text = "aaaa"
+  { responseText = ""
   }
 
 
@@ -34,10 +36,27 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     Submit ->
-      ( model, Ports.fileRequest "filerequest" )
+      let
+        formID =
+          "filerequest"
+
+        url = 
+          "/api/login/file/"
+      in
+        ( model, Ports.fileRequest ( formID ++ "@" ++ url ) )
     
     Response str ->
-      ( { model | text = str }, Cmd.none )
+      let
+        decodedResult : Result String Response.Decoded
+        decodedResult = 
+          Json.decodeString Response.decoder str
+      in
+        case decodedResult of
+          Ok decoded ->
+            ( { model | responseText = Maybe.withDefault "" decoded.message }, Cmd.none )
+          
+          Err error ->
+            ( { model | responseText = "Bad response" }, Cmd.none )
     
     None ->
       ( model, Cmd.none )
@@ -92,10 +111,11 @@ view model =
         , onSubmit None  -- Insert event.preventDefault()
         ]
         [ div [ horizontalFloat ]
-          [ input [ type_ "file" ] [] ]
+          [ input [ type_ "file", name "course.txt" ] [] ]
         , div [ horizontalFloat ]
-          [ button [ onClick Submit ] [] ]
+          [ button [ onClick Submit, value "Submit" ] [] ]
+        , input [ type_ "hidden", name "filename", value "course.txt" ] []
         ]
-      , text ( "Debug : " ++ model.text )
+      , text ( "Debug : " ++ model.responseText )
       ]
         

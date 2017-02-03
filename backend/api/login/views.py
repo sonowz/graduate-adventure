@@ -49,6 +49,8 @@ class LoginRequest(APIView):
                 text = text.decode('euc-kr', errors='ignore')
                 sugang_list = parse_credit(text)
 
+            if len(sugang_list) == 0:
+                raise ClientRenderedException('이수내역이 존재하지 않습니다.')
             rule = self.get_rule(request)
             # tree =
             TreeLoader(rule, sugang_list, None, [])
