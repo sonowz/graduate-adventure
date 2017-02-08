@@ -14,3 +14,8 @@
 - 강의 언어 (language)
 - 개설대학 (collage)
 - 개설학과 (dept)
+
+
+# 대체교과목 (Replace)
+- **피 대체과목 코드** (from_code)
+- **대체과목 코드** (to_code)
