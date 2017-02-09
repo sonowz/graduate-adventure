@@ -27,3 +27,17 @@ class Course(models.Model):
             area=self.area,
             subarea=self.subarea,
         )
+
+
+class Replace(models.Model):
+    from_code = models.CharField(max_length=30)
+    to_code = models.CharField(max_length=30)
+
+    class Meta:
+        unique_together = (('from_code', 'to_code'),)
+
+    def __str__(self):
+        return '{from_code} -> {to_code}'.format(
+            from_code=self.from_code,
+            to_code=self.to_code
+        )
