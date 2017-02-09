@@ -53,11 +53,18 @@ update msg model =
 
 -- VIEW
 
-view : Model -> Html Msg
-view model =
+view : Model -> (Html.Attribute Msg) -> Html Msg
+view model textBoxType=
   let
     fieldType =
       if model.password then "password" else "text"
   in
     div []
-      [ input [ type_ fieldType, placeholder model.defaultText, onInput TextInput ] [] ]
+      [ input 
+        [ type_ fieldType
+        , placeholder model.defaultText
+        , onInput TextInput
+        , textBoxType 
+        ] 
+        [] 
+      ]
