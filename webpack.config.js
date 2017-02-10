@@ -62,8 +62,12 @@ if ( TARGET_ENV === 'development' ) {
     ],
 
     devServer: {
-      // serve index.html in place of 404 responses
-      historyApiFallback: true,
+      // serve static/index.html in place of 404 responses
+      historyApiFallback: {
+        rewrites: [
+          { from: /./, to: '/static/index.html' },
+        ]
+      }
     },
 
     module: {

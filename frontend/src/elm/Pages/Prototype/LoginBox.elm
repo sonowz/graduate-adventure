@@ -5,6 +5,7 @@ import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 import Http
 import Result exposing (Result(..))
+import Pages.Prototype.Response as Response
 import TextBox
 import CheckBox
 import Utils.Http
@@ -37,8 +38,8 @@ type Msg
   = TextInput_ID TextBox.Msg
   | TextInput_pw TextBox.Msg
   | Submit
-  | Response (Result Http.Error String)
   | Toggle_checkBox_info CheckBox.Msg
+  | Response (Result Http.Error Response.Decoded)
 
 
 -- UPDATE
@@ -63,7 +64,7 @@ update msg model =
     Submit ->
       let
         url =
-          URL.host ++ "login/mysnu/"
+          "/api/login/mysnu/"
         
         parameter =
           "user_id=" ++ model.textBox_ID.text ++ "&password=" ++ model.textBox_pw.text
@@ -72,18 +73,16 @@ update msg model =
           Http.stringBody "application/x-www-form-urlencoded" parameter
         
         request = 
-          Utils.Http.postString url body
+          Http.post url body Response.decoder
       in
         ( model, Http.send Response request )
       
-    Response (Ok res) ->
-      if String.length res > 100 then   -- temporary code for testing
-        ( { model | responseText = "성공적으로 로그인했습니다." }, Cmd.none )
-      else
-        ( { model | responseText = res }, Cmd.none )
+    -- TODO: make request to main page when successful
+    Response (Ok decoded) ->
+      ( { model | responseText = Maybe.withDefault "" decoded.message }, Cmd.none )
     
     Response (Err error) ->
-      ( { model | responseText = "Server not responding / Bad status" }, Cmd.none )
+      ( { model | responseText = "Bad response" }, Cmd.none )
 
     Toggle_checkBox_info subMsg ->
       let

@@ -95,7 +95,7 @@ def crawl_major(userid, password):
     return res.json()['GRD_SREG524']
 
 
-def crawl_same_replace(userid, password):
+def crawl_replace_course(userid, password):
     session = login(userid, password)
     if session is None:
         return None
@@ -120,9 +120,23 @@ def crawl_same_replace(userid, password):
         }
         same_res = s.post(same_url, params=params, headers=headers, data=json.dumps(payload))
         same_courses = same_res.json()['GRD_COUR102']
-        same = [{'code': c['sbjtCd'], 'group': c['sameSubstGrpNo']} for c in same_courses]
+        sames = [{'code': c['sbjtCd'], 'group': c['sameSubstGrpNo']} for c in same_courses]
+
+        replaces = []
+        group_by = {}
+        for same in sames:
+            if same['group'] in group_by:
+                group_by[same['group']].append(same['code'])
+            else:
+                group_by[same['group']] = [same['code']]
+
+        for _, v in group_by.items():
+            num = len(v)
+            for i in range(num):
+                for j in range(i):
+                    replaces.append({'from_code': v[i], 'to_code': v[j]})
 
         replace_res = s.post(replace_url, params=params, headers=headers, data=json.dumps(payload))
         replace_courses = replace_res.json()['GRD_COUR102']
-        replace = [{'code_from': c['sbjtCd'], 'code_to': c['substSbjtCd']} for c in replace_courses]
-    return {'same': same, 'replace': replace}
+        replaces.extend([{'from_code': c['sbjtCd'], 'to_code': c['substSbjtCd']} for c in replace_courses])
+    return replaces

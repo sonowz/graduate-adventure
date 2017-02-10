@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from login.views import login_page, LoginRequest
+from api.login.views import login_page, LoginRequest
 
 urlpatterns = [
     url(r'^$', login_page),
