@@ -18,11 +18,19 @@ type alias Model =
   , checkBox_info : CheckBox.Model
   }
 
+textBoxBound : Html.Attribute msg
+textBoxBound = 
+  style
+  [ ("width","50%")
+  , ("float","left")
+  , ("border-radius","5px")
+  , ("height","24px")
+  ]
 
 init : Model
 init =
-  { textBox_ID = TextBox.init
-  , textBox_pw = TextBox.initpw
+  { textBox_ID = TextBox.init textBoxBound
+  , textBox_pw = TextBox.initpw textBoxBound
   , responseText = ""
   , checkBox_info = CheckBox.init
   }
@@ -117,15 +125,6 @@ view model =
       , ("width","40%")
       ]
 
-    textBoxBound : Html.Attribute msg
-    textBoxBound = 
-      style
-      [ ("width","50%")
-      , ("float","left")
-      , ("border-radius","5px")
-      , ("height","24px")
-      ]
-
     buttonType : Html.Attribute msg
     buttonType =
       style
@@ -172,7 +171,7 @@ view model =
           [ contentsType,fontType ]
           [ text "id" ]
         , 
-        Html.map TextInput_ID (TextBox.view model.textBox_ID textBoxBound)
+        Html.map TextInput_ID (TextBox.view model.textBox_ID)
         ]
       , div
         [ style
@@ -184,7 +183,7 @@ view model =
           [ contentsType,fontType ]
           [ text "password" ]
         ,
-        Html.map TextInput_pw (TextBox.view model.textBox_pw textBoxBound)
+        Html.map TextInput_pw (TextBox.view model.textBox_pw)
         ]
       , table
         [ visibilityTable model.checkBox_info.flag
