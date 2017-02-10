@@ -30,7 +30,7 @@ inittext text newAttr =
 
 -- password field
 initpw : (Html.Attribute Msg) -> Model
-initpw newAttr=
+initpw newAttr =
   let
     model =
       inittext "" newAttr
@@ -56,7 +56,7 @@ update msg model =
 -- VIEW
 
 view : Model -> Html Msg
-view model=
+view model =
   let
     fieldType =
       if model.password then "password" else "text"
