@@ -1,5 +1,6 @@
 module Tests.Components.TextBox exposing (tests)
 
+import Html.Attributes exposing (style)
 import Test exposing (Test, describe, test)
 import Expect exposing (equal)
 import Tests.Util as Util
@@ -12,22 +13,22 @@ tests =
     [ describe "constructors"
       [ test "init" <|
         \_ ->
-          init |> .defaultText
+          init testAttr |> .defaultText
             |> equal ""
       
       , test "inittext with blank string" <|
         \_ ->
-          inittext "" |> .defaultText
+          inittext "" testAttr |> .defaultText
             |> equal ""
       
       , test "inittext with some string" <|
         \_ ->
-          inittext " _str __" |> .defaultText
+          inittext " _str __" testAttr |> .defaultText
             |> equal " _str __"
       
       , test "initpw" <|
         \_ ->
-          initpw |> .password
+          initpw testAttr |> .password
             |> equal True
       ]
 
@@ -50,7 +51,7 @@ tests =
       
       , test "initpw should be password type" <|
         \_ ->
-          Util.htmlHasStr ( view initpw ) "type = \"password\""
+          Util.htmlHasStr ( view ( initpw testAttr ) ) "type = \"password\""
             |> equal True
       ]
     ]
@@ -61,4 +62,8 @@ testMsg =
 
 
 testModel = 
-  inittext "defText"
+  inittext "defText" testAttr
+
+
+testAttr = 
+  style []
