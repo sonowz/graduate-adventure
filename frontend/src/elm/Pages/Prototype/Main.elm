@@ -154,7 +154,8 @@ view model =
           [("height","50px")]
         ]
         [ modeSelect ]
-        ,div
+        ,
+        div
         [ style
           [("height","200px")]
         ]

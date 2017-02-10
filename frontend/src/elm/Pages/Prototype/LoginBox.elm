@@ -8,8 +8,6 @@ import Result exposing (Result(..))
 import Pages.Prototype.Response as Response
 import TextBox
 import CheckBox
-import Utils.Http
-import URL
 
 -- MODEL
 
@@ -18,7 +16,6 @@ type alias Model =
   , textBox_pw : TextBox.Model
   , responseText : String
   , checkBox_info : CheckBox.Model
-  , visibilityTable : Html.Attribute Msg
   }
 
 
@@ -28,7 +25,6 @@ init =
   , textBox_pw = TextBox.initpw
   , responseText = ""
   , checkBox_info = CheckBox.init
-  , visibilityTable = style [("visibility","visible")]
   }
 
 
@@ -89,12 +85,17 @@ update msg model =
         ( newBox,cmd ) =
           CheckBox.update subMsg model.checkBox_info
       in
-        if model.visibilityTable == style [("visibility","visible")] then
-          ({ model | checkBox_info = newBox 
-                   , visibilityTable = style[("visibility","hidden")] }, Cmd.none)
+        if model.checkBox_info.flag then
+          ({ model | checkBox_info = newBox }, Cmd.none)
         else
-          ({ model | checkBox_info = newBox 
-                   , visibilityTable = style[("visibility","visible")] }, Cmd.none)
+          ({ model | checkBox_info = newBox }, Cmd.none)
+
+
+visibilityTable : Bool -> Html.Attribute msg
+visibilityTable flag =
+  case flag of
+    True -> style [("visibility","hidden")]
+    False -> style [("visibility","visible")]
 
 -- VIEW
 
@@ -146,7 +147,6 @@ view model =
       , ("position","relative")
       , ("left","10%")
       , ("border-collapse","collapse")
-      , ("background-color","white")
       , ("height","80px")
       ]
 
@@ -156,11 +156,11 @@ view model =
       [ ("border","1px solid white")
       , ("text-align","center")
       , ("color","white")
-      , ("background-color","rgb(147,114,147)")
+      , ("background-color","rgb(0,0,0)")
       ]
 
   in
-    div [ ]
+    div []
       [ div
         [ style
           [ ("padding-bottom", "50px")
@@ -187,7 +187,7 @@ view model =
         Html.map TextInput_pw (TextBox.view model.textBox_pw textBoxBound)
         ]
       , table
-        [ model.visibilityTable
+        [ visibilityTable model.checkBox_info.flag
         , tableType
         ]
         [
