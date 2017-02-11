@@ -39,5 +39,5 @@ matrix:
 test_script:
   - node --version
   - npm --version
-  - python backend/manage.py test
+  - "cd backend && python manage.py test && cd .."
   - npm test
