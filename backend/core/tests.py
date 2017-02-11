@@ -3,7 +3,6 @@ from django.test import TestCase
 from django.conf import settings
 import pickle
 import os
-
 from core.models import Course
 from core.rule.tree import TreeLoader, TreeNode, TreeLoaderException
 
