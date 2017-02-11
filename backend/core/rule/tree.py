@@ -25,13 +25,20 @@ class Loader(yaml.Loader):
 Loader.add_constructor('!include', Loader.include)
 
 
+class TreeLoaderException(Exception):
+    pass
+
+
 class TreeLoader(object):
-    def __init__(self, rule_name, taken_list, metadata, course_model):
+    def __init__(self, rule_name, metadata, course_model):
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        f = open(os.path.join(base_dir, 'rules', rule_name + '.yml'), 'r', encoding='utf-8')
-        self.tree = yaml.load(f, Loader)
-        f.close()
-        self.taken_list = taken_list
+        try:
+            f = open(os.path.join(base_dir, 'rules', rule_name + '.yml'), 'r', encoding='utf-8')
+            self.tree = yaml.load(f, Loader)
+            f.close()
+        except IOError:
+            logger.error('Error opening file: ' + rule_name)
+            raise TreeLoaderException()
         self.metadata = metadata
         self.course_model = course_model
         self.default_properties = {
@@ -39,7 +46,7 @@ class TreeLoader(object):
             'hide_false': False,
             'credit_info': [0, 0, False],
         }
-        self.base_node = TreeNode(None, and_func(), '!GRADUATE', self.default_properties, self.metadata)
+        self.base_node = TreeNode(None, self.default_properties, self.metadata, and_func(), '!GRADUATE')
         self.load_tree(self.tree, self.base_node)
 
     def load_tree(self, current_tree, previous_node):
@@ -50,8 +57,7 @@ class TreeLoader(object):
                     code_list = [item.code for item in self.course_model.objects.filter(subarea=subarea)]
                     code_set = set(code_list)
                     for code in code_set:
-                        previous_node.add_children(
-                            TreeNode(code, None, None, self.default_properties, self.metadata, self.taken_list))
+                        previous_node.add_children(TreeNode(code, self.default_properties, self.metadata))
                 elif course.startswith('@'):
                     t = course.split('@')
                     dept, category, year = t[1], t[2], int(t[3])
@@ -62,11 +68,9 @@ class TreeLoader(object):
                     )]
                     code_set = set(code_list)
                     for code in code_set:
-                        previous_node.add_children(
-                            TreeNode(code, None, None, self.default_properties, self.metadata, self.taken_list))
+                        previous_node.add_children(TreeNode(code, self.default_properties, self.metadata))
                 else:
-                    previous_node.add_children(
-                        TreeNode(course, None, None, self.default_properties, self.metadata, self.taken_list))
+                    previous_node.add_children(TreeNode(course, self.default_properties, self.metadata))
             elif type(course) is dict:
                 args = course.get('args', [])
                 hide_false = course.get('hide_false', False)
@@ -86,16 +90,16 @@ class TreeLoader(object):
                         self.load_tree(course['then'], previous_node)
                 else:
                     current_node = TreeNode(None,
-                                            make_func(current_func)(*args),
-                                            course['name'],
                                             properties,
                                             self.metadata,
+                                            make_func(current_func)(*args),
+                                            course['name'],
                                             )
                     self.load_tree(course['courses'], current_node)
                     previous_node.add_children(current_node)
 
-    def eval_tree(self):
-        self.base_node.eval_children()
+    def eval_tree(self, taken_list):
+        self.base_node.eval_children(taken_list)
         return self.base_node.data
 
     def tree_into_str(self):
@@ -106,19 +110,19 @@ class TreeLoader(object):
 
 
 class TreeNode(object):
-    def __init__(self, data, func, namespace, properties, metadata, *args):
+    def __init__(self, data, properties, metadata, func=None, namespace=None, *args):
         self.data = data
-        self.func = func
-        self.namespace = namespace
-        self.metadata = metadata
         self.credit = properties['credit_info'][0]
         self.required_credit = properties['credit_info'][1]
         self.sum_false = properties['credit_info'][2]
         self.hide_false = properties['hide_false']
+        self.metadata = metadata
+        self.func = func
+        self.namespace = namespace
         self.false_reason = ''
         self.is_course = isinstance(data, str)
         if self.is_course:
-            self.children = args[0]
+            self.children = None
             try:
                 filtered_course = properties['course_model'].objects.filter(code=self.data)[0]
                 self.namespace = filtered_course.title
@@ -171,11 +175,12 @@ class TreeNode(object):
     def add_children(self, obj):
         self.children.append(obj)
 
-    def eval_children(self):
-        for i, child in enumerate(self.children):
-            if isinstance(child, TreeNode):
-                child.eval_children()
+    def eval_children(self, taken_list):
         if not self.is_course:
+            for i, child in enumerate(self.children):
+                if isinstance(child, TreeNode):
+                    child.eval_children(taken_list)
+
             logger.debug('{children} passed through {func}'.format(
                 children=str(self.children),
                 func=self.func.__name__,
@@ -192,7 +197,6 @@ class TreeNode(object):
                     self.data = False
                     self.false_reason = 'not enough credit'
         else:
-            taken_list = self.children
             is_satisfied = False
             for i, course in enumerate(taken_list):
                 code = course['code']
