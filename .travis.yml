@@ -20,7 +20,7 @@ install:
 
 # command to run tests
 script:
-  - "cd backend && python manage.py test && cd .."
+  - "cd backend && python manage.py test --keepdb && cd .."
   - npm test
 
 cache:

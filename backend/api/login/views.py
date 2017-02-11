@@ -55,7 +55,7 @@ class LoginRequest(APIView):
             rule = self.get_rule(request)
             try:
                 # tree =
-                TreeLoader(rule, None, Course)
+                TreeLoader(rule, {}, Course)
             except TreeLoaderException:
                 raise ClientRenderedException('Internal error')
             # do something with 'tree' here
