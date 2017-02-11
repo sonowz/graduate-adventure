@@ -122,7 +122,7 @@ class TreeNode(object):
         self.false_reason = ''
         self.is_course = isinstance(data, str)
         if self.is_course:
-            self.children = None
+            self.children = []
             try:
                 filtered_course = properties['course_model'].objects.filter(code=self.data)[0]
                 self.namespace = filtered_course.title
@@ -176,11 +176,11 @@ class TreeNode(object):
         self.children.append(obj)
 
     def eval_children(self, taken_list):
-        if not self.is_course:
-            for i, child in enumerate(self.children):
-                if isinstance(child, TreeNode):
-                    child.eval_children(taken_list)
+        for i, child in enumerate(self.children):
+            if isinstance(child, TreeNode):
+                child.eval_children(taken_list)
 
+        if not self.is_course:
             logger.debug('{children} passed through {func}'.format(
                 children=str(self.children),
                 func=self.func.__name__,
@@ -204,6 +204,7 @@ class TreeNode(object):
                     logger.debug('{data} returns True'.format(data=self.data))
                     self.data = True
                     is_satisfied = True
+                    self.namespace = course['title']  # Change name to what user actually took
                     del taken_list[i]
                     break
             if not is_satisfied:
