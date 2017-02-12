@@ -1,13 +1,34 @@
-import Html
-import Pages.Prototype.Main as PMain
+module Main exposing (..)
 
--- Currently using 'prototype' page as main
+import Navigation exposing (Location)
 
-main : Program Never PMain.Model PMain.Msg
+import Models exposing (Model, initialModel)
+import View exposing (view)
+import Update exposing (update)
+import Messages exposing (Msg(..))
+import Routes exposing (Route)
+
+
+init : Location -> (Model, Cmd Msg)
+init location =
+  let
+    currentRoute =
+      Routes.parseLocation location
+  
+  in
+    (initialModel currentRoute, Cmd.none)
+
+
+subscription : Model -> Sub Msg
+subscription model =
+  Sub.none
+
+
+main : Program Never Model Msg
 main =
-  Html.program
-    { init = PMain.init
-    , view = PMain.view
-    , update = PMain.update
-    , subscriptions = PMain.subscriptions
+  Navigation.program OnLocationChange
+    {init = init
+    , view = view
+    , update = update
+    , subscriptions = subscription
     }
