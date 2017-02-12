@@ -1,48 +1,38 @@
 module Login.Major.Update exposing (..)
 
+import List.Extra exposing (removeAt)
 import Login.Major.Messages exposing (Msg(..))
-import Login.Major.Models exposing (Major, MajorForm)
-
-
-removeAt : Int -> List a -> List a
-removeAt index list =
-  if index < 0 then
-    list
-
-  else if index == 0 then
-    case list of
-      x::xs ->
-        xs
-
-      [] ->
-        []
-  
-  else 
-    case list of
-      x::xs ->
-        x::(removeAt (index-1) xs)
-
-      [] ->
-        []
+import Login.Major.Models exposing (Major, MajorForm, initialMajorForm)
 
 
 update : Msg -> MajorForm -> (MajorForm, Cmd Msg)
 update message majorForm =
   case message of
-    AddMajor major ->
+    AddMajor ->
       let
-        newMajors = major::majorForm.majors
+        newMajor =
+          { majorType = majorForm.newMajorType
+          , majorName = majorForm.newMajorName
+          }
+        newMajors = majorForm.majors ++ [ newMajor ]
       in
-        ( { majorForm | majors = newMajors }, Cmd.none )
+        ( { majorForm 
+          | majors = newMajors
+          , newMajorType = initialMajorForm.newMajorType
+          , newMajorName = initialMajorForm.newMajorName
+          }
+        , Cmd.none 
+        )
 
     DeleteMajor index ->
       let
-        newMajors = removeAt index majorForm.majors
+        newMajors =
+          removeAt index majorForm.majors
       in
         ( { majorForm | majors = newMajors }, Cmd.none )
 
-    OnNewMajorTypeChange newMajorType ->
-      ( { majorForm | majorType = newMajorType }, Cmd.none )
+    UpdateNewMajorType updatedMajorType ->
+      ( { majorForm | newMajorType = updatedMajorType }, Cmd.none )
 
-    OnNewMajorChange newMajor ->
-      ( { majorForm | major = newMajor }, Cmd.none )
+    UpdateNewMajorName updatedMajorName ->
+      ( { majorForm | newMajorName = updatedMajorName }, Cmd.none )

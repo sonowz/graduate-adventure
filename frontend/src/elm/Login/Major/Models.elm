@@ -3,20 +3,20 @@ module Login.Major.Models exposing (..)
 
 type alias Major =
   { majorType : String
-  , major : String
+  , majorName : String
   }
 
 
 type alias MajorForm =
   { majors : List Major
-  , majorType : String
-  , major : String
+  , newMajorType : String
+  , newMajorName : String
   }
 
 
 initialMajorForm : MajorForm
 initialMajorForm =
   { majors = []
-  , majorType = ""
-  , major = ""
+  , newMajorType = "주전공"
+  , newMajorName = ""
   }

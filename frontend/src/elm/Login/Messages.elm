@@ -11,3 +11,4 @@ type Msg
   | UpdateFile String
   | UpdateUseMysnuMajors Bool
   | MajorMsg Login.Major.Messages.Msg
+  | SubmitForm LoginType

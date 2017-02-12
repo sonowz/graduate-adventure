@@ -13,34 +13,46 @@ update msg loginForm =
 
     UpdateUsername newUsername ->
       let
-        mysnuLoginForm = loginForm.mysnuLoginForm
-        newMysnuLoginForm = { mysnuLoginForm | username = newUsername }
+        mysnuLoginForm =
+          loginForm.mysnuLoginForm
+        newMysnuLoginForm =
+          { mysnuLoginForm | username = newUsername }
       in
        ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
 
     UpdatePassword newPassword ->
       let
-        mysnuLoginForm = loginForm.mysnuLoginForm
-        newMysnuLoginForm = { mysnuLoginForm | password = newPassword }
+        mysnuLoginForm =
+          loginForm.mysnuLoginForm
+        newMysnuLoginForm =
+          { mysnuLoginForm | password = newPassword }
       in
        ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
 
     UpdateUseMysnuMajors newUseMysnuMajors ->
       let
-        mysnuLoginForm = loginForm.mysnuLoginForm
-        newMysnuLoginForm = { mysnuLoginForm | useMysnuMajors = newUseMysnuMajors }
+        mysnuLoginForm =
+          loginForm.mysnuLoginForm
+        newMysnuLoginForm =
+          { mysnuLoginForm | useMysnuMajors = newUseMysnuMajors }
       in
        ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
 
     UpdateFile newFile ->
       let
-        fileLoginForm = loginForm.fileLoginForm
-        newFileLoginForm = { fileLoginForm | file = newFile }
+        fileLoginForm =
+          loginForm.fileLoginForm
+        newFileLoginForm =
+          { fileLoginForm | file = newFile }
       in
         ( { loginForm | fileLoginForm = newFileLoginForm }, Cmd.none )
 
     MajorMsg majorMsg ->
       let
-        ( updatedMajorForm, cmd ) = Login.Major.Update.update majorMsg loginForm.majorForm
+        ( updatedMajorForm, cmd ) =
+          Login.Major.Update.update majorMsg loginForm.majorForm
       in
         ( { loginForm | majorForm = updatedMajorForm }, Cmd.map MajorMsg cmd)
+
+    SubmitForm loginType ->
+      ( loginForm, Cmd.none )
