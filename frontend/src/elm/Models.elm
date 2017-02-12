@@ -1,15 +1,19 @@
 module Models exposing (..)
 
 import Routes
+import Login.Models exposing (LoginForm, initialLoginForm)
+
 
 type alias Model =
-  { result : String
+  { loginForm : LoginForm
+  , result : String
   , route : Routes.Route
   }
 
 
 initialModel : Routes.Route -> Model
 initialModel route =
-  { result = "Result : Nothing"
+  { loginForm = initialLoginForm
+  , result = "Result : Nothing"
   , route = route
   }
