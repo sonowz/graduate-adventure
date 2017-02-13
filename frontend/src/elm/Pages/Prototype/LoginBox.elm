@@ -1,7 +1,7 @@
 module Pages.Prototype.LoginBox exposing (..)
 
 import Html exposing (Html, div, text, button,table,thead,tr,td,th)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, class)
 import Html.Events exposing (onClick)
 import Http
 import Result exposing (Result(..))
@@ -109,57 +109,7 @@ visibilityTable flag =
 
 view : Model -> Html Msg
 view model =
-  let
-    fontType : Html.Attribute msg
-    fontType = 
-      style
-      [ ("font-size","20px")
-      , ("color","white")
-      ]
-
-    contentsType : Html.Attribute msg
-    contentsType =
-      style
-      [ ("text-align","center")
-      , ("float","left")
-      , ("width","40%")
-      ]
-
-    buttonType : Html.Attribute msg
-    buttonType =
-      style
-      [ ("font-size","20px")
-      , ("color","black")
-      , ("float","right")
-      , ("text-align","center")
-      , ("width","20%")
-      , ("border-radius", "10px")
-      ]
-
-    tableType : Html.Attribute msg
-    tableType = 
-      style 
-      [ ("clear","both")
-      , ("width","80%")
-      , ("margin-bottom", "20px")
-      , ("float","left")
-      , ("position","relative")
-      , ("left","10%")
-      , ("border-collapse","collapse")
-      , ("height","80px")
-      ]
-
-    tableIndexType : Html.Attribute msg
-    tableIndexType =
-      style
-      [ ("border","1px solid white")
-      , ("text-align","center")
-      , ("color","white")
-      , ("background-color","rgb(0,0,0)")
-      ]
-
-  in
-    div []
+    div [ ]
       [ div
         [ style
           [ ("padding-bottom", "50px")
@@ -168,7 +118,7 @@ view model =
           ]
         ]
         [ div 
-          [ contentsType,fontType ]
+          [ class "loginStyle-font" ]
           [ text "id" ]
         , 
         Html.map TextInput_ID (TextBox.view model.textBox_ID)
@@ -180,33 +130,33 @@ view model =
           ]
         ]
         [ div 
-          [ contentsType,fontType ]
+          [ class "loginStyle-font" ]
           [ text "password" ]
         ,
         Html.map TextInput_pw (TextBox.view model.textBox_pw)
         ]
       , table
         [ visibilityTable model.checkBox_info.flag
-        , tableType
+        , class "loginStyle-table"
         ]
         [
           thead []
           [
-            th [tableIndexType][text "전공구분"]
-          , th [tableIndexType][text "전공명"]
-          , th [tableIndexType][text "기준년도"]
+            th [class "loginStyle-tableIndex"][text "전공구분"]
+          , th [class "loginStyle-tableIndex"][text "전공명"]
+          , th [class "loginStyle-tableIndex"][text "기준년도"]
           ]
           , tr[]
           [
-            td [tableIndexType][text "주전공"]
-          , td [tableIndexType][text "컴퓨터공학부"]
-          , td [tableIndexType][text "2015"]
+            td [class "loginStyle-tableIndex"][text "주전공"]
+          , td [class "loginStyle-tableIndex"][text "컴퓨터공학부"]
+          , td [class "loginStyle-tableIndex"][text "2015"]
           ]
           , tr[]
           [
-            td [tableIndexType][text "추가"]
-          , td [tableIndexType][text ""]
-          , td [tableIndexType][text ""]
+            td [class "loginStyle-tableIndex"][text "추가"]
+          , td [class "loginStyle-tableIndex"][text ""]
+          , td [class "loginStyle-tableIndex"][text ""]
           ]
         ]
       , button
@@ -215,7 +165,7 @@ view model =
           , ("clear","both")
           ]
           , onClick Submit
-          , buttonType
+          , class "loginStyle-button"
         ]
         [ text "Login" ]
       , div
@@ -226,7 +176,7 @@ view model =
         ]
         [
           Html.map Toggle_checkBox_info 
-            (CheckBox.view model.checkBox_info "마이스누 전공 정보 사용" fontType)
+            (CheckBox.view model.checkBox_info "마이스누 전공 정보 사용" (class "loginStyle-buttonFont"))
         ]
       , div 
         [ style [ ("clear", "both") ]
