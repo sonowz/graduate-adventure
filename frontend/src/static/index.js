@@ -1,6 +1,6 @@
 'use strict';
 
-//require('./index.html');
+require('./styles/index.css')
 
 var Elm = require('../elm/Main.elm');
 var mountNode = document.getElementById('main');
