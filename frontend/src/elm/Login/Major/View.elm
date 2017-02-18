@@ -4,7 +4,6 @@ import List exposing (indexedMap, reverse)
 import Html exposing (Html, div, input, text, select, option)
 import Html.Attributes exposing (id, class, type_, name, value)
 import Html.Events exposing (onInput, onClick)
-
 import Login.Major.Messages exposing (Msg(..))
 import Login.Major.Models exposing (..)
 
@@ -15,7 +14,7 @@ view majorForm =
     [ id "major-info"
     , class "table"
     ]
-    ([ header ] ++ (indexedMap majorRow  majorForm.majors) ++ [ newMajor majorForm ])
+    ( [ header ] ++ ( indexedMap majorRow majorForm.majors ) ++ [ newMajor majorForm ] )
 
 
 header : Html Msg
@@ -66,7 +65,7 @@ newMajor majorForm =
         , name "major-type"
         , onInput UpdateNewMajorType
         ]
-        (List.map majorTypeOption majorTypes)
+        ( List.map majorTypeOption majorTypes )
       ]
     , div
       [ class "cell center vcenter" ]

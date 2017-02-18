@@ -5,9 +5,9 @@ import Html.Attributes exposing (class)
 import Models exposing (Model)
 import Messages exposing (Msg(..))
 import Routes exposing (Route(..))
-
 import Login.View
 import Login.Models exposing (LoginForm)
+
 
 view : Model -> Html Msg
 view model =
@@ -25,6 +25,7 @@ page model =
 
     NotFoundRoute ->
       text "page Not Found"
+
 
 loginPage : LoginForm -> Html Msg
 loginPage loginForm =

@@ -1,7 +1,6 @@
 module Main exposing (..)
 
 import Navigation exposing (Location)
-
 import Models exposing (Model, initialModel)
 import View exposing (view)
 import Update exposing (update)
@@ -14,7 +13,7 @@ init location =
   let
     currentRoute =
       Routes.parseLocation location
-  
+
   in
     (initialModel currentRoute, Cmd.none)
 

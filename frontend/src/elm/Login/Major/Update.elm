@@ -16,12 +16,12 @@ update message majorForm =
           }
         newMajors = majorForm.majors ++ [ newMajor ]
       in
-        ( { majorForm 
+        ( { majorForm
           | majors = newMajors
           , newMajorType = initialMajorForm.newMajorType
           , newMajorName = initialMajorForm.newMajorName
           }
-        , Cmd.none 
+        , Cmd.none
         )
 
     DeleteMajor index ->

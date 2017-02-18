@@ -3,7 +3,6 @@ module Login.View exposing (view)
 import Html exposing (Html, div, p, text, button, input, form, label)
 import Html.Attributes exposing (id, class, name, placeholder, action, type_, checked, value, for)
 import Html.Events exposing (onClick, onInput, onCheck, onSubmit)
-
 import Login.Major.View
 import Login.Models exposing (..)
 import Login.Messages exposing (Msg(..))
@@ -11,20 +10,18 @@ import Login.Messages exposing (Msg(..))
 
 view : LoginForm -> Html Msg
 view loginForm =
-  div 
+  div
     [ id "login" ]
     [ div
       [ class "tab-area" ]
       [ tab MysnuLogin "계정으로 로그인" loginForm
       , tab FileLogin "성적파일로 입력" loginForm
       ]
-
     , div
       [ class "login-form" ]
       [ case loginForm.loginType of
           MysnuLogin ->
             viewMysnuLoginForm loginForm
-            
           FileLogin ->
             viewFileLoginForm loginForm
       ]
@@ -50,14 +47,13 @@ viewMysnuLoginForm loginForm =
     [ usernameField loginForm.mysnuLoginForm.username
     , passwordField loginForm.mysnuLoginForm.password
     , checkboxField loginForm.mysnuLoginForm.useMysnuMajors
-
     , if loginForm.mysnuLoginForm.useMysnuMajors then
         div [] []
       else
         Html.map MajorMsg (Login.Major.View.view loginForm.majorForm)
-    
     , submitButton MysnuLogin
     ]
+
 
 usernameField : String -> Html Msg
 usernameField username =
@@ -83,7 +79,7 @@ passwordField password =
   div
     [ class "inline" ]
     [ label
-      [ for "username" ]
+      [ for "password" ]
       [ text "PW" ]
     , input
       [ type_ "password"
@@ -105,7 +101,7 @@ checkboxField useMysnuMajors =
       [ type_ "checkbox"
       , id "use-mysnu-majors"
       , checked useMysnuMajors
-      , onCheck UpdateUseMysnuMajors 
+      , onCheck UpdateUseMysnuMajors
       ]
       []
     , label
@@ -120,7 +116,7 @@ viewFileLoginForm loginForm =
     [ action "#"
     , id "file-login-form"
     ]
-    [ div 
+    [ div
       [ class "inline" ]
       [ input
         [ type_ "text"
@@ -132,18 +128,16 @@ viewFileLoginForm loginForm =
         ]
         []
       ]
-
     , Html.map MajorMsg (Login.Major.View.view loginForm.majorForm)
-
     , submitButton FileLogin
     ]
 
 
 submitButton : LoginType -> Html Msg
 submitButton loginType =
-  div 
+  div
     [ class "inline"  ]
-    [ input 
+    [ input
       [ type_ "button"
       , id "submit"
       , value "로그인"
@@ -151,4 +145,3 @@ submitButton loginType =
       ]
       []
     ]
-

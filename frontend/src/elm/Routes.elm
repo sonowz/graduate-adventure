@@ -4,7 +4,7 @@ import Navigation exposing (Location)
 import Route exposing (..)
 
 
-type Route 
+type Route
   = LoginRoute
   | MainRoute
   | NotFoundRoute
