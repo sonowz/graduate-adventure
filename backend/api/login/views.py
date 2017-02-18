@@ -4,8 +4,9 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from crawler import mysnu
+from core.models import Course
 from core.parser import parse_credit
-from core.rule.tree import TreeLoader
+from core.rule.tree import TreeLoader, TreeLoaderException
 from core.rule.util import find_rule
 import logging.config
 
@@ -52,13 +53,12 @@ class LoginRequest(APIView):
             if len(sugang_list) == 0:
                 raise ClientRenderedException('이수내역이 존재하지 않습니다.')
             rule = self.get_rule(request)
-            # tree =
-            TreeLoader(rule, sugang_list, None, [])
+            try:
+                # tree =
+                TreeLoader(rule, {}, Course)
+            except TreeLoaderException:
+                raise ClientRenderedException('Internal error')
             # do something with 'tree' here
-        # IOError should be handled within 'TreeLoader' later
-        except IOError:
-            logger.error('No such file: ' + rule)
-            pass
         except ClientRenderedException as e:
             logger.error(e.args[0])
             return JsonResponse({'success': False, 'message': e.args[0]})

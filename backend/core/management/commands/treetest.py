@@ -29,6 +29,6 @@ class Command(BaseCommand):
             self.stdout.write('error: invalid credential.')
             return
 
-        tree_node = TreeLoader(rule, taken_list, metadata, Course)
-        tree_node.eval_tree()
+        tree_node = TreeLoader(rule, metadata, Course)
+        tree_node.eval_tree(taken_list)
         self.stdout.write(tree_node.tree_into_str())

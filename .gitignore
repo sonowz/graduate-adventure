@@ -50,8 +50,9 @@ docs/_build
 *.ropeproject
 *.swp
 
-# DB
+# DB (exclude testing DB)
 *.sqlite3
+!**/test_sample/*.sqlite3
 
 # Virtualenv
 .venv
