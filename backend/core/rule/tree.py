@@ -108,6 +108,10 @@ class TreeLoader(object):
     def tree_into_dict(self):
         return self.base_node.tree_into_dict()
 
+    # TODO: Find and return node by name
+    def find(self, name):
+        return None
+
 
 class TreeNode(object):
     def __init__(self, data, properties, metadata, func=None, namespace=None, *args):
@@ -211,3 +215,7 @@ class TreeNode(object):
                 logger.debug('{data} returns False'.format(data=self.data))
                 self.data = False
                 self.credit = 0
+
+    # TODO: filter courses that only satisfies the node
+    def filter_true(self, queryset):
+        return queryset

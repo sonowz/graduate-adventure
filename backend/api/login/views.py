@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http.response import HttpResponse, JsonResponse
+from django.http.response import HttpResponseServerError, JsonResponse
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -19,17 +19,12 @@ class ClientRenderedException(Exception):
     pass
 
 
-def login_page(request):
-    logger.debug('Login page request with sessionid: ' + request.session.session_key)
-    return HttpResponse("Hello World!")
-
-
 class LoginRequest(APIView):
     parser_classes = (MultiPartParser, FormParser,)
 
     # For debugging purpose :
     #   - Return sugang_list at success
-    def post(self, request, option, *args, **kwargs):
+    def post(self, request, option):
         try:
             if option == 'mysnu':
                 logger.debug('mySNU login request with sessionid: ' + str(request.session.session_key))
@@ -54,17 +49,17 @@ class LoginRequest(APIView):
                 raise ClientRenderedException('이수내역이 존재하지 않습니다.')
             rule = self.get_rule(request)
             try:
-                # tree =
-                TreeLoader(rule, {}, Course)
+                tree = TreeLoader(rule, {}, Course)
+                tree.eval_tree(sugang_list)
             except TreeLoaderException:
-                raise ClientRenderedException('Internal error')
+                return HttpResponseServerError()
             # do something with 'tree' here
         except ClientRenderedException as e:
             logger.error(e.args[0])
             return JsonResponse({'success': False, 'message': e.args[0]})
 
-        request.session['list'] = sugang_list
-        request.session.set_expiry(600)
+        request.session['tree'] = tree
+        request.session.set_expiry(6000)
         return JsonResponse({'success': True, 'message': str(request.session['list'])})
 
     def get_rule(self, request):
