@@ -19,30 +19,5 @@ routeTest : String -> String -> Route -> Test
 routeTest name path route =
   test (name ++ " route") <|
     \() ->
-      parsePath path
+      match path
         |> Expect.equal route
-
-
-parsePath : String -> Route
-parsePath path =
-  let
-    location =
-      { newLocation | pathname = path }
-
-  in Routes.parseLocation location
-
-
-newLocation : Location
-newLocation =
-  { href = ""
-  , host = ""
-  , hostname = ""
-  , protocol = ""
-  , origin = ""
-  , port_ = ""
-  , pathname = ""
-  , search = ""
-  , hash = ""
-  , username = ""
-  , password = ""
-  }

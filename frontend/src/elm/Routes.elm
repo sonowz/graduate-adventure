@@ -1,7 +1,7 @@
-module Routes exposing (..)
+module Routes exposing (Route(..), match, toString, parseLocation, navigationTo)
 
 import Navigation exposing (Location)
-import UrlParser exposing (..)
+import Route exposing (..)
 
 
 type Route 
@@ -10,19 +10,48 @@ type Route
   | NotFoundRoute
 
 
-matchers : Parser (Route -> a) a
-matchers =
-  oneOf
-    [ map MainRoute top
-    , map LoginRoute (s "login")
+loginRoute : Route.Route Route
+loginRoute =
+  LoginRoute := static "login"
+
+
+mainRoute : Route.Route Route
+mainRoute =
+  MainRoute := static ""
+
+
+routes : Route.Router Route
+routes =
+  router
+    [ loginRoute
+    , mainRoute
     ]
 
 
-parseLocation : Location -> Route
-parseLocation location =
-  case (parsePath matchers location) of
-    Just route ->
-      route
+match : String -> Route
+match =
+  Route.match routes
+    >> Maybe.withDefault NotFoundRoute
 
-    Nothing ->
-      NotFoundRoute
+
+toString : Route -> String
+toString route =
+  case route of
+    LoginRoute ->
+      reverse loginRoute []
+
+    MainRoute ->
+      reverse mainRoute []
+
+    NotFoundRoute ->
+      Debug.crash "cannot route to NotFound"
+
+
+parseLocation : Location -> Route
+parseLocation =
+  .pathname >> match
+
+
+navigationTo : Route -> Cmd msg
+navigationTo =
+  toString >> Navigation.newUrl
