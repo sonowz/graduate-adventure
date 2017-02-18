@@ -6,11 +6,7 @@ environment:
   PYTHONIOENCODING: "utf-8"
   matrix:
     - nodejs_version: 6
-      PYTHON: "C:\\Python27"
-      PYTHON_VERSION: "2.7"
-
-    - nodejs_version: 6
-      PYTHON: "C:/Python35"
+      PYTHON: "C:\\Python35"
       PYTHON_VERSION: "3.5"
 
 platform:
@@ -21,6 +17,7 @@ skip_branch_with_pr: true
 
 init:
   - git config --global core.autocrlf input
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
 install:
   - ps: Install-Product node $env:nodejs_version
@@ -39,5 +36,5 @@ matrix:
 test_script:
   - node --version
   - npm --version
-  - python backend/manage.py test
+  - "cd backend && python manage.py test --keepdb && cd .."
   - npm test

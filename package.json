@@ -28,7 +28,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base frontend/src",
-    "test": "webpack && cd frontend/src/elm/Tests && elm-test Main.elm"
+    "test": "webpack && cd frontend/src/elm/Tests && elm-test Main.elm && cd ../../../../"
   },
   "repository": {
     "type": "git",
