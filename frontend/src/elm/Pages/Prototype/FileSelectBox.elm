@@ -74,21 +74,6 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
   let
-    mainBoxStyle : Html.Attribute Msg
-    mainBoxStyle = 
-      style
-        [ ("position", "relative")
-        , ("top", "50%")
-        , ("left", "50%")
-        , ("transform", "translateX(-50%) translateY(-50%)")
-        ]
-    
-    fileBoxStyle : Html.Attribute Msg
-    fileBoxStyle = 
-      style
-        [ ("position", "relative")
-        , ("top", "100px")
-        ]
 
     horizontalFloat : Html.Attribute Msg
     horizontalFloat = 
@@ -103,16 +88,15 @@ view model =
 
   in
     div
-      [ mainBoxStyle ]
+      [ ]
       [ div [] instructionText
       , form
-        [ fileBoxStyle
-        , id "filerequest"
+        [ id "filerequest"
         , onSubmit None  -- Insert event.preventDefault()
         ]
         [ div [ horizontalFloat ]
           [ input [ type_ "file", name "course.txt" ] [] ]
-        , div [ horizontalFloat ]
+        , div [ ]
           [ button [ onClick Submit, value "Submit" ] [] ]
         , input [ type_ "hidden", name "filename", value "course.txt" ] []
         ]

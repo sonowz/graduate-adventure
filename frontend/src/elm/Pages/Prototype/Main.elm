@@ -1,8 +1,8 @@
 module Pages.Prototype.Main exposing (..)
 
-import Html exposing (Html, div, text, button)
+import Html exposing (Html, div, text, button,body)
 import Html.Events exposing (onClick)
-import Html.Attributes exposing (align, style)
+import Html.Attributes exposing (align, style, class)
 import Pages.Prototype.LoginBox as LoginBox
 import Pages.Prototype.FileSelectBox as FileSelectBox
 
@@ -75,51 +75,30 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
   let
-    mainBoxStyle : Html.Attribute Msg
-    mainBoxStyle = 
-      style
-        [ ("position", "absolute")
-        , ("top", "50%")
-        , ("left", "50%")
-        , ("transform", "translateX(-50%) translateY(-50%)")
-        , ("width", "500px")
-        , ("height", "350px")
-        , ("background-color", "grey")
-        , ("border-color", "black")
-        , ("border-size", "1px")
-        , ("border-style", "solid")
-        ]
-
     modeSelect : Html Msg
     modeSelect = 
       div []
         [ button
-          [ style <|
-            [ ("width", "50%")
-            , ("height", "50px")
-            , ("float", "left")
-            ]
-            ++ loginBoxColor
+          [ style <|[("float", "left")] ++ loginBoxColor
           , onClick StartByLogin
+          , class "mainStyle-button"
           ]
-          [ text "mySNU Login" ]
+          [ text "계정으로 로그인" ]
         , button
-          [ style <|
-            [ ("width", "50%")
-            , ("height", "50px")
-            , ("float", "right")
-            ]
-            ++ fileBoxColor
+          [ style <|[("float", "right")] ++ fileBoxColor
           , onClick StartByFile
+          , class "mainStyle-button"
           ]
-          [ text "Load From File" ]
+          [ text "성적 파일로 입력" ]
         ]
 
     (loginBoxColor, fileBoxColor) =
       if model.useLoginBox then
-        ( [("background-color", "yellowgreen")], [("background-color", "green")] )
+        ( [("background-color", "rgba(0,0,0,0)")],
+          [("background-color", "rgba(0,0,0,0.75)")] )
       else
-        ( [("background-color", "green")], [("background-color", "yellowgreen")] )
+        ( [("background-color", "rgba(0,0,0,0.75)")],
+          [("background-color", "rgba(0,0,0,0)")] )
     
     selectedModeBox : Html Msg
     selectedModeBox = 
@@ -130,7 +109,23 @@ view model =
 
   in
     div
-      [ mainBoxStyle ]
-      [ modeSelect
-      , selectedModeBox
+    [ class "Background" ]
+    [
+      div
+      [ class "mainStyle-border" ]
+      [ 
+        div
+        [ style 
+          [("height","50px")]
+        ]
+        [ modeSelect ]
+        ,
+        div
+        [ style
+          [("height","300px")]
+        ]
+        [ selectedModeBox ]
       ]
+    ]
+    
+    

@@ -26,7 +26,7 @@ tests =
     , describe "view function"
       [ test "should print LoginBox" <|
         \_ ->
-          Util.htmlHasStrs (Main.view loginModel) [ "ID", "PW" ]
+          Util.htmlHasStr (Main.view loginModel) "Login"
             |> equal True
       
       , test "should print FileSelectBox" <|
