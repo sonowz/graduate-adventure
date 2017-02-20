@@ -1,7 +1,7 @@
-module Login.Messages exposing (..)
+module Login.Msgs exposing (..)
 
 import Login.Models exposing (LoginType)
-import Login.Major.Messages
+import Login.MajorForm.Msgs
 
 
 type Msg
@@ -10,5 +10,5 @@ type Msg
   | UpdatePassword String
   | UpdateFile String
   | UpdateUseMysnuMajors Bool
-  | MajorMsg Login.Major.Messages.Msg
+  | MajorMsg Login.MajorForm.Msgs.Msg
   | SubmitForm LoginType

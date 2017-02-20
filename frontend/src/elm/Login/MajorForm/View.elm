@@ -1,14 +1,14 @@
-module Login.Major.View exposing (view)
+module Login.MajorForm.View exposing (view)
 
 import List exposing (indexedMap, reverse)
 import Html exposing (Html, div, input, text, select, option)
 import Html.Attributes exposing (id, class, type_, name, value)
 import Html.Events exposing (onInput, onClick)
-import Login.Major.Messages exposing (Msg(..))
-import Login.Major.Models exposing (..)
+import Login.MajorForm.Msgs exposing (Msg(..))
+import Login.MajorForm.Models exposing (..)
 
 
-view : MajorForm -> Html Msg
+view : Model -> Html Msg
 view majorForm =
   div
     [ id "major-info"
@@ -53,7 +53,7 @@ majorTypeOption majorType =
     [ text majorType ]
 
 
-newMajor : MajorForm -> Html Msg
+newMajor : Model -> Html Msg
 newMajor majorForm =
   div
     [ class "row" ]

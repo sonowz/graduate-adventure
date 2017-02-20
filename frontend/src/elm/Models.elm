@@ -1,11 +1,11 @@
 module Models exposing (..)
 
 import Routes
-import Login.Models exposing (LoginForm, initialLoginForm)
+import Login.Models as Login
 
 
 type alias Model =
-  { loginForm : LoginForm
+  { loginForm : Login.Model
   , result : String
   , route : Routes.Route
   }
@@ -13,7 +13,7 @@ type alias Model =
 
 initialModel : Routes.Route -> Model
 initialModel route =
-  { loginForm = initialLoginForm
+  { loginForm = Login.initialModel
   , result = "Result : Nothing"
   , route = route
   }

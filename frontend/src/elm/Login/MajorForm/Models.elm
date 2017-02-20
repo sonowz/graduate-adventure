@@ -1,4 +1,4 @@
-module Login.Major.Models exposing (..)
+module Login.MajorForm.Models exposing (..)
 
 
 type alias Major =
@@ -7,15 +7,15 @@ type alias Major =
   }
 
 
-type alias MajorForm =
+type alias Model =
   { majors : List Major
   , newMajorType : String
   , newMajorName : String
   }
 
 
-initialMajorForm : MajorForm
-initialMajorForm =
+initialModel : Model
+initialModel =
   { majors = []
   , newMajorType = "주전공"
   , newMajorName = ""

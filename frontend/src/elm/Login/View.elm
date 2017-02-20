@@ -3,12 +3,12 @@ module Login.View exposing (view)
 import Html exposing (Html, div, p, text, button, input, form, label)
 import Html.Attributes exposing (id, class, name, placeholder, action, type_, checked, value, for)
 import Html.Events exposing (onClick, onInput, onCheck, onSubmit)
-import Login.Major.View
+import Login.MajorForm.View
 import Login.Models exposing (..)
-import Login.Messages exposing (Msg(..))
+import Login.Msgs exposing (Msg(..))
 
 
-view : LoginForm -> Html Msg
+view : Model -> Html Msg
 view loginForm =
   div
     [ id "login" ]
@@ -28,7 +28,7 @@ view loginForm =
     ]
 
 
-tab : LoginType -> String -> LoginForm -> Html Msg
+tab : LoginType -> String -> Model -> Html Msg
 tab loginType title loginForm =
   div
     [ type_ "button"
@@ -38,7 +38,7 @@ tab loginType title loginForm =
     [ p [] [ text title ] ]
 
 
-viewMysnuLoginForm : LoginForm -> Html Msg
+viewMysnuLoginForm : Model -> Html Msg
 viewMysnuLoginForm loginForm =
   form
     [ action "#"
@@ -50,7 +50,7 @@ viewMysnuLoginForm loginForm =
     , if loginForm.mysnuLoginForm.useMysnuMajors then
         div [] []
       else
-        Html.map MajorMsg (Login.Major.View.view loginForm.majorForm)
+        Html.map MajorMsg (Login.MajorForm.View.view loginForm.majorForm)
     , submitButton MysnuLogin
     ]
 
@@ -110,7 +110,7 @@ checkboxField useMysnuMajors =
     ]
 
 
-viewFileLoginForm : LoginForm -> Html Msg
+viewFileLoginForm : Model -> Html Msg
 viewFileLoginForm loginForm =
   form
     [ action "#"
@@ -128,7 +128,7 @@ viewFileLoginForm loginForm =
         ]
         []
       ]
-    , Html.map MajorMsg (Login.Major.View.view loginForm.majorForm)
+    , Html.map MajorMsg (Login.MajorForm.View.view loginForm.majorForm)
     , submitButton FileLogin
     ]
 

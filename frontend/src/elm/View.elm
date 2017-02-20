@@ -3,10 +3,10 @@ module View exposing (..)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
 import Models exposing (Model)
-import Messages exposing (Msg(..))
+import Msgs exposing (Msg(..))
 import Routes exposing (Route(..))
 import Login.View
-import Login.Models exposing (LoginForm)
+import Login.Models as Login
 
 
 view : Model -> Html Msg
@@ -27,7 +27,7 @@ page model =
       text "page Not Found"
 
 
-loginPage : LoginForm -> Html Msg
+loginPage : Login.Model -> Html Msg
 loginPage loginForm =
   div
     [ class "center-wrapper" ]

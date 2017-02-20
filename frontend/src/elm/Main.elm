@@ -4,7 +4,7 @@ import Navigation exposing (Location)
 import Models exposing (Model, initialModel)
 import View exposing (view)
 import Update exposing (update)
-import Messages exposing (Msg(..))
+import Msgs exposing (Msg(..))
 import Routes exposing (Route)
 
 

@@ -1,6 +1,6 @@
 module Login.Models exposing (..)
 
-import Login.Major.Models exposing (..)
+import Login.MajorForm.Models as Major
 
 
 type LoginType
@@ -20,16 +20,16 @@ type alias FileLoginForm =
   }
 
 
-type alias LoginForm =
+type alias Model =
   { loginType : LoginType
   , mysnuLoginForm : MysnuLoginForm
   , fileLoginForm : FileLoginForm
-  , majorForm : MajorForm
+  , majorForm : Major.Model
   }
 
 
-initialLoginForm : LoginForm
-initialLoginForm =
+initialModel : Model
+initialModel =
   { loginType = MysnuLogin
   , mysnuLoginForm =
     { username = ""
@@ -39,5 +39,5 @@ initialLoginForm =
   , fileLoginForm =
     { file = ""
     }
-  , majorForm = initialMajorForm
+  , majorForm = Major.initialModel
   }

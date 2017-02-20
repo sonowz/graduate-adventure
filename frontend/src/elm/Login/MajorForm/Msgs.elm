@@ -1,4 +1,4 @@
-module Login.Major.Messages exposing (..)
+module Login.MajorForm.Msgs exposing (..)
 
 
 type Msg

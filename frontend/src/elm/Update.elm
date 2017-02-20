@@ -1,6 +1,6 @@
 module Update exposing (..)
 
-import Messages exposing (Msg(..))
+import Msgs exposing (Msg(..))
 import Models exposing (Model)
 import Routes exposing (parseLocation)
 import Login.Update

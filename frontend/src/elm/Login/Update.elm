@@ -1,11 +1,11 @@
 module Login.Update exposing (..)
 
-import Login.Messages exposing (Msg(..))
+import Login.Msgs exposing (Msg(..))
 import Login.Models exposing (..)
-import Login.Major.Update
+import Login.MajorForm.Update
 
 
-update : Login.Messages.Msg -> LoginForm -> ( LoginForm, Cmd Msg )
+update : Login.Msgs.Msg -> Model -> ( Model, Cmd Msg )
 update msg loginForm =
   case msg of
     UpdateLoginType newLoginType ->
@@ -50,7 +50,7 @@ update msg loginForm =
     MajorMsg majorMsg ->
       let
         ( updatedMajorForm, cmd ) =
-          Login.Major.Update.update majorMsg loginForm.majorForm
+          Login.MajorForm.Update.update majorMsg loginForm.majorForm
       in
         ( { loginForm | majorForm = updatedMajorForm }, Cmd.map MajorMsg cmd)
 
