@@ -1,0 +1,263 @@
+@charset "utf-8";
+
+body {
+  background: -webkit-linear-gradient(rgb(99, 92, 136) 27%, rgb(148, 114, 147) 53%, rgb(219, 165, 139) 87%, rgb(214, 191, 164) 100%);
+  background:         linear-gradient(rgb(99, 92, 136) 27%, rgb(148, 114, 147) 53%, rgb(219, 165, 139) 87%, rgb(214, 191, 164) 100%);
+  min-height: 100vh;
+  height: 100%;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+#content {
+  width: 80%;
+  margin: auto;
+}
+
+.tab-area {
+  display: flex;
+  align-items: stretch;
+  height: 40pt;
+  width: 100%;
+}
+
+.tab {
+  width: 180pt;
+  height: 100%;
+  display: inline-flex;
+  color: white;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.tab p {
+  margin: auto;
+  font-size: 18pt;
+}
+
+.login-form {
+  width: 360pt
+}
+
+.active {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#summary {
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  color: white;
+  padding: 10px;
+}
+
+.bar-area {
+  display: flex;
+  align-items: stretch;
+  height: 40pt;
+}
+
+.bar-label {
+  width: 50pt;
+  text-align: center;
+  margin: auto 10px;
+  font-size: 14pt;
+}
+
+.bar {
+  margin: 5px 10px;
+  border: 1px solid white;
+  width: 100%;
+  height: auto;
+}
+
+.done {
+  height: 100%;
+  background: #83818E;
+  display: inline-flex;
+}
+
+p.bar-stat {
+  display: block;
+  margin: auto;
+  color: white;
+  font-weight: bold;
+  font-size: 14pt;
+  text-align: center;
+}
+
+#result {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  max-height: 500px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  overflow-y: overlay;
+}
+
+.table {
+  display: table;
+}
+
+#result .table {
+  color: white;
+  width: 100%;
+  font-size: 15pt;
+}
+
+#major-info {
+  color: white;
+  width: 100%;
+  font-size: 13pt;
+}
+
+.bar .table {
+  width: 100%;
+  height: 100%;
+}
+
+.table-body {
+  display: table-row-group;
+}
+
+.header {
+  display: table-row;
+}
+
+.row {
+  display: table-row;
+}
+
+.center {
+  text-align: center;
+}
+
+#result .header {
+  text-align: center;
+}
+
+#result .header .year {
+  min-width: 80pt;
+}
+
+#result .header .major {
+  width: 50%;
+}
+
+#result .header .liberal {
+  width: 50%;
+}
+
+#major-info .header .column {
+    width: 50%;
+}
+
+.cell {
+  display: table-cell;
+}
+
+.cell.vcenter {
+  vertical-align: middle;
+}
+
+#result .cell {
+  padding: 3px 10px;
+  border: 1px solid white;
+}
+
+#major-info .cell {
+    padding: 3px 10px;
+    border: 1px solid white;
+}
+.course {
+  display: inline-block;
+  margin: 5px 1px;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 12pt;
+}
+
+.course.necessary {
+  background: rgb(100, 92, 136);
+}
+
+.course.optional {
+  background: rgb(158, 121, 146);
+}
+
+#result::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+ 	      box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  opacity: 0.8;
+  border-radius: 20px;
+}
+
+#result::-webkit-scrollbar
+{
+  width: 20px;
+  opacity: 0.8;
+}
+
+#result::-webkit-scrollbar-thumb
+{
+  border-radius: 20px;
+  background-image: -webkit-gradient(linear,
+                                     left bottom,
+                                     left top,
+                                     color-stop(0.44, rgb(219,165,139)),
+                                     color-stop(0.72, rgb(148,114,147)),
+                                     color-stop(0.86, rgb(99,92,136)));
+}
+
+#year {
+  width: 40pt;
+}
+
+.center-wrapper {
+  position: fixed;
+  text-align: center;
+  white-space: nowrap;
+  height: 100%;
+  width: 100%;
+}
+
+.center-wrapper:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -0.25em;
+}
+
+#login {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.login-form {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 15pt;
+  padding: 40px 0;
+}
+
+.inline {
+  padding: 20px;
+  display: block;
+}
+
+.inline label {
+  margin: 0;
+  text-align: left;
+}
+
+.inline input {
+  border-radius: 5px;
+  float: right;
+  width: 16em;
+  font-size: 14pt;
+  padding: 3px;
+}
