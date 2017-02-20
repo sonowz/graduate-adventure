@@ -21,7 +21,7 @@ class SearchModal(APIView):
 
     def post(self, request):
         tree = request.session.get('tree', None)
-        node_title = request.session.get('node_title', None)
+        node_title = request.data.get('node_title', None)
         if tree is None or node_title is None:
             return HttpResponseBadRequest()
         node = tree.find(node_title)
