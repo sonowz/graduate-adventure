@@ -11,27 +11,29 @@ type alias Model =
   { text : String
   , defaultText : String
   , password : Bool
+  , attr : Html.Attribute Msg
   }
 
 -- no defaultText
-init : Model
-init =
-  inittext ""
+init : (Html.Attribute Msg) -> Model
+init newAttr =
+  inittext "" newAttr
 
 -- has defaultText
-inittext : String -> Model
-inittext text =
+inittext : String -> (Html.Attribute Msg) -> Model
+inittext text newAttr =
   { text = ""
   , defaultText = text
   , password = False
+  , attr = newAttr
   }
 
 -- password field
-initpw : Model
-initpw =
+initpw : (Html.Attribute Msg) -> Model
+initpw newAttr =
   let
     model =
-      inittext ""
+      inittext "" newAttr
   in
     { model | password = True }
 
@@ -60,4 +62,11 @@ view model =
       if model.password then "password" else "text"
   in
     div []
-      [ input [ type_ fieldType, placeholder model.defaultText, onInput TextInput ] [] ]
+      [ input 
+        [ type_ fieldType
+        , placeholder model.defaultText
+        , onInput TextInput
+        , model.attr
+        ] 
+        [] 
+      ]
