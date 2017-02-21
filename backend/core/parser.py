@@ -20,9 +20,7 @@ def parse_credit(text):
             continue
         dic = to_dict(columns, line)
 
-        # 26 : course taking info
-        # 13 : semester info
-        # 9 : total info
+        # Change 'core.rule.tree.TreeNode._filter_true_evaluate()' too if you change this
         if 'SBJT_CD' in dic:
             taking_info = {
                 'year': int(dic['SCHYY']),

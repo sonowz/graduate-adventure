@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import yaml
+import copy
 from core.rule.functions import and_func, make_func, if_func_list
 import os
 import logging.config
@@ -216,6 +217,21 @@ class TreeNode(object):
                 self.data = False
                 self.credit = 0
 
-    # TODO: filter courses that only satisfies the node
     def filter_true(self, queryset):
-        return queryset
+        return [x for x in queryset if self._filter_true_evaluate(x)]
+
+    def _filter_true_evaluate(self, course):
+        # TODO: add functions to get 'year' and 'semester
+        sugang_list = {
+            'year': '2017',
+            'semester': '1',
+            'grade': 'A+',
+            'code': course['code'],
+            'number': course['number'],
+            'title': course['title'],
+            'credit': course['credit'],
+            'category': course['category']
+        }
+        test_node = copy.deepcopy(self)
+        test_node.eval_children(sugang_list)
+        return copy.deepcopy(test_node.data)  # Let 'test_node' garbage collected
