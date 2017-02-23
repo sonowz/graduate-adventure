@@ -11,8 +11,9 @@ def tree_to_json(tree, sugang_list):
         'major': [],
         'liberal': []
     }
-    graph_nodes = _extract_nodes(tree.base_node, sugang_list, table)
-    _add_uncounted_courses(sugang_list, table)
+    sugang_dict = {x['title']: x for x in sugang_list}  # use dictionary for performance
+    graph_nodes = _extract_nodes(tree.base_node, sugang_dict, table)
+    _add_uncounted_courses(sugang_dict, table)
     json_dict = dict()
     json_dict['major_table'] = table['major']
     json_dict['liberal_table'] = table['liberal']
@@ -21,7 +22,7 @@ def tree_to_json(tree, sugang_list):
 
 
 # Build course table, while returning nodes used in graph section
-def _extract_nodes(node, sugang_list, table, state=None):
+def _extract_nodes(node, sugang_dict, table, state=None):
     if state is None:
         state = {
             'category': 'UNDEFINED',
@@ -44,7 +45,7 @@ def _extract_nodes(node, sugang_list, table, state=None):
             'category': state['category'],
             'tooltip': state['main_node'].namespace
         }
-        semester = _get_semester(node, sugang_list)
+        semester = _get_semester(node, sugang_dict)
     elif node.main_node and node.data is False:  # not satisfied main nodes
         data = {
             'title': node.namespace,
@@ -55,25 +56,16 @@ def _extract_nodes(node, sugang_list, table, state=None):
 
     if 'data' in dir():
         if state['category'] == 'liberal':  # Decide which table to insert
-            name = 'liberal'
+            _insert_entry(table['liberal'], semester, data)
         else:
-            name = 'major'
-        for entry in table[name]:
-            if entry['semester'] == semester:
-                entry['data'].append(data)
-                break
-        else:
-            table[name].append({
-                'semester': semester,
-                'data': [data]
-            })
+            _insert_entry(table['major'], semester, data)
 
     graph_nodes_list = ['전필', '전선', '교양']
     graph_nodes = []
     if node.namespace in graph_nodes_list:
         graph_nodes.append(node)
     for child in node.children:
-        graph_nodes.extend(_extract_nodes(child, sugang_list, table, state))
+        graph_nodes.extend(_extract_nodes(child, sugang_dict, table, state))
     return graph_nodes
 
 
@@ -121,15 +113,38 @@ def _get_leafs(node, max_depth, depth=0):
         return [node]
     leafs = []
     for child in node.children:
-        leafs.extend(_get_leafs(child, max_depth, depth+1))
+        leafs.extend(_get_leafs(child, max_depth, depth + 1))
     return leafs
 
 
-# TODO:
-def _get_semester(node, sugang_list):
-    return 'default'
+def _get_semester(node, sugang_dict):
+    course = sugang_dict.get(node.namespace, None)
+    if course is None:
+        return 'ERROR'
+    course['counted'] = True  # for _add_uncounted_courses()
+    return str(course['year']) + '-' + course['semester']
 
 
-# TODO:
-def _add_uncounted_courses(sugang_list, table):
-    pass
+def _add_uncounted_courses(sugang_dict, table):
+    for course in sugang_dict.values():
+        if not course.get('counted', False):
+            data = {
+                'title': course['title'],
+                'category': 'free',
+                'tooltip': ''
+            }
+            semester = str(course['year']) + '-' + course['semester']
+            # TODO: check cases where courses belong to 'major'
+            _insert_entry(table['liberal'], semester, data)
+
+
+def _insert_entry(table, semester, data):
+    for entry in table:
+        if entry['semester'] == semester:
+            entry['data'].append(data)
+            break
+    else:
+        table.append({
+            'semester': semester,
+            'data': [data]
+        })

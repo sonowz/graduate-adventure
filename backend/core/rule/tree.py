@@ -103,7 +103,8 @@ class TreeLoader(object):
                     previous_node.add_children(current_node)
 
     def eval_tree(self, taken_list):
-        self.base_node.eval_children(taken_list)
+        # clone taken_list because it's modified
+        self.base_node.eval_children(list(taken_list))
         return self.base_node.data
 
     def tree_into_str(self):
