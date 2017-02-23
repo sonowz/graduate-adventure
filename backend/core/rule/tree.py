@@ -46,6 +46,7 @@ class TreeLoader(object):
             'course_model': self.course_model,
             'hide_false': False,
             'credit_info': [0, 0, False],
+            'main_node': False,
         }
         self.base_node = TreeNode(None, self.default_properties, self.metadata, and_func(), '!GRADUATE')
         self.load_tree(self.tree, self.base_node)
@@ -77,11 +78,13 @@ class TreeLoader(object):
                 hide_false = course.get('hide_false', False)
                 required_credit = course.get('required_credit', 0)
                 sum_false = course.get('sum_false', False)
+                main_node = course.get('main_node', False)
 
                 properties = {
                     'course_model': self.course_model,
                     'hide_false': hide_false,
                     'credit_info': [0, required_credit, sum_false],
+                    'main_node': main_node,
                 }
 
                 current_func = course['func']
@@ -121,6 +124,7 @@ class TreeNode(object):
         self.required_credit = properties['credit_info'][1]
         self.sum_false = properties['credit_info'][2]
         self.hide_false = properties['hide_false']
+        self.main_node = properties['main_node']
         self.metadata = metadata
         self.func = func
         self.namespace = namespace

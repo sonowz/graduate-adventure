@@ -59,6 +59,7 @@ class LoginRequest(APIView):
             return JsonResponse({'success': False, 'message': e.args[0]})
 
         request.session['tree'] = tree
+        request.session['list'] = sugang_list
         request.session.set_expiry(6000)
         return JsonResponse({'success': True, 'message': str(request.session['list'])})
 

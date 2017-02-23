@@ -13,6 +13,7 @@
           name: 외국어
           func: and
           required_credit: 4
+          main_node: true
           courses:
             -
               name: 영어 필수
@@ -193,12 +194,14 @@
           name: 사고와 표현
           func: or
           hide_false: true
+          main_node: true
           courses:
             - '031.001' # 글쓰기의 기초
             - '031.004' # 과학과 기술 글쓰기
         -
           name: 수량적 분석과 추론
           func: and
+          main_node: true
           courses:
             -
               name: 수학 1
@@ -224,6 +227,7 @@
           name: 과학적 사고 및 표현 # 과학 중 3개
           func: part
           hide_false: true
+          main_node: true
           args:
             - 3
           courses:
@@ -304,6 +308,7 @@
       func: part
       required_credit: 6
       hide_false: true
+      main_node: true
       args:
         - 2
       courses:
@@ -352,12 +357,15 @@
     -
       name: 전필
       func: and
+      required_credit: 37
+      main_node: true
       courses:
         - '@컴퓨터공학부@전필@2015'
         -
           name: 공대 공통 교과목
           func: or
           hide_false: true
+          main_node: true
           courses:
             - '400.013' # 기계공학개론
             - '400.015' # 산업공학개론
@@ -370,11 +378,13 @@
       func: or
       required_credit: 22
       hide_false: true
+      main_node: true
       courses:
         - '@컴퓨터공학부@전선@2015'
     -
       name: 내규
       func: and
+      main_node: true
       courses:
         - '4190.209' # 컴퓨터공학세미나
         - '4190.422' # IT-리더십세미나

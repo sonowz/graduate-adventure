@@ -11,9 +11,10 @@ def main_data(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed('GET')
     tree = request.session.get('tree', None)
-    if tree is None:
+    sugang_list = request.session.get('list', None)
+    if tree is None or sugang_list is None:
         return HttpResponseBadRequest()
-    return JsonResponse(tree_to_json(tree))
+    return JsonResponse(tree_to_json(tree, sugang_list))
 
 
 class SearchModal(APIView):
