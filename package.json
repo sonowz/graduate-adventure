@@ -19,6 +19,7 @@
     "html-webpack-plugin": "^2.26.0",
     "node-sass": "^3.13.1",
     "sass-loader": "^4.1.1",
+    "postcss-loader": "^1.3.0",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.14.0",
@@ -27,7 +28,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base frontend/src",
-    "test": "webpack && cd frontend/src/elm/Tests && elm-test Main.elm && cd ../../../../"
+    "test": "webpack && elm-test frontend/src/elm/Tests/Main.elm"
   },
   "repository": {
     "type": "git",
