@@ -96,7 +96,7 @@ passwordField password =
 checkboxField : Bool -> Html Msg
 checkboxField useMysnuMajors =
   div
-    []
+    [ class "checkBox"]
     [ input
       [ type_ "checkbox"
       , id "use-mysnu-majors"
@@ -116,27 +116,36 @@ viewFileLoginForm loginForm =
     [ action "#"
     , id "file-login-form"
     ]
-    [ div
-      [ class "inline" ]
-      [ input
-        [ type_ "text"
-        , id "file"
-        , name "file"
-        , placeholder "put grade file"
-        , value loginForm.fileLoginForm.file
-        , onInput UpdateFile
-        ]
-        []
-      ]
+    [ explanationBox
     , Html.map MajorMsg (Login.MajorForm.View.view loginForm.majorForm)
+    , uploadFile loginForm
     , submitButton FileLogin
     ]
 
+explanationBox : Html Msg
+explanationBox =
+  div
+    [ class "explanationBox" ]
+    [ text "다음과 같은 방식으로 성적 파일을 업로드합니다." ]
+
+uploadFile : Model -> Html Msg
+uploadFile loginForm =
+  label
+    [ id "fileInputButton" ]
+    [ input
+      [ type_ "file"
+      , id "file"
+      , name "file"
+      ]
+      []
+      , text "성적 파일 업로드"
+      , text loginForm.fileLoginForm.file
+    ]
 
 submitButton : LoginType -> Html Msg
 submitButton loginType =
-  div
-    [ class "inline"  ]
+  label
+    [ class "inline loginButton"  ]
     [ input
       [ type_ "button"
       , id "submit"

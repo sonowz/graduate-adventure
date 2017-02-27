@@ -105,15 +105,19 @@ p.bar-stat {
   font-size: 15pt;
 }
 
-#major-info {
-  color: white;
-  width: 100%;
-  font-size: 13pt;
-}
-
 .bar .table {
   width: 100%;
   height: 100%;
+}
+
+.table_scroll {
+  width: 100%;
+  height: 65px;
+  overflow: auto;
+}
+
+.table_scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .table-body {
@@ -148,16 +152,50 @@ p.bar-stat {
   width: 50%;
 }
 
-#major-info .header .column {
-    width: 50%;
+#major-info {
+  color: white;
+  width: 90%;
+  font-size: 13pt;
+  margin: 10px auto;
+  position: relative;
+  z-index: 1;
+}
+
+#major-type {
+  width: 90%;
+}
+
+#major-name {
+  text-align: center;
+  width: 90%;
+}
+
+#major-button input {
+  margin: 10% 0 0 5px;
+  width: 25px;
+  height: 25px;
+  background: rgba(0,0,0,0);
+  color: white;
+  border: solid 2px;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#major-info .number {
+    width: 80px;
+}
+
+#major-info .major-type {
+    width: 130px;
+}
+
+#major-info .major-name {
+    width: 180px;
 }
 
 .cell {
   display: table-cell;
-}
-
-.cell.vcenter {
-  vertical-align: middle;
 }
 
 #result .cell {
@@ -166,9 +204,21 @@ p.bar-stat {
 }
 
 #major-info .cell {
-    padding: 3px 10px;
+    padding: 1px;
     border: 1px solid white;
+    height: 30px;
+    vertical-align: middle;
 }
+
+#table-wrapper {
+  position: absolute;
+  border: 1px solid white;
+  width: 399px;
+  height: 64.5px;
+  top: 32px;
+  z-index: -1;
+}
+
 .course {
   display: inline-block;
   margin: 5px 1px;
@@ -218,14 +268,15 @@ p.bar-stat {
 
 .center-wrapper {
   position: fixed;
+  top: 20%;
   text-align: center;
   white-space: nowrap;
   height: 100%;
   width: 100%;
+  overflow: auto;
 }
 
 .center-wrapper:before {
-  content: '';
   display: inline-block;
   height: 100%;
   vertical-align: middle;
@@ -241,11 +292,11 @@ p.bar-stat {
   background: rgba(0, 0, 0, 0.5);
   color: white;
   font-size: 15pt;
-  padding: 40px 0;
+  padding: 10px 0 40px;
 }
 
 .inline {
-  padding: 20px;
+  padding: 10px 20px;
   display: block;
 }
 
@@ -257,7 +308,51 @@ p.bar-stat {
 .inline input {
   border-radius: 5px;
   float: right;
-  width: 16em;
+  width: 11em;
   font-size: 14pt;
   padding: 3px;
+}
+
+.loginButton input {
+  background: rgba(0,0,0,0);
+  color: white;
+  border: solid 2px;
+}
+
+.checkBox {
+  margin-top: 10px;
+}
+
+#fileInputButton {
+  border-radius: 5px;
+  float: left;
+  width: 11em;
+  font-size: 14pt;
+  padding: 3px;
+  border: 2px solid;
+  margin: 10px 0 0 20px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.explanationBox {
+  width: 90%;
+  height: 107px;
+  border: 2px solid;
+  border-radius: 5px;
+  margin: 10px auto;
+  padding: 1%;
+  font-size: 15px;
+  text-align: left;
+
+  overflow: auto;             /*Scroll Bar*/
+  overflow-x: hidden;
+  word-break: break-all;      
+  word-wrap: break-word;      /*IE*/
+  white-space: pre-wrap;      /*CSS3*/
+  white-space: -moz-pre-wrap; /*Firefox*/
+  white-space: -pre-wrap;     /*Opera <7*/
+  white-space: -o-pre-wrap;   /*Opera 7*/
 }
