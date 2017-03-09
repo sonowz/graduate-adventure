@@ -1,10 +1,11 @@
-'use strict';
+//'use strict';
 
 require('./styles/index.css')
 
-var Elm = require('../elm/Main.elm');
-var mountNode = document.getElementById('main');
+Elm = require('../elm/Main.elm');
 
-var app = Elm.Main.embed(mountNode);
+//var mountNode = document.getElementById('main');
 
-//fileRequest = require('../js/filerequest');
+//app = Elm.Main.embed(mountNode);
+
+fileRequest = require('../js/filerequest');

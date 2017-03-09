@@ -113,14 +113,16 @@ checkboxField useMysnuMajors =
 viewFileLoginForm : Model -> Html Msg
 viewFileLoginForm loginForm =
   form
-    [ action "#"
-    , id "file-login-form"
+    [ id "filerequest"
+    , onSubmit None
     ]
     [ explanationBox
     , Html.map MajorMsg (Login.MajorForm.View.view loginForm.majorForm)
     , uploadFile loginForm
     , submitButton FileLogin
+    , input [ type_ "hidden", name "filename", value "file" ] []
     ]
+
 
 explanationBox : Html Msg
 explanationBox =
@@ -128,13 +130,13 @@ explanationBox =
     [ class "explanationBox" ]
     [ text "다음과 같은 방식으로 성적 파일을 업로드합니다." ]
 
+
 uploadFile : Model -> Html Msg
 uploadFile loginForm =
   label
     [ id "fileInputButton" ]
     [ input
       [ type_ "file"
-      , id "file"
       , name "file"
       ]
       []
@@ -142,15 +144,15 @@ uploadFile loginForm =
       , text loginForm.fileLoginForm.file
     ]
 
+
 submitButton : LoginType -> Html Msg
 submitButton loginType =
   label
     [ class "inline loginButton"  ]
     [ input
       [ type_ "button"
-      , id "submit"
       , value "로그인"
-      , onSubmit (SubmitForm loginType)
+      , onClick (SubmitForm loginType)
       ]
       []
     ]

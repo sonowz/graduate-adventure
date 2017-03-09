@@ -2,7 +2,11 @@ module Login.Update exposing (..)
 
 import Login.Msgs exposing (Msg(..))
 import Login.Models exposing (..)
+import Json.Decode as Json
 import Login.MajorForm.Update
+import Result exposing (Result(..))
+import Login.Ports as Ports
+import Login.Response as Response
 
 
 update : Login.Msgs.Msg -> Model -> ( Model, Cmd Msg )
@@ -38,14 +42,21 @@ update msg loginForm =
       in
        ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
 
-    UpdateFile newFile ->
+    Response str ->
       let
+        decodedResult : Result String Response.Decoded
+        decodedResult =
+          Json.decodeString Response.decoder str
         fileLoginForm =
           loginForm.fileLoginForm
-        newFileLoginForm =
-          { fileLoginForm | file = newFile }
+        newfileLoginForm = 
+          case decodedResult of
+            Ok decoded ->
+              { fileLoginForm | file = Maybe.withDefault "" decoded.message }
+            Err error ->
+              { fileLoginForm | file = "X" }
       in
-        ( { loginForm | fileLoginForm = newFileLoginForm }, Cmd.none )
+       ( { loginForm | fileLoginForm = newfileLoginForm }, Cmd.none )
 
     MajorMsg majorMsg ->
       let
@@ -55,4 +66,23 @@ update msg loginForm =
         ( { loginForm | majorForm = updatedMajorForm }, Cmd.map MajorMsg cmd)
 
     SubmitForm loginType ->
+      case loginType of
+        MysnuLogin ->
+          ( loginForm, Cmd.none )
+        FileLogin ->
+          let
+            formID =
+              "filerequest"
+            url =
+              "localhost:8000/api/login/file"
+
+          in
+            ( loginForm, Ports.fileRequest ( formID ++ "@" ++ url ) )
+
+    None ->
       ( loginForm, Cmd.none )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Ports.fileResponse Response
