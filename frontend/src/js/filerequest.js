@@ -1,8 +1,8 @@
 // Interface for Elm that handles HTTP form request & intercepts response
 // Elm 0.18 does not support 'file input request' in native.
-var app = Elm.Main.fullscreen();
+var elmApp = Elm.Main.fullscreen();
 
-app.ports.fileRequest.subscribe(function (param) {
+elmApp.ports.fileRequest.subscribe(function (param) {
   var split = param.split('@');
   var id = split[0];
   var url = split[1];

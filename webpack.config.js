@@ -21,7 +21,7 @@ var commonConfig = {
   output: {
     path:       outputPath,
     filename:   outputFilename,
-    publicPath: '/static/'
+    publicPath: '/'
   },
 
   resolve: {
@@ -62,12 +62,13 @@ if ( TARGET_ENV === 'development' ) {
     ],
 
     devServer: {
-      // serve static/index.html in place of 404 responses
-      historyApiFallback: {
-        rewrites: [
-          { from: /./, to: '/static/index.html' },
-        ]
-      }
+      historyApiFallback: true,
+      proxy: [
+        {
+          context: ['/api'],
+          target: 'http://localhost:8000',
+        }
+      ]
     },
 
     module: {
