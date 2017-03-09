@@ -37,7 +37,7 @@ initialModel =
     , useMysnuMajors = True
     }
   , fileLoginForm =
-    { file = "temp"
+    { file = ""
     }
   , majorForm = Major.initialModel
   }

@@ -6,6 +6,7 @@ import View exposing (view)
 import Update exposing (update)
 import Msgs exposing (Msg(..))
 import Routes exposing (Route)
+import Subscription exposing (subscription)
 
 
 init : Location -> (Model, Cmd Msg)
@@ -16,11 +17,6 @@ init location =
 
   in
     (initialModel currentRoute, Cmd.none)
-
-
-subscription : Model -> Sub Msg
-subscription model =
-  Sub.none
 
 
 main : Program Never Model Msg

@@ -47,8 +47,10 @@ update msg loginForm =
         decodedResult : Result String Response.Decoded
         decodedResult =
           Json.decodeString Response.decoder str
+        
         fileLoginForm =
           loginForm.fileLoginForm
+        
         newfileLoginForm = 
           case decodedResult of
             Ok decoded ->
@@ -74,15 +76,10 @@ update msg loginForm =
             formID =
               "filerequest"
             url =
-              "localhost:8000/api/login/file"
+              "/api/login/file/"
 
           in
             ( loginForm, Ports.fileRequest ( formID ++ "@" ++ url ) )
 
     None ->
       ( loginForm, Cmd.none )
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-  Ports.fileResponse Response
