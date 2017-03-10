@@ -14,6 +14,7 @@ update message model =
           { majorType = model.newMajorType
           , majorName = model.newMajorName
           }
+          
         newMajors = model.majors ++ [ newMajor ]
       in
         ( { model

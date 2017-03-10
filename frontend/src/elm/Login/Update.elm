@@ -19,6 +19,7 @@ update msg loginForm =
       let
         mysnuLoginForm =
           loginForm.mysnuLoginForm
+
         newMysnuLoginForm =
           { mysnuLoginForm | username = newUsername }
       in
@@ -28,6 +29,7 @@ update msg loginForm =
       let
         mysnuLoginForm =
           loginForm.mysnuLoginForm
+
         newMysnuLoginForm =
           { mysnuLoginForm | password = newPassword }
       in
@@ -37,6 +39,7 @@ update msg loginForm =
       let
         mysnuLoginForm =
           loginForm.mysnuLoginForm
+
         newMysnuLoginForm =
           { mysnuLoginForm | useMysnuMajors = newUseMysnuMajors }
       in
@@ -71,6 +74,7 @@ update msg loginForm =
       case loginType of
         MysnuLogin ->
           ( loginForm, Cmd.none )
+          
         FileLogin ->
           let
             formID =

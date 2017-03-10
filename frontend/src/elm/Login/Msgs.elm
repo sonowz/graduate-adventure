@@ -5,6 +5,7 @@ import Login.MajorForm.Msgs
 import Login.Ports as Ports
 import Login.Response as Response
 
+
 type Msg
   = UpdateLoginType LoginType
   | UpdateUsername String
