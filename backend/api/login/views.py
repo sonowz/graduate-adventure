@@ -59,7 +59,7 @@ class LoginRequest(APIView):
             return JsonResponse({'success': False, 'message': e.args[0]})
 
         request.session['list'] = sugang_list
-        # TODO: fix error
+        # TODO: fix error ( tree is not serializable )
         # request.session['tree'] = tree
         request.session.set_expiry(6000)
         return JsonResponse({'success': True, 'message': str(request.session['list'])})
