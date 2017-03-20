@@ -74,20 +74,20 @@ body::-webkit-scrollbar {
 .done {
   height: 100%;
   background: #83818E;
-  display: inline-flex;
-}
-
-p.bar-stat {
-  display: block;
-  margin: auto;
-  color: white;
   font-weight: bold;
   font-size: 14pt;
-  text-align: center;
+  padding-top: 8px;
+  display: inline-block;
+}
+
+.rest {
+  display: inline-block;
+  font-weight: bold;
+  font-size: 14pt;
+  padding-top: 8px;
 }
 
 #result {
-  background: rgba(0, 0, 0, 0.5);
   padding: 20px;
   max-height: 500px;
   overflow-x: hidden;
@@ -194,6 +194,43 @@ p.bar-stat {
     width: 180px;
 }
 
+#major-type {
+  width: 90%;
+}
+
+.subjects {
+  text-align : left;
+}
+
+#major-name {
+  text-align: center;
+  width: 90%;
+}
+
+#major-button input {
+  margin: 10% 0 0 5px;
+  width: 25px;
+  height: 25px;
+  background: rgba(0,0,0,0);
+  color: white;
+  border: solid 2px;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#major-info .number {
+    width: 80px;
+}
+
+#major-info .major-type {
+    width: 130px;
+}
+
+#major-info .major-name {
+    width: 180px;
+}
+
 .cell {
   display: table-cell;
 }
@@ -263,7 +300,18 @@ p.bar-stat {
 }
 
 #year {
+  display: inline-block;
   width: 40pt;
+  margin-right: 10px;
+}
+
+#semester {
+  display: inline-block;
+}
+
+.plus {
+  display: block;
+  margin: 5px auto 0px;
 }
 
 .center-wrapper {
@@ -337,6 +385,30 @@ input[type="file"] {
   display: none;
 }
 
+.loginButton input {
+  background: rgba(0,0,0,0);
+  color: white;
+  border: solid 2px;
+}
+
+.checkBox {
+  margin-top: 10px;
+}
+
+#fileInputButton {
+  border-radius: 5px;
+  float: left;
+  width: 11em;
+  font-size: 14pt;
+  padding: 3px;
+  border: 2px solid;
+  margin: 10px 0 0 20px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
 .explanationBox {
   width: 90%;
   height: 107px;
@@ -355,4 +427,9 @@ input[type="file"] {
   white-space: -moz-pre-wrap; /*Firefox*/
   white-space: -pre-wrap;     /*Opera <7*/
   white-space: -o-pre-wrap;   /*Opera 7*/
+}
+
+#main {
+  width: 80%;
+  margin: auto;
 }
