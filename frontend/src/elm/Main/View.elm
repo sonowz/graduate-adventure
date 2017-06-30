@@ -3,9 +3,9 @@ module Main.View exposing (view)
 import Html exposing (Html, div, p, text, button, input, form, select, option, label)
 import Html.Attributes exposing (id, class, name, placeholder, action, type_, checked, value, for, style)
 import Html.Events exposing (onClick, onInput, onCheck, onSubmit)
-import Msgs exposing (Msg(..))
-import Main.Models exposing (..)
 import Array
+import Main.Msgs exposing(Msg(..))
+import Main.Models exposing (..)
 
 
 --for filter subjects
@@ -24,8 +24,7 @@ isGeneral subject =
   else
     False
 
-
---Encapsulation
+--for number expresion
 computePercentage : Int -> Int -> String
 computePercentage full curr =
   if toFloat curr < 0.99*(toFloat full) then
@@ -47,7 +46,7 @@ numberExpression full curr =
     else
       toString curr
 
-
+--return a bar of grades (FULL/REST)
 gradesBar : String -> Int -> Int -> Int -> Html Msg
 gradesBar title full curr rest = 
   div [ class "bar-area" ]
@@ -62,7 +61,7 @@ gradesBar title full curr rest =
     ]
   ]
 
-
+-- subjects block(button)
 subjectBlocks : Subject -> Html Msg
 subjectBlocks subject =
   button
@@ -73,7 +72,7 @@ subjectBlocks subject =
   ]
   [ text subject.name ]
 
-
+--semester rows
 semesterRow : Semester -> Html Msg
 semesterRow semester =
   div
@@ -88,12 +87,12 @@ semesterRow semester =
   ]
 
 
---for Current major
-currMajor : Model -> Major
-currMajor model = 
-  Maybe.withDefault initialMajor (Array.get model.state (Array.fromList model.majors))
+--for selecting major
+selectMajor : Int -> List Major -> Major
+selectMajor index majors = 
+  Maybe.withDefault initialMajor (Array.get index (Array.fromList majors))
 
-
+--for select tab(major)
 majorLists : Model -> Int -> Major -> Html Msg
 majorLists model index major =
   div
@@ -101,14 +100,18 @@ majorLists model index major =
               "tab active"
             else
               "tab")
+  , onClick (UpdateMajor index)
   ]
   [ p []
     [ text (major.majorName++"/"++major.majorProperty) ] 
   ]
 
+
+-- list of seasons for select element
 seasons : List String
 seasons =
-  [ "1"
+  [ ""
+  , "1"
   , "S"
   , "2"
   , "W"
@@ -120,8 +123,10 @@ seasonTypeOption season =
     [ value season ]
     [ text season ]
 
-newSemester : Model -> Html Msg
-newSemester model =
+
+--make new semester
+newSemester : Major -> Html Msg
+newSemester major =
   div
   [ class "row" ]
   [ div
@@ -130,13 +135,20 @@ newSemester model =
       [ type_ "text"
       , name "year"
       , id "year"
+      , onInput UpdateYear
       ][]
     , select
       [ name "semester"
       , id "semester"
+      , onInput UpdateSeason
       ] (List.map seasonTypeOption seasons)
     , button
-      [ class "plus" ]
+      [ class "plus"
+      , onClick (if major.newSemester.year/="" && major.newSemester.season/="" then
+                   AddSemester
+                 else
+                   None)
+      ]
       [ text "+" ]
     ]
   , div [ class "cell" ][]
@@ -155,29 +167,36 @@ view model =
   ,  summaryField model ]
 
 
+--semester/subjects table
+--allGradeRest : 총 잔여 학점
+--mandatoryGradeRest : 총 잔여 전필 학점
+--electivesGradeRest : 총 잔여 전선 학점
+--generalGradeRest : 총 잔여 교양 학점
 summaryField : Model -> Html Msg
 summaryField model =
   let
+    currMajor = selectMajor model.state model.majors
+
     allGradeRest = 
-      (currMajor model).allGradeFull - (currMajor model).allGradeCurr
+      currMajor.allGradeFull - currMajor.allGradeCurr
 
     mandatoryGradeRest = 
-      (currMajor model).mandatoryGradeFull - (currMajor model).mandatoryGradeCurr
+      currMajor.mandatoryGradeFull - currMajor.mandatoryGradeCurr
 
     electivesGradeRest = 
-      (currMajor model).electivesGradeFull - (currMajor model).electivesGradeCurr
+      currMajor.electivesGradeFull - currMajor.electivesGradeCurr
 
     generalGradeRest = 
-      (currMajor model).generalGradeFull - (currMajor model).generalGradeCurr
+      currMajor.generalGradeFull - currMajor.generalGradeCurr
 
 
   in
     div
     [ id "summary" ]
-    [ gradesBar "전체" (currMajor model).allGradeFull (currMajor model).allGradeCurr allGradeRest
-    , gradesBar "전필" (currMajor model).mandatoryGradeFull (currMajor model).mandatoryGradeCurr mandatoryGradeRest
-    , gradesBar "전선" (currMajor model).electivesGradeFull (currMajor model).electivesGradeCurr electivesGradeRest
-    , gradesBar "교양" (currMajor model).generalGradeFull (currMajor model).generalGradeCurr generalGradeRest
+    [ gradesBar "전체" currMajor.allGradeFull currMajor.allGradeCurr allGradeRest
+    , gradesBar "전필" currMajor.mandatoryGradeFull currMajor.mandatoryGradeCurr mandatoryGradeRest
+    , gradesBar "전선" currMajor.electivesGradeFull currMajor.electivesGradeCurr electivesGradeRest
+    , gradesBar "교양" currMajor.generalGradeFull currMajor.generalGradeCurr generalGradeRest
     , div 
       [ id "result" ]
       [ div 
@@ -191,15 +210,15 @@ summaryField model =
             , div [ class "cell liberal" ][ text "교양" ]
             ]
           ]
-          ++ ( List.map semesterRow (currMajor model).majorSemesters ) 
-          ++ [ newSemester model
+          ++ ( List.map semesterRow currMajor.majorSemesters ) 
+          ++ [ newSemester currMajor
           , div
             [ class "row" ]
             [ div [ class "cell year" ][ text "미이수" ]
             , div
-              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor (currMajor model).remainSubjects ) )
+              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor currMajor.remainSubjects ) )
             , div
-              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isGeneral (currMajor model).remainSubjects ) )
+              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isGeneral currMajor.remainSubjects ) )
             ]  
           ]
           )

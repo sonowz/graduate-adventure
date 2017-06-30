@@ -33,7 +33,7 @@ mainPage : Main.Model -> Html Msg
 mainPage mainForm =
   div
     [ class "center-wrapper" ]
-    [ Main.View.view mainForm ]
+    [ Html.map MainFormMsg (Main.View.view mainForm) ]
 
 
 loginPage : Login.Model -> Html Msg
