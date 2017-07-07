@@ -1,8 +1,8 @@
 Graduate Simulator
 ==================
 
-[![Build Status](https://travis-ci.org/LastOne817/graduate-adventure.svg)](https://travis-ci.org/LastOne817/graduate-adventure)
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/LastOne817/graduate-adventure?branch=master&svg=true)](https://ci.appveyor.com/project/LastOne817/graduate-adventure)
+[![Build Status](https://travis-ci.org/dnsdhrj/graduate-adventure.svg)](https://travis-ci.org/dnsdhrj/graduate-adventure)
+[![Build Status](https://ci.appveyor.com/api/projects/status/github/dnsdhrj/graduate-adventure?branch=master&svg=true)](https://ci.appveyor.com/project/dnsdhrj/graduate-adventure)
 
 Graduate simulator for SNU students
 
@@ -10,6 +10,7 @@ Graduate simulator for SNU students
 
   - Python ≥ 3.5
   - node ≥ 6.x
+  - npm ≥ 5
 
 ### Installation
 
