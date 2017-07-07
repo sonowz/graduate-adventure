@@ -10,6 +10,7 @@ Graduate simulator for SNU students
 
   - Python ≥ 3.5
   - node ≥ 6.x
+  - npm ≥ 5
 
 ### Installation
 
