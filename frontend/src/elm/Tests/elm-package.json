@@ -1,7 +1,7 @@
 {
     "version": "0.1.1",
     "summary": "Graduate simulator frontend Elm test",
-    "repository": "https://github.com/LastOne817/graduate-adventure.git",
+    "repository": "https://github.com/dnsdhrj/graduate-adventure.git",
     "license": "MIT",
     "source-directories": [
         "..",
