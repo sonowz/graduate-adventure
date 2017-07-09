@@ -2,15 +2,15 @@ module Login.Msgs exposing (..)
 
 import Login.Models exposing (LoginType)
 import Login.MajorForm.Msgs
-import Login.Ports as Ports
-import Login.Response as Response
+import Http
 
 
 type Msg
   = UpdateLoginType LoginType
   | UpdateUsername String
   | UpdatePassword String
-  | Response String
+  | Response (Result Http.Error Bool)
+  | Responsejs String
   | UpdateUseMysnuMajors Bool
   | MajorMsg Login.MajorForm.Msgs.Msg
   | SubmitForm LoginType

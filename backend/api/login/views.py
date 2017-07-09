@@ -2,7 +2,7 @@
 from django.http.response import HttpResponseServerError, JsonResponse
 from django.conf import settings
 from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from crawler import mysnu
 from core.models import Course
 from core.parser import parse_credit
@@ -20,7 +20,7 @@ class ClientRenderedException(Exception):
 
 
 class LoginRequest(APIView):
-    parser_classes = (MultiPartParser, FormParser,)
+    parser_classes = (MultiPartParser, FormParser, JSONParser,)
 
     # For debugging purpose :
     #   - Return sugang_list at success
@@ -62,7 +62,7 @@ class LoginRequest(APIView):
         # TODO: fix error ( tree is not serializable )
         # request.session['tree'] = tree
         request.session.set_expiry(6000)
-        return JsonResponse({'success': True, 'message': str(request.session['list'])})
+        return JsonResponse({'success': True, 'message': request.session['list']})
 
     def get_rule(self, request):
         has_major = request.data.get('major_info', False)

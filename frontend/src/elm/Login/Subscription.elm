@@ -7,4 +7,4 @@ import Login.Models exposing (Model)
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Ports.fileResponse Response
+  Ports.fileResponse Responsejs
