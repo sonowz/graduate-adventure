@@ -150,7 +150,7 @@ class TreeLoader(object):
                 # hide falsy node or not
                 hide_false = course.get('hide_false', False)
 
-                # required credit for evaludated to True
+                # required credit for evaluated to True
                 required_credit = course.get('required_credit', 0)
 
                 # sum credit of falsy node or not
@@ -192,7 +192,7 @@ class TreeLoader(object):
     def eval_tree(self, taken_list):
         """Evaluate tree recursively
 
-        Constructor automately call this function, so it is not needed to be called explicitly.
+        Constructor automatically call this function, so it is not needed to be called explicitly.
 
         Args:
             taken_list: list of taken courses.
@@ -237,7 +237,7 @@ class TreeNode(object):
         """Constructor of TreeNode
 
         Args:
-            data: data of current node. more additional explain is in below
+            data: data of current node. more additional explaination is in below
             properties: dict of property. will be deconstructed
             metadata: data of any other information needed evaluating tree
             func: evaluator function (closure)
@@ -245,13 +245,13 @@ class TreeNode(object):
             *args: any other additional arguments
         """
 
-        # self.data can contain various type of data.
+        # self.data can contain various types of data.
         # If type of self.data is `None`, it means it is not
         # yet evaluated. Maybe it is not leaf node, which
-        # means for being evaluate, all children node
+        # means for being evaluated, all children node
         # should be evaluated.
-        # If type of self.data is `Boolean`, it means it is
-        # evaluated.
+        # If type of self.data is `Boolean`, it means its
+        # evaluation is done.
         # If type of self.data is `str`, it is just a
         # course code number, and it means it is not
         # yet evaluated, and it can be directly evaluated
@@ -268,7 +268,7 @@ class TreeNode(object):
         self.func = func
         self.namespace = namespace
 
-        # maybe this variable needed for user-friendly interface
+        # maybe this variable will be needed for user-friendly interface
         self.false_reason = ''
 
         # if str, it is course (more specifically, course code number)
@@ -301,8 +301,8 @@ class TreeNode(object):
         """Convert tree to tree string
 
         Args:
-            depth: current depth. this will be appeared by count of tabs
-            hide: boolean about hide falsy node or not
+            depth: current depth. this will be shown by count of tabs
+            hide: boolean about hiding falsy node or not
 
         Returns:
             tree string
@@ -326,7 +326,7 @@ class TreeNode(object):
         """Convert tree to tree dictionary
 
         Args:
-            hide: boolean about hide falsy node or not
+            hide: boolean about hiding falsy node or not
 
         Returns:
             tree dictionary object
@@ -355,7 +355,7 @@ class TreeNode(object):
         """Evaluate children recursively
 
         Evaluate TreeNode and set self.data to its value.
-        If children exist, evaluated them all recursively.
+        If children exist, evaluate them all recursively.
 
         Args:
             taken_list: taken course list
@@ -370,7 +370,7 @@ class TreeNode(object):
                 child.eval_children(taken_list)
 
         # If it is not course, which is not course code number, it should be
-        # evaluated through `func`, because it is not directly able to evaluated
+        # evaluated through `func`, because it is not directly able to be evaluated
         # by looking up course taken list.
         if not self.is_course:
 
@@ -424,7 +424,7 @@ class TreeNode(object):
                     del taken_list[i]
                     break
 
-            # it any of entries of taken_list is not matches,
+            # it any of entries of taken_list does not matches,
             # it will be evaluated to False.
             if not is_satisfied:
                 logger.debug('{data} returns False'.format(data=self.data))
