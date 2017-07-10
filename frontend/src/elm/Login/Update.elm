@@ -2,11 +2,14 @@ module Login.Update exposing (..)
 
 import Login.Msgs exposing (Msg(..))
 import Login.Models exposing (..)
-import Json.Decode as Json
+import Json.Decode as Decode exposing (field)
+import Json.Encode as Encode exposing (object, string)
 import Login.MajorForm.Update
 import Result exposing (Result(..))
 import Login.Ports as Ports
 import Login.Response as Response
+import Http
+import Navigation exposing (load)
 
 
 update : Login.Msgs.Msg -> Model -> ( Model, Cmd Msg )
@@ -44,17 +47,31 @@ update msg loginForm =
           { mysnuLoginForm | useMysnuMajors = newUseMysnuMajors }
       in
        ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
+{- TODO:
+ - handle fail message of response (after handle decoder)
+ - handle Response & Responsejs together (after handle filerequest in elm)
+ -}
+    Response result ->
+      case result of
+        Ok success ->
+          case success of
+            True ->
+              ( loginForm, load "/" )
+            False ->
+              ( loginForm, Cmd.none )
+        Err error ->
+          ( loginForm, Cmd.none )
 
-    Response str ->
+    Responsejs str ->
       let
         decodedResult : Result String Response.Decoded
         decodedResult =
-          Json.decodeString Response.decoder str
-        
+          Decode.decodeString Response.decoder str
+
         fileLoginForm =
           loginForm.fileLoginForm
-        
-        newfileLoginForm = 
+
+        newfileLoginForm =
           case decodedResult of
             Ok decoded ->
               { fileLoginForm | file = Maybe.withDefault "" decoded.message }
@@ -73,8 +90,8 @@ update msg loginForm =
     SubmitForm loginType ->
       case loginType of
         MysnuLogin ->
-          ( loginForm, Cmd.none )
-          
+          ( loginForm, postMysnuLogin loginForm.mysnuLoginForm )
+
         FileLogin ->
           let
             formID =
@@ -87,3 +104,24 @@ update msg loginForm =
 
     None ->
       ( loginForm, Cmd.none )
+
+
+postMysnuLogin : MysnuLoginForm -> Cmd Msg
+postMysnuLogin mysnu =
+  Http.send Response
+  <| Http.post
+    "/api/login/mysnu/"
+    ( mysnuLoginBody mysnu )
+    ( field "success" Decode.bool )
+
+mysnuLoginBody : MysnuLoginForm -> Http.Body
+mysnuLoginBody mysnu =
+  Http.jsonBody
+    <| object
+      [ ( "user_id", string mysnu.username )
+      , ( "password", string mysnu.password )
+      , ( "major_info", Encode.bool (not mysnu.useMysnuMajors) )
+      ]
+
+{- TODO: send additional body when major_info is true
+-}

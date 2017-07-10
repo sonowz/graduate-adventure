@@ -1,4 +1,4 @@
-module Tests.Routes exposing (all)
+module TestRoute exposing (..)
 
 import Test exposing (..)
 import Expect
@@ -6,8 +6,8 @@ import Navigation exposing (Location)
 import Routes exposing (..)
 
 
-all : Test
-all =
+suite : Test
+suite =
   describe "Routes"
     [ routeTest "login" "/login" LoginRoute
     , routeTest "main" "/" MainRoute
