@@ -46,7 +46,12 @@ class LoginRequest(APIView):
                     raise LoginException('파일이 올바르지 않습니다.')
                 text = file.read().decode('euc-kr', errors='ignore')
                 file.close()
-                taken_list = parse_credit(text)
+                try:
+                    taken_list = parse_credit(text)
+
+                except Exception as e:
+                    logger.error(e.args[0])
+                    raise LoginException('수강 정보가 올바르지 않습니다.')
 
             else:
                 raise LoginException('접근 경로가 잘못되었습니다.')
@@ -57,6 +62,7 @@ class LoginRequest(APIView):
             rule = self.get_rule(request)
 
             try:
+                # TODO: metadata should be set on here
                 tree = TreeLoader(rule, {}, Course)
                 tree.eval_tree(taken_list)
 
