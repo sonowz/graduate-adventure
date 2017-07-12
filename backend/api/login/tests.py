@@ -33,9 +33,11 @@ class TestView(TestCase):
 
     def test_get_rule(self):
         request = self.init_request()
-        request.data['major_info'] = True
-        request.data['double_major'] = False
-        request.data['major'] = '컴퓨터공학전공'
-        request.data['minor'] = ''
+        request.data['majors'] = [
+            {
+                'type': '주전공',
+                'field': '컴퓨터공학전공'
+            }
+        ]
         response = self.req_class.get_rule(request)
         self.assertEqual(response, 'sample_cse_2016')
