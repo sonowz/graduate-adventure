@@ -67,14 +67,8 @@ class LoginRequest(APIView):
     def get_rule(self, request):
         has_major = request.data.get('major_info', False)
         if has_major:
-            try:
-                arg = [
-                    'double_major',
-                    'major',
-                    'minor',
-                ]
-                major_info = {x: request.data[x] for x in arg}
-            except KeyError:
+            major_info = request.data.get('majors', None)
+            if major_info is None:
                 raise ClientRenderedException('전공 정보가 없습니다.')
         else:
             user_id = request.data.get('user_id', 'nid')
