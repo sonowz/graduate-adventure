@@ -10,9 +10,9 @@
     "bootstrap-sass": "^3.3.7",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.25.0",
-    "elm": "^0.18.0",
-    "elm-hot-loader": "^0.5.4",
-    "elm-test": "^0.18.2",
+    "elm": "0.18.0",
+    "elm-hot-loader": "0.5.4",
+    "elm-test": "0.18.7",
     "elm-webpack-loader": "^4.2.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
@@ -28,16 +28,16 @@
   },
   "scripts": {
     "start": "webpack-dev-server --hot --inline --content-base frontend/src",
-    "test": "webpack && elm-test frontend/src/elm/Tests/Main.elm"
+    "test": "webpack && elm-test frontend/src/elm/Tests/*.elm"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LastOne817/graduate-adventure.git"
+    "url": "git+https://github.com/dnsdhrj/graduate-adventure.git"
   },
-  "author": "LastOne817",
+  "author": "dnsdhrj",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/LastOne817/graduate-adventure/issues"
+    "url": "https://github.com/dnsdhrj/graduate-adventure/issues"
   },
-  "homepage": "https://github.com/LastOne817/graduate-adventure#readme"
+  "homepage": "https://github.com/dnsdhrj/graduate-adventure#readme"
 }
