@@ -9,6 +9,7 @@ import Main.Models exposing (..)
 
 
 --for filter subjects
+
 isMajor : Subject -> Bool
 isMajor subject =
   if subject.property == "G" then
@@ -25,6 +26,7 @@ isGeneral subject =
     False
 
 --for number expresion
+
 computePercentage : Int -> Int -> String
 computePercentage full curr =
   if toFloat curr < 0.99*(toFloat full) then
@@ -46,9 +48,9 @@ numberExpression full curr =
     else
       toString curr
 
---return a bar of grades (FULL/REST)
-gradesBar : String -> Int -> Int -> Int -> Html Msg
-gradesBar title full curr rest = 
+--return a bar of credits (FULL/REST)
+creditsBar : String -> Int -> Int -> Int -> Html Msg
+creditsBar title full curr rest = 
   div [ class "bar-area" ]
   [ div [ class "bar-label" ][ text title ]
   , div [ class "bar" ]
@@ -65,10 +67,12 @@ gradesBar title full curr rest =
 subjectBlocks : Subject -> Html Msg
 subjectBlocks subject =
   button
-  [ class ( if subject.property /= "E" then 
-              "course necessary" 
-            else 
-              "course optional")
+  [ class 
+    ( if subject.property /= "E" then 
+      "course necessary" 
+      else 
+      "course optional"
+    )
   ]
   [ text subject.name ]
 
@@ -87,23 +91,25 @@ semesterRow semester =
   ]
 
 
---for selecting major
-selectMajor : Int -> List Major -> Major
-selectMajor index majors = 
-  Maybe.withDefault initialMajor (Array.get index (Array.fromList majors))
+--for selecting discipline
+selectDiscipline : Int -> List Discipline -> Discipline
+selectDiscipline index disciplines = 
+  Maybe.withDefault initialDiscipline (Array.get index (Array.fromList disciplines))
 
---for select tab(major)
-majorLists : Model -> Int -> Major -> Html Msg
-majorLists model index major =
+--for select tab(discipline)
+disciplineLists : Model -> Int -> Discipline -> Html Msg
+disciplineLists model index discipline =
   div
-  [ class ( if model.state == index then
-              "tab active"
-            else
-              "tab")
-  , onClick (UpdateMajor index)
+  [ class
+    ( if model.tabNumber == index then
+      "tab active"
+      else
+      "tab"
+    )
+  , onClick (UpdateDiscipline index)
   ]
   [ p []
-    [ text (major.majorName++"/"++major.majorProperty) ] 
+    [ text (discipline.disciplineName++"/"++discipline.disciplineProperty) ] 
   ]
 
 
@@ -125,8 +131,8 @@ seasonTypeOption season =
 
 
 --make new semester
-newSemester : Major -> Html Msg
-newSemester major =
+newSemester : Discipline -> Html Msg
+newSemester discipline =
   div
   [ class "row" ]
   [ div
@@ -144,10 +150,12 @@ newSemester major =
       ] (List.map seasonTypeOption seasons)
     , button
       [ class "plus"
-      , onClick (if major.newSemester.year/="" && major.newSemester.season/="" then
-                   AddSemester
-                 else
-                   None)
+      , onClick
+        ( if discipline.newSemester.year/="" && discipline.newSemester.season/="" then
+          AddSemester
+          else
+          None
+        )
       ]
       [ text "+" ]
     ]
@@ -163,40 +171,40 @@ view model =
   [ id "main" ]
   [ div
     [ class "tab-area" ]
-    (List.indexedMap (majorLists model) model.majors)
+    (List.indexedMap (disciplineLists model) model.disciplines)
   ,  summaryField model ]
 
 
 --semester/subjects table
---allGradeRest : 총 잔여 학점
---mandatoryGradeRest : 총 잔여 전필 학점
---electivesGradeRest : 총 잔여 전선 학점
---generalGradeRest : 총 잔여 교양 학점
+--allCreditRest : 총 잔여 학점
+--mandatoryCreditRest : 총 잔여 전필 학점
+--electivesCreditRest : 총 잔여 전선 학점
+--generalCreditRest : 총 잔여 교양 학점
 summaryField : Model -> Html Msg
 summaryField model =
   let
-    currMajor = selectMajor model.state model.majors
+    currDiscipline = selectDiscipline model.tabNumber model.disciplines
 
-    allGradeRest = 
-      currMajor.allGradeFull - currMajor.allGradeCurr
+    allCreditRest = 
+      currDiscipline.allCreditFull - currDiscipline.allCreditCurr
 
-    mandatoryGradeRest = 
-      currMajor.mandatoryGradeFull - currMajor.mandatoryGradeCurr
+    mandatoryCreditRest = 
+      currDiscipline.mandatoryCreditFull - currDiscipline.mandatoryCreditCurr
 
-    electivesGradeRest = 
-      currMajor.electivesGradeFull - currMajor.electivesGradeCurr
+    electivesCreditRest = 
+      currDiscipline.electivesCreditFull - currDiscipline.electivesCreditCurr
 
-    generalGradeRest = 
-      currMajor.generalGradeFull - currMajor.generalGradeCurr
+    generalCreditRest = 
+      currDiscipline.generalCreditFull - currDiscipline.generalCreditCurr
 
 
   in
     div
     [ id "summary" ]
-    [ gradesBar "전체" currMajor.allGradeFull currMajor.allGradeCurr allGradeRest
-    , gradesBar "전필" currMajor.mandatoryGradeFull currMajor.mandatoryGradeCurr mandatoryGradeRest
-    , gradesBar "전선" currMajor.electivesGradeFull currMajor.electivesGradeCurr electivesGradeRest
-    , gradesBar "교양" currMajor.generalGradeFull currMajor.generalGradeCurr generalGradeRest
+    [ creditsBar "전체" currDiscipline.allCreditFull currDiscipline.allCreditCurr allCreditRest
+    , creditsBar "전필" currDiscipline.mandatoryCreditFull currDiscipline.mandatoryCreditCurr mandatoryCreditRest
+    , creditsBar "전선" currDiscipline.electivesCreditFull currDiscipline.electivesCreditCurr electivesCreditRest
+    , creditsBar "교양" currDiscipline.generalCreditFull currDiscipline.generalCreditCurr generalCreditRest
     , div 
       [ id "result" ]
       [ div 
@@ -206,23 +214,22 @@ summaryField model =
           ( [ div
             [ class "header" ]
             [ div [ class "cell year" ][ text "이수학기" ]
-            , div [ class "cell major" ][ text "전공" ]
+            , div [ class "cell discipline" ][ text "전공" ]
             , div [ class "cell liberal" ][ text "교양" ]
             ]
           ]
-          ++ ( List.map semesterRow currMajor.majorSemesters ) 
-          ++ [ newSemester currMajor
+          ++ ( List.map semesterRow currDiscipline.disciplineSemesters ) 
+          ++ [ newSemester currDiscipline
           , div
             [ class "row" ]
             [ div [ class "cell year" ][ text "미이수" ]
             , div
-              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor currMajor.remainSubjects ) )
+              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor currDiscipline.remainSubjects ) )
             , div
-              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isGeneral currMajor.remainSubjects ) )
+              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isGeneral currDiscipline.remainSubjects ) )
             ]  
           ]
           )
         ]
       ]
     ]
-

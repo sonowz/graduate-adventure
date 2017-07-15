@@ -6,16 +6,16 @@ import Array
 import Maybe
 
 
-currMajor : Model -> Major
-currMajor model = 
-  Maybe.withDefault initialMajor (Array.get model.state (Array.fromList model.majors))
+currDiscipline : Model -> Discipline
+currDiscipline model = 
+  Maybe.withDefault initialDiscipline (Array.get model.tabNumber (Array.fromList model.disciplines))
 
 
-updateElement : List Major -> Int -> Major -> List Major
-updateElement list index newMajor =
+updateElement : List Discipline -> Int -> Discipline -> List Discipline
+updateElement list index newDiscipline =
   let
-    toggle i major =
-      if i == index then newMajor else major
+    toggle i discipline =
+      if i == index then newDiscipline else discipline
   in
     List.indexedMap toggle list
 
@@ -23,59 +23,59 @@ updateElement list index newMajor =
 update : Main.Msgs.Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    UpdateMajor majorIndex ->
-      ( { model | state = majorIndex }, Cmd.none)
+    UpdateDiscipline disciplineIndex ->
+      ( { model | tabNumber = disciplineIndex }, Cmd.none)
 
     UpdateYear newYear ->
       let
-        majorForm = currMajor model
+        disciplineForm = currDiscipline model
 
-        semesterForm = majorForm.newSemester
+        semesterForm = disciplineForm.newSemester
 
         newSemesterForm =
           { semesterForm | year = newYear }
 
-        newMajorForm =
-          { majorForm | newSemester = newSemesterForm }
+        newDisciplineForm =
+          { disciplineForm | newSemester = newSemesterForm }
 
-        newMajors = 
-          updateElement model.majors model.state newMajorForm
+        newDisciplines = 
+          updateElement model.disciplines model.tabNumber newDisciplineForm
 
       in
-        ( { model | majors = newMajors }, Cmd.none )
+        ( { model | disciplines = newDisciplines }, Cmd.none )
 
     UpdateSeason newSeason ->
       let
-        majorForm = currMajor model
+        disciplineForm = currDiscipline model
 
-        semesterForm = majorForm.newSemester
+        semesterForm = disciplineForm.newSemester
 
         newSemesterForm =
           { semesterForm | season = newSeason }
 
-        newMajorForm =
-          { majorForm | newSemester = newSemesterForm }
+        newDisciplineForm =
+          { disciplineForm | newSemester = newSemesterForm }
 
-        newMajors = 
-          updateElement model.majors model.state newMajorForm
+        newDisciplines = 
+          updateElement model.disciplines model.tabNumber newDisciplineForm
 
       in
-        ( { model | majors = newMajors }, Cmd.none )
+        ( { model | disciplines = newDisciplines }, Cmd.none )
 
     AddSemester ->
       let
-        majorForm = currMajor model
+        disciplineForm = currDiscipline model
 
-        newMajorSemesters = majorForm.majorSemesters ++ [ majorForm.newSemester ]
+        newDisciplineSemesters = disciplineForm.disciplineSemesters ++ [ disciplineForm.newSemester ]
 
-        newMajorForm =
-          { majorForm | majorSemesters = newMajorSemesters, newSemester = emptySemester }
+        newDisciplineForm =
+          { disciplineForm | disciplineSemesters = newDisciplineSemesters, newSemester = emptySemester }
 
-        newMajors = 
-          updateElement model.majors model.state newMajorForm
+        newDisciplines = 
+          updateElement model.disciplines model.tabNumber newDisciplineForm
 
       in
-        ( { model | majors = newMajors }, Cmd.none )
+        ( { model | disciplines = newDisciplines }, Cmd.none )
 
     None ->
       ( model, Cmd.none )

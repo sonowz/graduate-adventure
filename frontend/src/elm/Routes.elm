@@ -17,7 +17,7 @@ loginRoute =
 
 mainRoute : Route.Route Route
 mainRoute =
-  MainRoute := static "main"
+  MainRoute := static ""
 
 
 routes : Route.Router Route

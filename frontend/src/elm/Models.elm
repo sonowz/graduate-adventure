@@ -7,7 +7,7 @@ import Main.Models as Main
 
 type alias Model =
   { loginForm : Login.Model
-  , mainForm : Main.Model
+  , mainPage : Main.Model
   , result : String
   , route : Routes.Route
   }
@@ -16,7 +16,7 @@ type alias Model =
 initialModel : Routes.Route -> Model
 initialModel route =
   { loginForm = Login.initialModel
-  , mainForm = Main.initialModel
+  , mainPage = Main.initialModel
   , result = "Result : Nothing"
   , route = route
   }

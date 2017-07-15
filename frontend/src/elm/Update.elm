@@ -17,12 +17,12 @@ update msg model =
       in
         ( { model | route = newRoute }, Cmd.none )
 
-    MainFormMsg mainFormMsg ->
+    MainPageMsg mainPageMsg ->
       let
-        ( newMainForm, cmd ) =
-          Main.Update.update mainFormMsg model.mainForm
+        ( newMainPage, cmd ) =
+          Main.Update.update mainPageMsg model.mainPage
       in
-        ( { model | mainForm = newMainForm }, Cmd.map MainFormMsg cmd )
+        ( { model | mainPage = newMainPage }, Cmd.map MainPageMsg cmd )
 
     LoginFormMsg loginFormMsg ->
       let

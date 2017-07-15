@@ -23,17 +23,17 @@ page model =
       loginPage model.loginForm
 
     MainRoute ->
-      mainPage model.mainForm
+      mainPage model.mainPage
 
     NotFoundRoute ->
       text "page Not Found"
 
 
 mainPage : Main.Model -> Html Msg
-mainPage mainForm =
+mainPage mainPage =
   div
     [ class "center-wrapper" ]
-    [ Html.map MainFormMsg (Main.View.view mainForm) ]
+    [ Html.map MainPageMsg (Main.View.view mainPage) ]
 
 
 loginPage : Login.Model -> Html Msg
