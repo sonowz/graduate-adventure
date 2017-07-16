@@ -29,7 +29,7 @@ npm install --save-dev
 #### Backend
 
 ```bash
-python3 backend/manage.py runserver
+python backend/manage.py runserver
 ```
 
 #### Frontend
