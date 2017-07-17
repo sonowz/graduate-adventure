@@ -7,6 +7,8 @@ import Msgs exposing (Msg(..))
 import Routes exposing (Route(..))
 import Login.View
 import Login.Models as Login
+import Main.View
+import Main.Models as Main
 
 
 view : Model -> Html Msg
@@ -21,10 +23,17 @@ page model =
       loginPage model.loginForm
 
     MainRoute ->
-      text model.result
+      mainPage model.mainPage
 
     NotFoundRoute ->
       text "page Not Found"
+
+
+mainPage : Main.Model -> Html Msg
+mainPage mainPage =
+  div
+    [ class "center-wrapper" ]
+    [ Html.map MainPageMsg (Main.View.view mainPage) ]
 
 
 loginPage : Login.Model -> Html Msg
