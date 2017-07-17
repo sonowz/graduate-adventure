@@ -6,4 +6,4 @@ type Msg
   | UpdateSeason String
   | AddSemester
   | None
-  | UpdateDiscipline Int
+  | UpdateSimData Int

@@ -2,14 +2,14 @@ module Main.Models exposing (..)
 
 
 type alias Model =
-  { disciplines : List Discipline
+  { totalSimData : List SimData
   , tabNumber : Int
   }
 
-type alias Discipline =
-  { disciplineName : String
-  , disciplineProperty : String
-  , disciplineSemesters : List Semester
+type alias SimData =
+  { majorName : String
+  , majorType : String
+  , semesters : List Semester
   , allCreditFull : Int              --총학점
   , mandatoryCreditFull : Int        --총전공필수학점
   , electivesCreditFull : Int        --총전공선택학점
@@ -77,11 +77,11 @@ initialSemesters2 =
   }
 
 
-initialDiscipline : Discipline
-initialDiscipline =
-  { disciplineName = "컴퓨터공학부"
-  , disciplineProperty = "주"
-  , disciplineSemesters = [ initialSemesters ]
+initialSimData : SimData
+initialSimData =
+  { majorName = "컴퓨터공학부"
+  , majorType = "주"
+  , semesters = [ initialSemesters ]
   , mandatoryCreditFull = 40
   , electivesCreditFull = 30
   , generalCreditFull = 60
@@ -95,11 +95,11 @@ initialDiscipline =
   }
 
 
-initialDiscipline2 : Discipline
-initialDiscipline2 =
-  { disciplineName = "수리과학부"
-  , disciplineProperty = "부"
-  , disciplineSemesters = [ initialSemesters2 ]
+initialSimData2 : SimData
+initialSimData2 =
+  { majorName = "수리과학부"
+  , majorType = "부"
+  , semesters = [ initialSemesters2 ]
   , mandatoryCreditFull = 40
   , electivesCreditFull = 30
   , generalCreditFull = 60
@@ -115,6 +115,6 @@ initialDiscipline2 =
 
 initialModel : Model
 initialModel =
-  { disciplines = [ initialDiscipline, initialDiscipline2 ]
+  { totalSimData = [ initialSimData, initialSimData2 ]
   , tabNumber = 0
   }

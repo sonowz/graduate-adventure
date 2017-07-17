@@ -6,16 +6,16 @@ import Array
 import Maybe
 
 
-currDiscipline : Model -> Discipline
-currDiscipline model = 
-  Maybe.withDefault initialDiscipline (Array.get model.tabNumber (Array.fromList model.disciplines))
+currSimData : Model -> SimData
+currSimData model = 
+  Maybe.withDefault initialSimData (Array.get model.tabNumber (Array.fromList model.totalSimData))
 
 
-updateElement : List Discipline -> Int -> Discipline -> List Discipline
-updateElement list index newDiscipline =
+updateElement : List SimData -> Int -> SimData -> List SimData
+updateElement list index newSimData =
   let
-    toggle i discipline =
-      if i == index then newDiscipline else discipline
+    toggle i simData =
+      if i == index then newSimData else simData
   in
     List.indexedMap toggle list
 
@@ -23,59 +23,59 @@ updateElement list index newDiscipline =
 update : Main.Msgs.Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    UpdateDiscipline disciplineIndex ->
-      ( { model | tabNumber = disciplineIndex }, Cmd.none)
+    UpdateSimData simDataIndex ->
+      ( { model | tabNumber = simDataIndex }, Cmd.none)
 
     UpdateYear newYear ->
       let
-        disciplineForm = currDiscipline model
+        simDataForm = currSimData model
 
-        semesterForm = disciplineForm.newSemester
+        semesterForm = simDataForm.newSemester
 
         newSemesterForm =
           { semesterForm | year = newYear }
 
-        newDisciplineForm =
-          { disciplineForm | newSemester = newSemesterForm }
+        newSimDataForm =
+          { simDataForm | newSemester = newSemesterForm }
 
-        newDisciplines = 
-          updateElement model.disciplines model.tabNumber newDisciplineForm
+        newTotalSimData = 
+          updateElement model.totalSimData model.tabNumber newSimDataForm
 
       in
-        ( { model | disciplines = newDisciplines }, Cmd.none )
+        ( { model | totalSimData = newTotalSimData }, Cmd.none )
 
     UpdateSeason newSeason ->
       let
-        disciplineForm = currDiscipline model
+        simDataForm = currSimData model
 
-        semesterForm = disciplineForm.newSemester
+        semesterForm = simDataForm.newSemester
 
         newSemesterForm =
           { semesterForm | season = newSeason }
 
-        newDisciplineForm =
-          { disciplineForm | newSemester = newSemesterForm }
+        newSimDataForm =
+          { simDataForm | newSemester = newSemesterForm }
 
-        newDisciplines = 
-          updateElement model.disciplines model.tabNumber newDisciplineForm
+        newTotalSimData = 
+          updateElement model.totalSimData model.tabNumber newSimDataForm
 
       in
-        ( { model | disciplines = newDisciplines }, Cmd.none )
+        ( { model | totalSimData = newTotalSimData }, Cmd.none )
 
     AddSemester ->
       let
-        disciplineForm = currDiscipline model
+        simDataForm = currSimData model
 
-        newDisciplineSemesters = disciplineForm.disciplineSemesters ++ [ disciplineForm.newSemester ]
+        newSemesters = simDataForm.semesters ++ [ simDataForm.newSemester ]
 
-        newDisciplineForm =
-          { disciplineForm | disciplineSemesters = newDisciplineSemesters, newSemester = emptySemester }
+        newSimDataForm =
+          { simDataForm | semesters = newSemesters, newSemester = emptySemester }
 
-        newDisciplines = 
-          updateElement model.disciplines model.tabNumber newDisciplineForm
+        newTotalSimData = 
+          updateElement model.totalSimData model.tabNumber newSimDataForm
 
       in
-        ( { model | disciplines = newDisciplines }, Cmd.none )
+        ( { model | totalSimData = newTotalSimData }, Cmd.none )
 
     None ->
       ( model, Cmd.none )

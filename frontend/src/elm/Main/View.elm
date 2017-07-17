@@ -17,7 +17,7 @@ isMajor subject =
   else
     True
 
-
+    
 isGeneral : Subject -> Bool
 isGeneral subject =
   if subject.property == "G" then
@@ -91,14 +91,14 @@ semesterRow semester =
   ]
 
 
---for selecting discipline
-selectDiscipline : Int -> List Discipline -> Discipline
-selectDiscipline index disciplines = 
-  Maybe.withDefault initialDiscipline (Array.get index (Array.fromList disciplines))
+--for selecting simData
+selectSimData : Int -> List SimData -> SimData
+selectSimData index totalSimData = 
+  Maybe.withDefault initialSimData (Array.get index (Array.fromList totalSimData))
 
---for select tab(discipline)
-disciplineLists : Model -> Int -> Discipline -> Html Msg
-disciplineLists model index discipline =
+--for select tab(simData)
+simDataLists : Model -> Int -> SimData -> Html Msg
+simDataLists model index simData =
   div
   [ class
     ( if model.tabNumber == index then
@@ -106,10 +106,10 @@ disciplineLists model index discipline =
       else
       "tab"
     )
-  , onClick (UpdateDiscipline index)
+  , onClick (UpdateSimData index)
   ]
   [ p []
-    [ text (discipline.disciplineName++"/"++discipline.disciplineProperty) ] 
+    [ text (simData.majorName++"/"++simData.majorType) ] 
   ]
 
 
@@ -131,8 +131,8 @@ seasonTypeOption season =
 
 
 --make new semester
-newSemester : Discipline -> Html Msg
-newSemester discipline =
+newSemester : SimData -> Html Msg
+newSemester simData =
   div
   [ class "row" ]
   [ div
@@ -151,7 +151,7 @@ newSemester discipline =
     , button
       [ class "plus"
       , onClick
-        ( if discipline.newSemester.year/="" && discipline.newSemester.season/="" then
+        ( if simData.newSemester.year/="" && simData.newSemester.season/="" then
           AddSemester
           else
           None
@@ -171,7 +171,7 @@ view model =
   [ id "main" ]
   [ div
     [ class "tab-area" ]
-    (List.indexedMap (disciplineLists model) model.disciplines)
+    (List.indexedMap (simDataLists model) model.totalSimData)
   ,  summaryField model ]
 
 
@@ -183,28 +183,28 @@ view model =
 summaryField : Model -> Html Msg
 summaryField model =
   let
-    currDiscipline = selectDiscipline model.tabNumber model.disciplines
+    currSimData = selectSimData model.tabNumber model.totalSimData
 
     allCreditRest = 
-      currDiscipline.allCreditFull - currDiscipline.allCreditCurr
+      currSimData.allCreditFull - currSimData.allCreditCurr
 
     mandatoryCreditRest = 
-      currDiscipline.mandatoryCreditFull - currDiscipline.mandatoryCreditCurr
+      currSimData.mandatoryCreditFull - currSimData.mandatoryCreditCurr
 
     electivesCreditRest = 
-      currDiscipline.electivesCreditFull - currDiscipline.electivesCreditCurr
+      currSimData.electivesCreditFull - currSimData.electivesCreditCurr
 
     generalCreditRest = 
-      currDiscipline.generalCreditFull - currDiscipline.generalCreditCurr
+      currSimData.generalCreditFull - currSimData.generalCreditCurr
 
 
   in
     div
     [ id "summary" ]
-    [ creditsBar "전체" currDiscipline.allCreditFull currDiscipline.allCreditCurr allCreditRest
-    , creditsBar "전필" currDiscipline.mandatoryCreditFull currDiscipline.mandatoryCreditCurr mandatoryCreditRest
-    , creditsBar "전선" currDiscipline.electivesCreditFull currDiscipline.electivesCreditCurr electivesCreditRest
-    , creditsBar "교양" currDiscipline.generalCreditFull currDiscipline.generalCreditCurr generalCreditRest
+    [ creditsBar "전체" currSimData.allCreditFull currSimData.allCreditCurr allCreditRest
+    , creditsBar "전필" currSimData.mandatoryCreditFull currSimData.mandatoryCreditCurr mandatoryCreditRest
+    , creditsBar "전선" currSimData.electivesCreditFull currSimData.electivesCreditCurr electivesCreditRest
+    , creditsBar "교양" currSimData.generalCreditFull currSimData.generalCreditCurr generalCreditRest
     , div 
       [ id "result" ]
       [ div 
@@ -214,19 +214,19 @@ summaryField model =
           ( [ div
             [ class "header" ]
             [ div [ class "cell year" ][ text "이수학기" ]
-            , div [ class "cell discipline" ][ text "전공" ]
+            , div [ class "cell simData" ][ text "전공" ]
             , div [ class "cell liberal" ][ text "교양" ]
             ]
           ]
-          ++ ( List.map semesterRow currDiscipline.disciplineSemesters ) 
-          ++ [ newSemester currDiscipline
+          ++ ( List.map semesterRow currSimData.semesters ) 
+          ++ [ newSemester currSimData
           , div
             [ class "row" ]
             [ div [ class "cell year" ][ text "미이수" ]
             , div
-              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor currDiscipline.remainSubjects ) )
+              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor currSimData.remainSubjects ) )
             , div
-              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isGeneral currDiscipline.remainSubjects ) )
+              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isGeneral currSimData.remainSubjects ) )
             ]  
           ]
           )
