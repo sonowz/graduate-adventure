@@ -9,6 +9,7 @@ from api.login.tree import tree_to_table
 from core.models import Course
 from core.rule.tree import TreeLoader
 
+
 class DummySession:
     def __init__(self):
         self.session_key = 'somesessionid'
@@ -38,17 +39,18 @@ class TestView(TestCase):
 
     def test_get_rule(self):
         request = self.init_request()
+        request.data['major_info'] = True
         request.data['majors'] = [
             {
                 'type': '주전공',
-                'field': '컴퓨터공학전공'
+                'name': '컴퓨터공학전공'
             }
         ]
-        response = self.req_class.get_rule(request)
-        self.assertEqual(response, 'sample_cse_2016')
+        major_info, rule = self.req_class.get_rules(request)[0]
+        self.assertEqual(rule, 'sample_cse_2016')
 
 
-class TestTreeToJson(TestCase):
+class TestTreeToTable(TestCase):
     def setUp(self):
         self.sample_rule = 'sample_cse_2016'
         sugang_list_dir = os.path.join(settings.BASE_DIR, 'test_sample/sugang_list.pickle')
@@ -59,8 +61,8 @@ class TestTreeToJson(TestCase):
         self.tree = TreeLoader(self.sample_rule, sample_metadata, Course)
         self.tree.eval_tree(self.sample_sugang_list)
 
-    def test_tree_to_json(self):
-        result = json.loads(tree_to_table(self.tree, self.sample_sugang_list))
+    def test_tree_to_table(self):
+        result = tree_to_table(self.tree, self.sample_sugang_list)
         self.assertEqual(len(result['liberal_table']), 4)
         for chunk in result['liberal_table']:
             if chunk['semester'] == '미이수':

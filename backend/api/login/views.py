@@ -89,6 +89,7 @@ class LoginRequest(APIView):
 
         return JsonResponse({'success': True, 'message': request.session['list']})
 
+    # returns list of (major_info, corresponding_rule_file)
     def get_rules(self, request):
         has_major = request.data.get('major_info', False)
 
