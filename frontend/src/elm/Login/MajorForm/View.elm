@@ -6,20 +6,20 @@ import Html.Attributes exposing (id, class, type_, name, value)
 import Html.Events exposing (onInput, onClick)
 import Login.MajorForm.Msgs exposing (Msg(..))
 import Login.MajorForm.Models exposing (..)
+import Select
+import Utils.Major as Major exposing (Major, MajorType(..))
 
 
 view : Model -> Html Msg
 view majorForm =
   div [ id "major-info" ]
-    [ div 
-        [ ]
+    [ div []
         [ header
         , div [ class "table_scroll" ] ( indexedMap majorRow majorForm.majors )
         , newMajor majorForm
         ]
-      , div [ id "table-wrapper" ] [ ]
+    , div [ id "table-wrapper" ] []
     ]
-  
 
 
 header : Html Msg
@@ -37,18 +37,10 @@ majorRow index major =
   div
     [ class "table row" ]
     [ div [ class "cell number" ] [ text (toString (index + 1)) ]
-    , div [ class "cell major-type" ] [ text major.majorType ]
-    , div [ class "cell major-name" ] [ text major.majorName ]
+    , div [ class "cell major-type" ] [ text (Major.typeToString major.type_) ]
+    , div [ class "cell major-name" ] [ text major.name ]
     , deleteButton index
     ]
-
-
-majorTypes : List String
-majorTypes =
-  [ "주전공"
-  , "복수전공"
-  , "부전공"
-  ]
 
 
 majorTypeOption : String -> Html Msg
@@ -60,31 +52,30 @@ majorTypeOption majorType =
 
 newMajor : Model -> Html Msg
 newMajor majorForm =
-  div
-    [ class "table row" ]
-    [ div [ class "cell center vcenter number" ] []
-    , div
-      [ class "cell center vcenter major-type" ]
-      [ select
-        [ id "major-type"
-        , name "major-type"
-        , onInput UpdateNewMajorType
+  let
+    majorClasses =
+      [ MajorSingle, MajorMulti, Minor, DoubleMajor ]
+  in
+    div
+      [ class "table row" ]
+      [ div [ class "cell center vcenter number" ] []
+      , div
+        [ class "cell center vcenter major-type" ]
+        [ Select.from_ majorClasses UpdateNewMajorClass toString Major.typeToString
         ]
-        ( List.map majorTypeOption majorTypes )
-      ]
-    , div
-      [ class "cell center vcenter major-name" ]
-      [ input
-        [ type_ "text"
-        , id "major-name"
-        , name "major-name"
-        , value majorForm.newMajorName
-        , onInput UpdateNewMajorName
+      , div
+        [ class "cell center vcenter major-name" ]
+        [ input
+          [ type_ "text"
+          , id "major-name"
+          , name "major-name"
+          , value majorForm.newMajor.name
+          , onInput UpdateNewMajorField
+          ]
+          []
         ]
-        []
+      , addButton
       ]
-    , addButton
-    ]
 
 
 addButton : Html Msg
@@ -100,7 +91,6 @@ addButton =
         ]
         []
     ]
- 
 
 
 deleteButton : Int -> Html Msg

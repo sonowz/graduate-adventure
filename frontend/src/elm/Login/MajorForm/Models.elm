@@ -1,22 +1,18 @@
 module Login.MajorForm.Models exposing (..)
 
-
-type alias Major =
-  { majorType : String
-  , majorName : String
-  }
-
+import Utils.Major exposing (Major, MajorType(..))
 
 type alias Model =
   { majors : List Major
-  , newMajorType : String
-  , newMajorName : String
+  , newMajor : Major
   }
 
 
 initialModel : Model
 initialModel =
   { majors = []
-  , newMajorType = "주전공"
-  , newMajorName = ""
+  , newMajor =
+    { name = ""
+    , type_ = MajorSingle
+    }
   }

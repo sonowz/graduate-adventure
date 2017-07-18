@@ -6,6 +6,7 @@ import Html.Events exposing (onClick, onInput, onCheck, onSubmit)
 import Array
 import Main.Msgs exposing(Msg(..))
 import Main.Models exposing (..)
+import Utils.Major as Major
 
 
 --for filter subjects
@@ -17,7 +18,7 @@ isMajor subject =
   else
     True
 
-    
+
 isGeneral : Subject -> Bool
 isGeneral subject =
   if subject.property == "G" then
@@ -50,14 +51,14 @@ numberExpression full curr =
 
 --return a bar of credits (FULL/REST)
 creditsBar : String -> Int -> Int -> Int -> Html Msg
-creditsBar title full curr rest = 
+creditsBar title full curr rest =
   div [ class "bar-area" ]
   [ div [ class "bar-label" ][ text title ]
   , div [ class "bar" ]
     [ div [ class "table" ]
-      [ div [ class "done", style [ ("width", (computePercentage full curr) ) ] ] 
+      [ div [ class "done", style [ ("width", (computePercentage full curr) ) ] ]
         [ text (numberExpression full curr) ]
-      , div [ class "rest", style [ ("width", (computePercentage full rest) ) ] ] 
+      , div [ class "rest", style [ ("width", (computePercentage full rest) ) ] ]
         [ text (numberExpression full rest) ]
       ]
     ]
@@ -67,10 +68,10 @@ creditsBar title full curr rest =
 subjectBlocks : Subject -> Html Msg
 subjectBlocks subject =
   button
-  [ class 
-    ( if subject.property /= "E" then 
-      "course necessary" 
-      else 
+  [ class
+    ( if subject.property /= "E" then
+      "course necessary"
+      else
       "course optional"
     )
   ]
@@ -81,7 +82,7 @@ semesterRow : Semester -> Html Msg
 semesterRow semester =
   div
   [ class "row" ]
-  [ div 
+  [ div
     [ class "cell" ]
     [ text ( semester.year ++ "-" ++ semester.season ) ]
   , div
@@ -93,7 +94,7 @@ semesterRow semester =
 
 --for selecting simData
 selectSimData : Int -> List SimData -> SimData
-selectSimData index totalSimData = 
+selectSimData index totalSimData =
   Maybe.withDefault initialSimData (Array.get index (Array.fromList totalSimData))
 
 --for select tab(simData)
@@ -109,7 +110,7 @@ simDataLists model index simData =
   , onClick (UpdateSimData index)
   ]
   [ p []
-    [ text (simData.majorName++"/"++simData.majorType) ] 
+    [ text (Major.toString simData.major) ]
   ]
 
 
@@ -185,16 +186,16 @@ summaryField model =
   let
     currSimData = selectSimData model.tabNumber model.totalSimData
 
-    allCreditRest = 
+    allCreditRest =
       currSimData.allCreditFull - currSimData.allCreditCurr
 
-    mandatoryCreditRest = 
+    mandatoryCreditRest =
       currSimData.mandatoryCreditFull - currSimData.mandatoryCreditCurr
 
-    electivesCreditRest = 
+    electivesCreditRest =
       currSimData.electivesCreditFull - currSimData.electivesCreditCurr
 
-    generalCreditRest = 
+    generalCreditRest =
       currSimData.generalCreditFull - currSimData.generalCreditCurr
 
 
@@ -205,9 +206,9 @@ summaryField model =
     , creditsBar "전필" currSimData.mandatoryCreditFull currSimData.mandatoryCreditCurr mandatoryCreditRest
     , creditsBar "전선" currSimData.electivesCreditFull currSimData.electivesCreditCurr electivesCreditRest
     , creditsBar "교양" currSimData.generalCreditFull currSimData.generalCreditCurr generalCreditRest
-    , div 
+    , div
       [ id "result" ]
-      [ div 
+      [ div
         [ class "table" ]
         [ div
           [ class "table-body" ]
@@ -218,7 +219,7 @@ summaryField model =
             , div [ class "cell liberal" ][ text "교양" ]
             ]
           ]
-          ++ ( List.map semesterRow currSimData.semesters ) 
+          ++ ( List.map semesterRow currSimData.semesters )
           ++ [ newSemester currSimData
           , div
             [ class "row" ]
@@ -227,7 +228,7 @@ summaryField model =
               [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor currSimData.remainSubjects ) )
             , div
               [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isGeneral currSimData.remainSubjects ) )
-            ]  
+            ]
           ]
           )
         ]
