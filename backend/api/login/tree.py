@@ -6,7 +6,7 @@ import json
 TOOLTIP_MAX_LINE = 20
 
 
-def tree_to_json(tree, sugang_list):
+def tree_to_table(tree, sugang_list):
     table = {
         'major': [],
         'liberal': []
@@ -18,7 +18,7 @@ def tree_to_json(tree, sugang_list):
     json_dict['major_table'] = table['major']
     json_dict['liberal_table'] = table['liberal']
     json_dict['point_graph'] = _build_graph(graph_nodes)
-    return json.dumps(json_dict, indent=2, ensure_ascii=False)
+    return json_dict
 
 
 # Build course table, while returning nodes used in graph section

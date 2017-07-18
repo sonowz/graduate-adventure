@@ -8,6 +8,7 @@ from core.models import Course
 from core.parser import parse_credit
 from core.rule.tree import TreeLoader, TreeLoaderException
 from core.rule.util import find_rule
+from api.login.tree import tree_to_table
 import logging.config
 
 
@@ -59,31 +60,36 @@ class LoginRequest(APIView):
             if not taken_list:
                 raise LoginException('이수내역이 존재하지 않습니다.')
 
-            rule = self.get_rule(request)
+            rules = self.get_rules(request)
 
             try:
                 # TODO: metadata should be set on here
-                tree = TreeLoader(rule, {}, Course)
-                tree.eval_tree(taken_list)
+                tables = []
+                for major, rule in rules:
+                    tree = TreeLoader(rule, {}, Course)
+                    tree.eval_tree(taken_list)
+                    tables.append({
+                        'name': major['name'],
+                        'type': major['type'],
+                        'data': tree_to_table(tree, taken_list)
+                    })
 
             except TreeLoaderException:
                 return HttpResponseServerError()
-
-            # do something with 'tree' here
 
         except LoginException as e:
             logger.error(e.args[0])
             return JsonResponse({'success': False, 'message': e.args[0]})
 
+        # 'tree' cannot be serialized, so store 'tables' instead
         request.session['list'] = taken_list
-        # TODO: fix error ( tree is not serializable )
-        # request.session['tree'] = tree
+        request.session['tables'] = tables
 
         request.session.set_expiry(6000)
 
         return JsonResponse({'success': True, 'message': request.session['list']})
 
-    def get_rule(self, request):
+    def get_rules(self, request):
         has_major = request.data.get('major_info', False)
 
         if has_major:
@@ -95,4 +101,4 @@ class LoginRequest(APIView):
             password = request.data.get('password', 'npw')
             major_info = mysnu.crawl_major(user_id, password)
 
-        return find_rule(major_info)
+        return [find_rule(item) for item in major_info]
