@@ -8,7 +8,7 @@ import Main.Models as Main
 type alias Model =
   { loginForm : Login.Model
   , mainPage : Main.Model
-  , result : String
+  , loading : Bool
   , route : Routes.Route
   }
 
@@ -17,6 +17,6 @@ initialModel : Routes.Route -> Model
 initialModel route =
   { loginForm = Login.initialModel
   , mainPage = Main.initialModel
-  , result = "Result : Nothing"
+  , loading = False
   , route = route
   }

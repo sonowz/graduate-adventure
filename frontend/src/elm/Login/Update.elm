@@ -10,100 +10,119 @@ import Login.Ports as Ports
 import Login.Response as Response
 import Http
 import Navigation exposing (load)
+import GlobalMsgs exposing (GlobalMsg(..))
+import Cmd.Extra
 
 
 update : Login.Msgs.Msg -> Model -> ( Model, Cmd Msg )
 update msg loginForm =
-  case msg of
-    UpdateLoginType newLoginType ->
-      ( { loginForm | loginType = newLoginType }, Cmd.none)
+  let
+    mysnuLoginForm =
+      loginForm.mysnuLoginForm
+  in
+    case msg of
+      UpdateLoginType newLoginType ->
+        ( { loginForm | loginType = newLoginType }, Cmd.none)
 
-    UpdateUsername newUsername ->
-      let
-        mysnuLoginForm =
-          loginForm.mysnuLoginForm
+      UpdateUsername newUsername ->
+        let
+          newMysnuLoginForm =
+            { mysnuLoginForm | username = newUsername }
+        in
+         ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
 
-        newMysnuLoginForm =
-          { mysnuLoginForm | username = newUsername }
-      in
-       ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
+      UpdatePassword newPassword ->
+        let
+          newMysnuLoginForm =
+            { mysnuLoginForm | password = newPassword }
+        in
+         ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
 
-    UpdatePassword newPassword ->
-      let
-        mysnuLoginForm =
-          loginForm.mysnuLoginForm
-
-        newMysnuLoginForm =
-          { mysnuLoginForm | password = newPassword }
-      in
-       ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
-
-    UpdateUseMysnuMajors newUseMysnuMajors ->
-      let
-        mysnuLoginForm =
-          loginForm.mysnuLoginForm
-
-        newMysnuLoginForm =
-          { mysnuLoginForm | useMysnuMajors = newUseMysnuMajors }
-      in
-       ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
-{- TODO:
- - handle fail message of response (after handle decoder)
- - handle Response & Responsejs together (after handle filerequest in elm)
- -}
-    Response result ->
-      case result of
-        Ok success ->
-          case success of
-            True ->
-              ( loginForm, load "/" )
-            False ->
-              ( loginForm, Cmd.none )
-        Err error ->
-          ( loginForm, Cmd.none )
-
-    Responsejs str ->
-      let
-        decodedResult : Result String Response.Decoded
-        decodedResult =
-          Decode.decodeString Response.decoder str
-
-        fileLoginForm =
-          loginForm.fileLoginForm
-
-        newfileLoginForm =
-          case decodedResult of
-            Ok decoded ->
-              { fileLoginForm | file = Maybe.withDefault "" decoded.message }
+      UpdateUseMysnuMajors newUseMysnuMajors ->
+        let
+          newMysnuLoginForm =
+            { mysnuLoginForm | useMysnuMajors = newUseMysnuMajors }
+        in
+         ( { loginForm | mysnuLoginForm = newMysnuLoginForm }, Cmd.none )
+  {- TODO:
+   - handle fail message of response (after handle decoder)
+   - handle Response & Responsejs together (after handle filerequest in elm)
+   -}
+      Response result ->
+        let
+          loadingOff =
+            Cmd.Extra.perform (Global (Loading False))
+        in
+          case result of
+            Ok success ->
+              case success of
+                True ->
+                  ( loginForm, Cmd.batch [loadingOff, load "/"] )
+                False ->
+                  ( loginForm, loadingOff )
             Err error ->
-              { fileLoginForm | file = "X" }
-      in
-       ( { loginForm | fileLoginForm = newfileLoginForm }, Cmd.none )
+              ( loginForm, loadingOff )
 
-    MajorMsg majorMsg ->
-      let
-        ( updatedMajorForm, cmd ) =
-          Login.MajorForm.Update.update majorMsg loginForm.majorForm
-      in
-        ( { loginForm | majorForm = updatedMajorForm }, Cmd.map MajorMsg cmd)
+      Responsejs str ->
+        let
+          decodedResult : Result String Response.Decoded
+          decodedResult =
+            Decode.decodeString Response.decoder str
 
-    SubmitForm loginType ->
-      case loginType of
-        MysnuLogin ->
-          ( loginForm, postMysnuLogin loginForm.mysnuLoginForm )
+          fileLoginForm =
+            loginForm.fileLoginForm
 
-        FileLogin ->
-          let
-            formID =
-              "filerequest"
-            url =
-              "/api/login/file/"
+          newfileLoginForm =
+            case decodedResult of
+              Ok decoded ->
+                { fileLoginForm | file = Maybe.withDefault "" decoded.message }
+              Err error ->
+                { fileLoginForm | file = "X" }
 
-          in
-            ( loginForm, Ports.fileRequest ( formID ++ "@" ++ url ) )
+          loadingOff =
+            Cmd.Extra.perform (Global (Loading False))
+        in
+         ( { loginForm | fileLoginForm = newfileLoginForm }, loadingOff )
 
-    None ->
-      ( loginForm, Cmd.none )
+      MajorMsg majorMsg ->
+        let
+          ( updatedMajorForm, cmd ) =
+            Login.MajorForm.Update.update majorMsg loginForm.majorForm
+        in
+          ( { loginForm | majorForm = updatedMajorForm }, Cmd.map MajorMsg cmd)
+
+      SubmitForm loginType ->
+        case loginType of
+          MysnuLogin ->
+            let
+              doSubmit =
+                if mysnuLoginForm.username /= ""
+                && mysnuLoginForm.password /= "" then
+                  Cmd.batch
+                  [ Cmd.Extra.perform (Global (Loading True))
+                  , postMysnuLogin loginForm.mysnuLoginForm
+                  ]
+                else
+                  Cmd.none
+
+            in
+              ( loginForm, doSubmit )
+
+          FileLogin ->
+            let
+              formID =
+                "filerequest"
+              url =
+                "/api/login/file/"
+
+            in
+              ( loginForm, Ports.fileRequest ( formID ++ "@" ++ url ) )
+
+      None ->
+        ( loginForm, Cmd.none )
+
+      Global _ ->
+        ( loginForm, Cmd.none )
 
 
 postMysnuLogin : MysnuLoginForm -> Cmd Msg
