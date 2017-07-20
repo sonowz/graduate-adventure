@@ -400,6 +400,22 @@ class TreeNode(object):
                     self.data = False
                     self.false_reason = 'not enough credit'
 
+            # IMPORTANT PART
+            # if this node is evaluated into True, its children nodes which are
+            # plain course number should be consumed so that prevents double-evaluated
+            # problem.
+            if self.data:
+                # traverse all children
+                for child in self.children:
+                    # if a child is course, search taken course list
+                    if child.is_course:
+                        for i, course in enumerate(taken_list):
+                            code = course['code']
+
+                            # if matches, consume it
+                            if code == child.data:
+                                del taken_list[i]
+
         # If it is just plain course code number, it can be evaluated by
         # looking up course taken list.
         else:
@@ -417,12 +433,6 @@ class TreeNode(object):
 
                     # Change name to what user actually took
                     self.namespace = course['title']
-
-                    # and consume the entry, because it can cause
-                    # double-evaluating problem, which can lead to
-                    # wrong result.
-                    del taken_list[i]
-                    break
 
             # it any of entries of taken_list does not matches,
             # it will be evaluated to False.
