@@ -4,6 +4,7 @@ import Msgs exposing (Msg(..))
 import Models exposing (Model)
 import Routes exposing (parseLocation)
 import Login.Update
+import Main.Update
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -15,6 +16,13 @@ update msg model =
           parseLocation location
       in
         ( { model | route = newRoute }, Cmd.none )
+
+    MainPageMsg mainPageMsg ->
+      let
+        ( newMainPage, cmd ) =
+          Main.Update.update mainPageMsg model.mainPage
+      in
+        ( { model | mainPage = newMainPage }, Cmd.map MainPageMsg cmd )
 
     LoginFormMsg loginFormMsg ->
       let
