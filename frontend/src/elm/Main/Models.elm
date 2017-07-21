@@ -1,14 +1,16 @@
 module Main.Models exposing (..)
 
+import Utils.Major exposing (Major, MajorType(..))
+
 
 type alias Model =
   { totalSimData : List SimData
   , tabNumber : Int
   }
 
+
 type alias SimData =
-  { majorName : String
-  , majorType : String
+  { major : Major
   , semesters : List Semester
   , allCreditFull : Int              --총학점
   , mandatoryCreditFull : Int        --총전공필수학점
@@ -79,8 +81,10 @@ initialSemesters2 =
 
 initialSimData : SimData
 initialSimData =
-  { majorName = "컴퓨터공학부"
-  , majorType = "주"
+  { major =
+    { name = "컴퓨터공학부"
+    , type_ = MajorMulti
+    }
   , semesters = [ initialSemesters ]
   , mandatoryCreditFull = 40
   , electivesCreditFull = 30
@@ -97,8 +101,10 @@ initialSimData =
 
 initialSimData2 : SimData
 initialSimData2 =
-  { majorName = "수리과학부"
-  , majorType = "부"
+  { major =
+    { name = "수리과학부"
+    , type_ = Minor
+    }
   , semesters = [ initialSemesters2 ]
   , mandatoryCreditFull = 40
   , electivesCreditFull = 30

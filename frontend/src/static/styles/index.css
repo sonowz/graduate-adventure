@@ -421,7 +421,7 @@ input[type="file"] {
 
   overflow: auto;             /*Scroll Bar*/
   overflow-x: hidden;
-  word-break: break-all;      
+  word-break: break-all;
   word-wrap: break-word;      /*IE*/
   white-space: pre-wrap;      /*CSS3*/
   white-space: -moz-pre-wrap; /*Firefox*/
@@ -432,4 +432,26 @@ input[type="file"] {
 #main {
   width: 80%;
   margin: auto;
+}
+
+#overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: #000000;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+#loading {
+  width: 128px;
+  height: 128px;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -64px 0 0 -64px;
+  z-index: 1;
 }

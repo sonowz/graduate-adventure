@@ -1,8 +1,9 @@
 module Login.Msgs exposing (..)
 
+import Http
+import GlobalMsgs exposing (..)
 import Login.Models exposing (LoginType)
 import Login.MajorForm.Msgs
-import Http
 
 
 type Msg
@@ -14,4 +15,4 @@ type Msg
   | UpdateUseMysnuMajors Bool
   | MajorMsg Login.MajorForm.Msgs.Msg
   | SubmitForm LoginType
-  | None
+  | Global GlobalMsg
