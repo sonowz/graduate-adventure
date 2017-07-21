@@ -5,6 +5,7 @@ from core.rule.functions import and_func, make_func, if_func_list
 import os
 import logging.config
 from django.conf import settings
+from core.models import Course, Replace
 
 logging.config.dictConfig(settings.LOGGING)
 logger = logging.getLogger('backend')
@@ -44,13 +45,12 @@ class TreeLoader(object):
     Raises:
         TreeLoaderException: any error in loader
     """
-    def __init__(self, rule_name, metadata, course_model):
+    def __init__(self, rule_name, metadata):
         """Constructor of TreeLoader.
 
         Args:
             rule_name: rule file name in ./rules, excluding extension .yml
             metadata: data of any other information needed evaluating tree
-            course_model: `Course` model object
         """
         base_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -66,13 +66,7 @@ class TreeLoader(object):
         # Metadata
         self.metadata = metadata
 
-        # model `Course`: because model in Django can be used only when server runs.
-        self.course_model = course_model
         self.default_properties = {
-
-            # course model object is passed by properties
-            'course_model': self.course_model,
-
             # if this value is True, falsy node will be hidden
             'hide_false': False,
 
@@ -111,7 +105,7 @@ class TreeLoader(object):
                     subarea = course[1:]
 
                     # filter with Django model
-                    code_list = [item.code for item in self.course_model.objects.filter(subarea=subarea)]
+                    code_list = [item.code for item in Course.objects.filter(subarea=subarea)]
                     code_set = set(code_list)
 
                     # expand tree
@@ -126,7 +120,7 @@ class TreeLoader(object):
                     dept, category, year = t[1], t[2], int(t[3])
 
                     # filter with Django model
-                    code_list = [item.code for item in self.course_model.objects.filter(
+                    code_list = [item.code for item in Course.objects.filter(
                         dept=dept,
                         category=category,
                         year=year,
@@ -159,7 +153,6 @@ class TreeLoader(object):
 
                 # construct property dictionary
                 properties = {
-                    'course_model': self.course_model,
                     'hide_false': hide_false,
                     'credit_info': [0, required_credit, sum_false],
                     'main_node': main_node,
@@ -279,7 +272,7 @@ class TreeNode(object):
             self.children = []
             try:
                 # get information of course by fetching database
-                filtered_course = properties['course_model'].objects.filter(code=self.data)[0]
+                filtered_course = Course.objects.filter(code=self.data)[0]
                 self.namespace = filtered_course.title
                 self.credit = filtered_course.credit
 
