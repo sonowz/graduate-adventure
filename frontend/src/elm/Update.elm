@@ -1,13 +1,13 @@
 module Update exposing (..)
 
-import Msgs exposing (Msg(..))
-import Login.Msgs
-import GlobalMsgs exposing (GlobalMsg(..))
-import Models exposing (Model)
-import Routes exposing (parseLocation)
-import Login.Update
-import Main.Update
 import Cmd.Extra exposing (..)
+import Routes exposing (parseLocation)
+import Models exposing (Model)
+import Msgs exposing (Msg(..))
+import GlobalMsgs exposing (GlobalMsg(..))
+import Main.Update
+import Login.Msgs
+import Login.Update
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )

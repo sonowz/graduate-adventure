@@ -1,9 +1,9 @@
 module Msgs exposing (..)
 
 import Navigation exposing (Location)
-import Login.Msgs
-import Main.Msgs
 import GlobalMsgs exposing (..)
+import Main.Msgs
+import Login.Msgs
 
 
 type Msg

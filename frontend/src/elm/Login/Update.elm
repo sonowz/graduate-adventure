@@ -1,17 +1,17 @@
 module Login.Update exposing (..)
 
-import Login.Msgs exposing (Msg(..))
-import Login.Models exposing (..)
+import Result exposing (Result(..))
+import Navigation exposing (load)
+import Http
+import Cmd.Extra
 import Json.Decode as Decode exposing (field)
 import Json.Encode as Encode exposing (object, string)
-import Login.MajorForm.Update
-import Result exposing (Result(..))
+import GlobalMsgs exposing (GlobalMsg(..))
+import Login.Msgs exposing (Msg(..))
+import Login.Models exposing (..)
 import Login.Ports as Ports
 import Login.Response as Response
-import Http
-import Navigation exposing (load)
-import GlobalMsgs exposing (GlobalMsg(..))
-import Cmd.Extra
+import Login.MajorForm.Update
 
 
 update : Login.Msgs.Msg -> Model -> ( Model, Cmd Msg )

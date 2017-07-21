@@ -4,10 +4,10 @@ import List exposing (indexedMap, reverse)
 import Html exposing (Html, div, input, text, select, option)
 import Html.Attributes exposing (id, class, type_, name, value)
 import Html.Events exposing (onInput, onClick)
-import Login.MajorForm.Msgs exposing (Msg(..))
-import Login.MajorForm.Models exposing (..)
 import Select
 import Utils.Major as Major exposing (Major, MajorType(..))
+import Login.MajorForm.Msgs exposing (Msg(..))
+import Login.MajorForm.Models exposing (..)
 
 
 view : Model -> Html Msg

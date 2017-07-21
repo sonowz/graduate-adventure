@@ -1,8 +1,8 @@
 module Models exposing (..)
 
 import Routes
-import Login.Models as Login
 import Main.Models as Main
+import Login.Models as Login
 
 
 type alias Model =

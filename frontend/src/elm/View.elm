@@ -2,13 +2,13 @@ module View exposing (..)
 
 import Html exposing (Html, div, text, object)
 import Html.Attributes exposing (class, id, src, type_, attribute)
+import Routes exposing (Route(..))
 import Models exposing (Model)
 import Msgs exposing (Msg(..))
-import Routes exposing (Route(..))
-import Login.View
-import Login.Models as Login
-import Main.View
 import Main.Models as Main
+import Main.View
+import Login.Models as Login
+import Login.View
 
 
 view : Model -> Html Msg

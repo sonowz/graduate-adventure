@@ -1,12 +1,12 @@
 module Main.View exposing (view)
 
+import Array
 import Html exposing (Html, div, p, text, button, input, form, select, option, label)
 import Html.Attributes exposing (id, class, name, placeholder, action, type_, checked, value, for, style)
 import Html.Events exposing (onClick, onInput, onCheck, onSubmit)
-import Array
+import Utils.Major as Major
 import Main.Msgs exposing(Msg(..))
 import Main.Models exposing (..)
-import Utils.Major as Major
 
 
 --for filter subjects

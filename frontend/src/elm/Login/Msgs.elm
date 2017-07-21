@@ -1,9 +1,10 @@
 module Login.Msgs exposing (..)
 
-import Login.Models exposing (LoginType)
-import Login.MajorForm.Msgs
 import Http
 import GlobalMsgs exposing (..)
+import Login.Models exposing (LoginType)
+import Login.MajorForm.Msgs
+
 
 type Msg
   = UpdateLoginType LoginType

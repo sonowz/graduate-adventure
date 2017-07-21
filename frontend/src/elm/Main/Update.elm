@@ -1,9 +1,9 @@
 module Main.Update exposing (..)
 
-import Main.Models exposing (..)
-import Main.Msgs exposing (Msg(..))
 import Array
 import Maybe
+import Main.Models exposing (..)
+import Main.Msgs exposing (Msg(..))
 
 
 currSimData : Model -> SimData
