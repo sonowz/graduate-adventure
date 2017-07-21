@@ -1,8 +1,8 @@
 module Subscription exposing (..)
 
+import Models exposing (Model)
 import Msgs exposing (Msg(..))
 import Login.Subscription
-import Models exposing (Model)
 
 
 subscription : Model -> Sub Msg

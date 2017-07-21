@@ -3,7 +3,6 @@ from django.test import TestCase
 from django.conf import settings
 import pickle
 import os
-from core.models import Course
 from core.rule.tree import TreeLoader, TreeNode, TreeLoaderException
 
 
@@ -22,9 +21,9 @@ class TestRuleTree(TestCase):
         self.sample_sugang_list = pickle.load(file)['credit_info']
 
     def test_tree_creation(self):
-        self.assertRaises(TreeLoaderException, TreeLoader, 'non_existing_rule', None, Course)
+        self.assertRaises(TreeLoaderException, TreeLoader, 'non_existing_rule', None)
 
-        tree = TreeLoader(self.sample_rule, {}, Course)
+        tree = TreeLoader(self.sample_rule, {})
         node_count = self.recur_node_count(tree.base_node)
         self.assertEqual(node_count, 340)  # print(node_count) to get proper value
         tree_str = tree.tree_into_str()
@@ -48,7 +47,7 @@ class TestRuleTree(TestCase):
 
     def test_tree_evaluation(self):
         sample_metadata = {"teps": 2}
-        tree = TreeLoader(self.sample_rule, sample_metadata, Course)
+        tree = TreeLoader(self.sample_rule, sample_metadata)
         tree.eval_tree(self.sample_sugang_list)
         self.recur_tree_evaluation(tree.base_node)
         tree_str = tree.tree_into_str()

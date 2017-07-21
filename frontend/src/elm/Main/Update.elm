@@ -1,13 +1,13 @@
 module Main.Update exposing (..)
 
-import Main.Models exposing (..)
-import Main.Msgs exposing (Msg(..))
 import Array
 import Maybe
+import Main.Models exposing (..)
+import Main.Msgs exposing (Msg(..))
 
 
 currSimData : Model -> SimData
-currSimData model = 
+currSimData model =
   Maybe.withDefault initialSimData (Array.get model.tabNumber (Array.fromList model.totalSimData))
 
 
@@ -38,7 +38,7 @@ update msg model =
         newSimDataForm =
           { simDataForm | newSemester = newSemesterForm }
 
-        newTotalSimData = 
+        newTotalSimData =
           updateElement model.totalSimData model.tabNumber newSimDataForm
 
       in
@@ -56,26 +56,27 @@ update msg model =
         newSimDataForm =
           { simDataForm | newSemester = newSemesterForm }
 
-        newTotalSimData = 
+        newTotalSimData =
           updateElement model.totalSimData model.tabNumber newSimDataForm
 
       in
         ( { model | totalSimData = newTotalSimData }, Cmd.none )
 
-    AddSemester ->
-      let
-        simDataForm = currSimData model
+    AddSemester filled ->
+      case filled of
+        True ->
+          let
+            simDataForm = currSimData model
 
-        newSemesters = simDataForm.semesters ++ [ simDataForm.newSemester ]
+            newSemesters = simDataForm.semesters ++ [ simDataForm.newSemester ]
 
-        newSimDataForm =
-          { simDataForm | semesters = newSemesters, newSemester = emptySemester }
+            newSimDataForm =
+              { simDataForm | semesters = newSemesters, newSemester = emptySemester }
 
-        newTotalSimData = 
-          updateElement model.totalSimData model.tabNumber newSimDataForm
+            newTotalSimData =
+              updateElement model.totalSimData model.tabNumber newSimDataForm
 
-      in
-        ( { model | totalSimData = newTotalSimData }, Cmd.none )
-
-    None ->
-      ( model, Cmd.none )
+          in
+            ( { model | totalSimData = newTotalSimData }, Cmd.none )
+        False ->
+          ( model, Cmd.none )
