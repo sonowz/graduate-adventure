@@ -5,7 +5,7 @@ from core.rule.functions import and_func, make_func, if_func_list
 import os
 import logging.config
 from django.conf import settings
-from ..models import Course, Replace
+from core.models import Course, Replace
 
 logging.config.dictConfig(settings.LOGGING)
 logger = logging.getLogger('backend')
