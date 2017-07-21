@@ -53,7 +53,7 @@ class TestView(TestCase):
 class TestTreeToTable(TestCase):
     def setUp(self):
         self.sample_rule = 'sample_cse_2016'
-        sugang_list_dir = os.path.join(settings.BASE_DIR, 'test_sample/sugang_list.pickle')
+        sugang_list_dir = os.path.join(settings.BASE_DIR, 'test_sample', 'sugang_list.pickle')
         sample_metadata = {"teps": 2}
 
         file = open(sugang_list_dir, 'rb')
