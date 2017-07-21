@@ -5,7 +5,6 @@ import json
 import pickle
 import os
 from api.main.tree import tree_to_json
-from core.models import Course
 from core.rule.tree import TreeLoader
 
 
@@ -17,7 +16,7 @@ class TestTreeToJson(TestCase):
 
         file = open(sugang_list_dir, 'rb')
         self.sample_sugang_list = pickle.load(file)['credit_info']
-        self.tree = TreeLoader(self.sample_rule, sample_metadata, Course)
+        self.tree = TreeLoader(self.sample_rule, sample_metadata)
         self.tree.eval_tree(self.sample_sugang_list)
 
     def test_tree_to_json(self):
