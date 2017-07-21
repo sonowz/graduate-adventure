@@ -14,5 +14,4 @@ type Msg
   | UpdateUseMysnuMajors Bool
   | MajorMsg Login.MajorForm.Msgs.Msg
   | SubmitForm LoginType
-  | None
   | Global GlobalMsg

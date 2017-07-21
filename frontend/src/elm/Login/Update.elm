@@ -118,9 +118,6 @@ update msg loginForm =
             in
               ( loginForm, Ports.fileRequest ( formID ++ "@" ++ url ) )
 
-      None ->
-        ( loginForm, Cmd.none )
-
       Global _ ->
         ( loginForm, Cmd.none )
 

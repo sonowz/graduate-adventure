@@ -113,9 +113,7 @@ checkboxField useMysnuMajors =
 viewFileLoginForm : Model -> Html Msg
 viewFileLoginForm loginForm =
   form
-    [ id "filerequest"
-    , onSubmit None
-    ]
+    [ id "filerequest" ]
     [ explanationBox
     , Html.map MajorMsg (Login.MajorForm.View.view loginForm.majorForm)
     , uploadFile loginForm

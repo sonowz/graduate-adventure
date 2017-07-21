@@ -132,8 +132,8 @@ seasonTypeOption season =
 
 
 --make new semester
-newSemester : SimData -> Html Msg
-newSemester simData =
+newSemester : Semester -> Html Msg
+newSemester semester =
   div
   [ class "row" ]
   [ div
@@ -152,11 +152,7 @@ newSemester simData =
     , button
       [ class "plus"
       , onClick
-        ( if simData.newSemester.year/="" && simData.newSemester.season/="" then
-          AddSemester
-          else
-          None
-        )
+        ( AddSemester (semester.year /= "" && semester.season /= "" ) )
       ]
       [ text "+" ]
     ]
@@ -220,7 +216,7 @@ summaryField model =
             ]
           ]
           ++ ( List.map semesterRow currSimData.semesters )
-          ++ [ newSemester currSimData
+          ++ [ newSemester currSimData.newSemester
           , div
             [ class "row" ]
             [ div [ class "cell year" ][ text "미이수" ]
