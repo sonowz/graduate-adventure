@@ -10,17 +10,17 @@ update message model =
   case message of
     AddMajor ->
       let
-        newMajor =
-          { majorType = model.newMajorType
-          , majorName = model.newMajorName
+        newMajors =
+          model.majors ++ [ model.newMajor ]
+
+        newInitMajor =
+          { name = ""
+          , type_ = model.newMajor.type_
           }
-          
-        newMajors = model.majors ++ [ newMajor ]
       in
         ( { model
           | majors = newMajors
-          , newMajorType = initialModel.newMajorType
-          , newMajorName = initialModel.newMajorName
+          , newMajor = newInitMajor
           }
         , Cmd.none
         )
@@ -32,8 +32,20 @@ update message model =
       in
         ( { model | majors = newMajors }, Cmd.none )
 
-    UpdateNewMajorType updatedMajorType ->
-      ( { model | newMajorType = updatedMajorType }, Cmd.none )
+    UpdateNewMajorClass majorClass ->
+      let
+        changedMajor =
+          { name = model.newMajor.name
+          , type_ = majorClass
+          }
+      in
+        ( { model | newMajor = changedMajor }, Cmd.none )
 
-    UpdateNewMajorName updatedMajorName ->
-      ( { model | newMajorName = updatedMajorName }, Cmd.none )
+    UpdateNewMajorField majorField ->
+      let
+        changedMajor =
+          { name = majorField
+          , type_ = model.newMajor.type_
+          }
+      in
+      ( { model | newMajor = changedMajor }, Cmd.none )

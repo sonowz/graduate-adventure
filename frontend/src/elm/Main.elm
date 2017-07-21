@@ -1,12 +1,12 @@
 module Main exposing (..)
 
 import Navigation exposing (Location)
-import Models exposing (Model, initialModel)
-import View exposing (view)
-import Update exposing (update)
-import Msgs exposing (Msg(..))
 import Routes exposing (Route)
+import Models exposing (Model, initialModel)
+import Msgs exposing (Msg(..))
 import Subscription exposing (subscription)
+import Update exposing (update)
+import View exposing (view)
 
 
 init : Location -> (Model, Cmd Msg)

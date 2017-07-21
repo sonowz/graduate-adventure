@@ -3,9 +3,9 @@ module Login.View exposing (view)
 import Html exposing (Html, div, p, text, button, input, form, label)
 import Html.Attributes exposing (id, class, name, placeholder, action, type_, checked, value, for)
 import Html.Events exposing (onClick, onInput, onCheck, onSubmit)
-import Login.MajorForm.View
 import Login.Models exposing (..)
 import Login.Msgs exposing (Msg(..))
+import Login.MajorForm.View
 
 
 view : Model -> Html Msg
@@ -113,9 +113,7 @@ checkboxField useMysnuMajors =
 viewFileLoginForm : Model -> Html Msg
 viewFileLoginForm loginForm =
   form
-    [ id "filerequest"
-    , onSubmit None
-    ]
+    [ id "filerequest" ]
     [ explanationBox
     , Html.map MajorMsg (Login.MajorForm.View.view loginForm.majorForm)
     , uploadFile loginForm
