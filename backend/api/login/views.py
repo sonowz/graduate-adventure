@@ -66,7 +66,7 @@ class LoginRequest(APIView):
                 # TODO: metadata should be set on here
                 tables = []
                 for major, rule in rules:
-                    tree = TreeLoader(rule, {}, Course)
+                    tree = TreeLoader(rule, {})
                     tree.eval_tree(taken_list)
                     tables.append({
                         'name': major['name'],
