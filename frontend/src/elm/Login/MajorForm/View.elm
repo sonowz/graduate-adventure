@@ -14,10 +14,10 @@ view : Model -> Html Msg
 view majorForm =
   div [ id "major-info" ]
     [ div []
-        [ header
-        , div [ class "table_scroll" ] ( indexedMap majorRow majorForm.majors )
-        , newMajor majorForm
-        ]
+      [ header
+      , div [ class "table_scroll" ] ( indexedMap majorRow majorForm.majors )
+      , newMajor majorForm
+      ]
     , div [ id "table-wrapper" ] []
     ]
 
@@ -80,16 +80,14 @@ newMajor majorForm =
 
 addButton : Html Msg
 addButton =
-  div
-    [ id "major-button" ]
-    [
-      input
-        [ type_ "button"
-        , class "plus"
-        , onClick AddMajor
-        , value "+"
-        ]
-        []
+  div [ id "major-button" ]
+    [ input
+      [ type_ "button"
+      , class "plus"
+      , onClick AddMajor
+      , value "+"
+      ]
+      []
     ]
 
 
@@ -97,12 +95,11 @@ deleteButton : Int -> Html Msg
 deleteButton index =
   div
     [ id "major-button" ]
-    [
-      input
-        [ type_ "button"
-        , class "minus"
-        , onClick (DeleteMajor index)
-        , value "-"
-        ]
-        []
+    [ input
+      [ type_ "button"
+      , class "minus"
+      , onClick (DeleteMajor index)
+      , value "-"
+      ]
+      []
     ]
