@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
-from django.http.response import JsonResponse, HttpResponseBadRequest, HttpResponseNotAllowed
+from django.http.response import JsonResponse, HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed
 from rest_framework.views import APIView
 from rest_framework.parsers import FormParser
 import json
-from api.main.tree import tree_to_json
 from core.models import Course
 
 
 def main_data(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed('GET')
-    tree = request.session.get('tree', None)
+    tables = request.session.get('tables', None)
     sugang_list = request.session.get('list', None)
-    if tree is None or sugang_list is None:
+    if tables is None or sugang_list is None:
         return HttpResponseBadRequest()
-    return JsonResponse(tree_to_json(tree, sugang_list))
+    json_dict = {
+        'disciplines': tables,
+    }
+    # TODO: remove 'indent' option when frontend development is done
+    return HttpResponse(json.dumps(json_dict, indent=2, ensure_ascii=False), content_type='application/json')
 
 
 class SearchModal(APIView):

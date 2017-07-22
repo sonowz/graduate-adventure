@@ -142,10 +142,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '../frontend/dist/'),
-]
-
 
 # Logging
 # LOG_DIR = os.path.join(BASE_DIR, 'log')
