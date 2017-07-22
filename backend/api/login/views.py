@@ -40,7 +40,6 @@ class LoginRequest(APIView):
 
             elif option == 'file':
                 logger.debug('File login request with sessionid: ' + str(request.session.session_key))
-                request.data['major_info'] = True
                 filename = request.data.get('filename', 'nofile')
                 file = request.data.get(filename, None)
                 if file is None:
@@ -91,15 +90,12 @@ class LoginRequest(APIView):
 
     # returns list of (major_info, corresponding_rule_file)
     def get_rules(self, request):
-        has_major = request.data.get('major_info', False)
-
-        if has_major:
-            major_info = request.data.get('majors', None)
-            if major_info is None:
+        major_info = request.data.get('majors', None)
+        if major_info is None:
+            user_id = request.data.get('user_id', None)
+            password = request.data.get('password', None)
+            if user_id is None or password is None:  # which means file login
                 raise LoginException('전공 정보가 없습니다.')
-        else:
-            user_id = request.data.get('user_id', 'nid')
-            password = request.data.get('password', 'npw')
             major_info = mysnu.crawl_major(user_id, password)
 
         return [find_rule(item) for item in major_info]
