@@ -44,8 +44,23 @@ class LoginRequest(APIView):
                 file = request.data.get(filename, None)
                 if file is None:
                     raise LoginException('파일이 올바르지 않습니다.')
-                text = file.read().decode('euc-kr', errors='ignore')
+                rawbytes = file.read()
                 file.close()
+
+                # <mySNU encoding representation> : <real encoding>
+                # - ANSI : euc-kr
+                # - unicode : utf-16_le
+                text = None
+                for encoding in ['euc-kr', 'utf-16-le']:
+                    try:
+                        text = rawbytes.decode(encoding)
+                    except UnicodeDecodeError:
+                        continue
+                    break
+
+                if text is None:
+                    raise LoginException('파일 인코딩이 올바르지 않습니다.')
+
                 try:
                     taken_list = parse_credit(text)
 

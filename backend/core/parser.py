@@ -1,9 +1,9 @@
-# <mySNU encoding representation> : <real encoding>
-# - ANSI : euc-kr
-# - unicode : utf-16_le
-
-
 def parse_credit(text):
+    """
+    text: str
+
+    return list of taken subject
+    """
     semester_name = {
         'U000200001U000300001': '1',
         'U000200001U000300002': 'S',
