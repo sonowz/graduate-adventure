@@ -8,4 +8,4 @@ def find_rule(major_info):
         rule set filename (excluding '.yml')
     """
     # TODO:
-    return 'sample_cse_2016'
+    return major_info, 'sample_cse_2016'

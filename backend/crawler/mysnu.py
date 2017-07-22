@@ -91,8 +91,12 @@ def crawl_major(userid, password):
         params = {'cscLocale': 'ko_KR', 'strPgmCd': 'S010101'}
         headers = {'Content-Type': 'application/extJs+sua; charset=UTF-8'}
         res = s.post(url, params=params, headers=headers)
-    # TODO: modify info for backend API
-    return res.json()['GRD_SREG524']
+    raw_data = res.json()['GRD_SREG524']
+    renamed_data = [{
+        'name': raw['deptNm'],
+        'type': raw['mjFgNm']
+    } for raw in raw_data]
+    return renamed_data
 
 
 def crawl_replace_course(userid, password):

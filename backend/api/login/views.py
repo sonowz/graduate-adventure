@@ -8,6 +8,7 @@ from core.models import Course
 from core.parser import parse_credit
 from core.rule.tree import TreeLoader, TreeLoaderException
 from core.rule.util import find_rule
+from api.login.tree import tree_to_table
 import logging.config
 
 
@@ -39,7 +40,6 @@ class LoginRequest(APIView):
 
             elif option == 'file':
                 logger.debug('File login request with sessionid: ' + str(request.session.session_key))
-                request.data['major_info'] = True
                 filename = request.data.get('filename', 'nofile')
                 file = request.data.get(filename, None)
                 if file is None:
@@ -59,40 +59,43 @@ class LoginRequest(APIView):
             if not taken_list:
                 raise LoginException('이수내역이 존재하지 않습니다.')
 
-            rule = self.get_rule(request)
+            rules = self.get_rules(request)
 
             try:
                 # TODO: metadata should be set on here
-                tree = TreeLoader(rule, {})
-                tree.eval_tree(taken_list)
+                tables = []
+                for major, rule in rules:
+                    tree = TreeLoader(rule, {})
+                    tree.eval_tree(taken_list)
+                    tables.append({
+                        'name': major['name'],
+                        'type': major['type'],
+                        'data': tree_to_table(tree, taken_list)
+                    })
 
             except TreeLoaderException:
                 return HttpResponseServerError()
-
-            # do something with 'tree' here
 
         except LoginException as e:
             logger.error(e.args[0])
             return JsonResponse({'success': False, 'message': e.args[0]})
 
+        # 'tree' cannot be serialized, so store 'tables' instead
         request.session['list'] = taken_list
-        # TODO: fix error ( tree is not serializable )
-        # request.session['tree'] = tree
+        request.session['tables'] = tables
 
         request.session.set_expiry(6000)
 
         return JsonResponse({'success': True, 'message': request.session['list']})
 
-    def get_rule(self, request):
-        has_major = request.data.get('major_info', False)
-
-        if has_major:
-            major_info = request.data.get('majors', None)
-            if major_info is None:
+    # returns list of (major_info, corresponding_rule_file)
+    def get_rules(self, request):
+        major_info = request.data.get('majors', None)
+        if major_info is None:
+            user_id = request.data.get('user_id', None)
+            password = request.data.get('password', None)
+            if user_id is None or password is None:  # which means file login
                 raise LoginException('전공 정보가 없습니다.')
-        else:
-            user_id = request.data.get('user_id', 'nid')
-            password = request.data.get('password', 'npw')
             major_info = mysnu.crawl_major(user_id, password)
 
-        return find_rule(major_info)
+        return [find_rule(item) for item in major_info]
