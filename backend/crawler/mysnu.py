@@ -8,8 +8,10 @@ logging.config.dictConfig(settings.LOGGING)
 
 
 def login(userid, password):
-    # return None if the login fails
-    # return an instance of requests.Session() if the login succeeds
+    """
+    login success -> return an instance of requests.Session()
+    login fail -> return None
+    """
     logger = logging.getLogger('backend')
     with requests.session() as s:
         data = {
@@ -40,6 +42,7 @@ def login(userid, password):
 
 
 def crawl_taken_list(userid, password):
+    """return list of taken subject"""
     session = login(userid, password)
     if session is None:
         return None
@@ -83,6 +86,7 @@ def crawl_taken_list(userid, password):
 
 
 def crawl_major(userid, password):
+    """return list of major: [{name, type}..]"""
     session = login(userid, password)
     if session is None:
         return None
@@ -100,6 +104,7 @@ def crawl_major(userid, password):
 
 
 def crawl_replace_course(userid, password):
+    """return list of replace info: [{from_code, to_code}..]"""
     session = login(userid, password)
     if session is None:
         return None
