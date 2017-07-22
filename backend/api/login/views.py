@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from crawler import mysnu
 from core.models import Course
-from core.parser import parse_credit
+from core.parser import parse_taken_list
 from core.rule.tree import TreeLoader, TreeLoaderException
 from core.rule.util import find_rule
 from api.login.tree import tree_to_table
@@ -33,7 +33,7 @@ class LoginRequest(APIView):
                 user_id = request.data.get('user_id', 'nid')
                 password = request.data.get('password', 'npw')
 
-                taken_list = mysnu.crawl_credit(user_id, password)
+                taken_list = mysnu.crawl_taken_list(user_id, password)
 
                 if taken_list is None:
                     raise LoginException('로그인에 실패했습니다.')
@@ -62,7 +62,7 @@ class LoginRequest(APIView):
                     raise LoginException('파일 인코딩이 올바르지 않습니다.')
 
                 try:
-                    taken_list = parse_credit(text)
+                    taken_list = parse_taken_list(text)
 
                 except Exception as e:
                     logger.error(e.args[0])

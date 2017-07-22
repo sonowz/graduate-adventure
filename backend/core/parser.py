@@ -1,4 +1,4 @@
-def parse_credit(text):
+def parse_taken_list(text):
     """
     text: str
 

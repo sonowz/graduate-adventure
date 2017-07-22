@@ -39,7 +39,7 @@ def login(userid, password):
         return s
 
 
-def crawl_credit(userid, password):
+def crawl_taken_list(userid, password):
     session = login(userid, password)
     if session is None:
         return None
