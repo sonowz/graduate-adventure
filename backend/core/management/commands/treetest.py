@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from core.rule.tree import TreeLoader
-from crawler.mysnu import crawl_credit
+from crawler.mysnu import crawl_taken_list
 from getpass import getpass
 from time import time
 
@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
         t = time()
         self.stdout.write('logging in to mysnu...')
-        taken_list = crawl_credit(username, password)
+        taken_list = crawl_taken_list(username, password)
         if not taken_list:
             self.stdout.write('error: invalid credential.')
             return
