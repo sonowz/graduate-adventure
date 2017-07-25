@@ -13,15 +13,12 @@ import Main.Models exposing (..)
 
 isMajor : Subject -> Bool
 isMajor subject =
-  if subject.property == "G" then
-    False
-  else
-    True
+  not (isLiberal subject)
 
 
-isGeneral : Subject -> Bool
-isGeneral subject =
-  if subject.property == "G" then
+isLiberal : Subject -> Bool
+isLiberal subject =
+  if subject.category == "liberal" then
     True
   else
     False
@@ -69,13 +66,13 @@ subjectBlocks : Subject -> Html Msg
 subjectBlocks subject =
   button
   [ class
-    ( if subject.property /= "E" then
+    ( if subject.category == "required" then
       "course necessary"
       else
       "course optional"
     )
   ]
-  [ text subject.name ]
+  [ text subject.title ]
 
 --semester rows
 semesterRow : Semester -> Html Msg
@@ -88,7 +85,7 @@ semesterRow semester =
   , div
     [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor semester.subjects ) )
   , div
-    [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isGeneral semester.subjects ) )
+    [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isLiberal semester.subjects ) )
   ]
 
 
@@ -182,26 +179,28 @@ summaryField model =
   let
     currSimData = selectSimData model.tabNumber model.totalSimData
 
-    allCreditRest =
-      currSimData.allCreditFull - currSimData.allCreditCurr
+    currCreditResults = currSimData.creditResults
 
-    mandatoryCreditRest =
-      currSimData.mandatoryCreditFull - currSimData.mandatoryCreditCurr
+    totalRest =
+      currCreditResults.totalAcq - currCreditResults.totalReq
 
-    electivesCreditRest =
-      currSimData.electivesCreditFull - currSimData.electivesCreditCurr
+    mandatoryRest =
+      currCreditResults.mandatoryReq - currCreditResults.mandatoryAcq
 
-    generalCreditRest =
-      currSimData.generalCreditFull - currSimData.generalCreditCurr
+    electivesRest =
+      currCreditResults.electivesReq - currCreditResults.electivesAcq
+
+    liberalRest =
+      currCreditResults.liberalReq - currCreditResults.liberalAcq
 
 
   in
     div
     [ id "summary" ]
-    [ creditsBar "전체" currSimData.allCreditFull currSimData.allCreditCurr allCreditRest
-    , creditsBar "전필" currSimData.mandatoryCreditFull currSimData.mandatoryCreditCurr mandatoryCreditRest
-    , creditsBar "전선" currSimData.electivesCreditFull currSimData.electivesCreditCurr electivesCreditRest
-    , creditsBar "교양" currSimData.generalCreditFull currSimData.generalCreditCurr generalCreditRest
+    [ creditsBar "전체" currCreditResults.totalReq currCreditResults.totalAcq totalRest
+    , creditsBar "전필" currCreditResults.mandatoryReq currCreditResults.mandatoryAcq mandatoryRest
+    , creditsBar "전선" currCreditResults.electivesReq currCreditResults.electivesAcq electivesRest
+    , creditsBar "교양" currCreditResults.liberalReq currCreditResults.liberalAcq liberalRest
     , div
       [ id "result" ]
       [ div
@@ -223,7 +222,7 @@ summaryField model =
             , div
               [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor currSimData.remainSubjects ) )
             , div
-              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isGeneral currSimData.remainSubjects ) )
+              [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isLiberal currSimData.remainSubjects ) )
             ]
           ]
           )

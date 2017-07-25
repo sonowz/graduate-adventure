@@ -26,6 +26,18 @@ typeToString majorType =
     DoubleMajor ->
       "복수전공"
 
+stringToType : String -> MajorType
+stringToType input =
+  case input of
+    "주전공(단일)" ->
+      MajorSingle
+    "주전공(복/부)" ->
+      MajorMulti
+    "부전공" ->
+      Minor
+    "복수전공" ->
+      DoubleMajor
+
 
 typeToShort : MajorType -> String
 typeToShort majorType =

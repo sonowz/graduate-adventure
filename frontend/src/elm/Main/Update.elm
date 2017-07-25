@@ -1,8 +1,16 @@
 module Main.Update exposing (..)
 
+import Result exposing (Result(..))
+import Navigation exposing (load)
+import Http
+import Cmd.Extra
+import Json.Decode as Decode exposing (field)
+import Json.Encode as Encode exposing (object, string)
+import GlobalMsgs exposing (GlobalMsg(..))
 import Array
 import Maybe
 import Main.Models exposing (..)
+import Main.Response as Response
 import Main.Msgs exposing (Msg(..))
 
 
@@ -80,3 +88,16 @@ update msg model =
             ( { model | totalSimData = newTotalSimData }, Cmd.none )
         False ->
           ( model, Cmd.none )
+
+    Response ->
+      let
+        loadingOff =
+          Cmd.Extra.perform (Global (Loading False))
+      in
+        ( model, loadingOff )
+
+
+getMainData : Cmd Msg
+getMainData =
+  Http.send Response
+  <| Http.get "/api/main"

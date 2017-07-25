@@ -12,16 +12,21 @@ type alias Model =
 type alias SimData =
   { major : Major
   , semesters : List Semester
-  , allCreditFull : Int              --총학점
-  , mandatoryCreditFull : Int        --총전공필수학점
-  , electivesCreditFull : Int        --총전공선택학점
-  , generalCreditFull : Int          --총교양학점
-  , allCreditCurr : Int              --현학점
-  , mandatoryCreditCurr : Int        --현전공필수학점
-  , electivesCreditCurr : Int        --현전공선택학점
-  , generalCreditCurr : Int          --현교양학점
   , remainSubjects : List Subject   --미이수과목
+  , creditResults : CreditResults
   , newSemester : Semester          --placeholder for user adding next semester
+  }
+
+
+type alias CreditResults =
+  { totalReq : Int              --총학점
+  , totalAcq : Int              --현학점
+  , mandatoryReq : Int        --총전공필수학점
+  , mandatoryAcq : Int        --현전공필수학점
+  , electivesReq : Int        --총전공선택학점
+  , electivesAcq : Int        --현전공선택학점
+  , liberalReq : Int          --총교양학점
+  , liberalAcq : Int          --현교양학점
   }
 
 
@@ -33,25 +38,25 @@ type alias Semester =
 
 
 type alias Subject =
-  { name : String
-  , property : String
-  , credit : Int
+  { title : String
+  , category : String
+  , tooltip : String
   }
 
 
 subject1 : Subject
 subject1 =
-  { name = "프로그래밍 연습"
-  , property = "E"
-  , credit = 3
+  { title = "프로그래밍 연습"
+  , category = "electives"
+  , tooltip = ""
   }
 
 
 subject2 : Subject
 subject2 =
-  { name = "수학 및 연습 1"
-  , property = "G"
-  , credit = 3
+  { title = "수학 및 연습 1"
+  , category = "liberal"
+  , tooltip = ""
   }
 
 
@@ -78,6 +83,31 @@ initialSemesters2 =
   , subjects = [ subject1, subject2 ]
   }
 
+initialCreditResults1 : CreditResults
+initialCreditResults1 =
+  { totalReq = 130
+  , totalAcq = 128
+  , mandatoryReq = 40
+  , mandatoryAcq = 37
+  , electivesReq = 30
+  , electivesAcq = 27
+  , liberalReq = 60
+  , liberalAcq = 64
+  }
+
+
+initialCreditResults2 : CreditResults
+initialCreditResults2 =
+  { totalReq = 130
+  , totalAcq = 128
+  , mandatoryReq = 40
+  , mandatoryAcq = 37
+  , electivesReq = 30
+  , electivesAcq = 27
+  , liberalReq = 60
+  , liberalAcq = 64
+  }
+
 
 initialSimData : SimData
 initialSimData =
@@ -86,14 +116,7 @@ initialSimData =
     , type_ = MajorMulti
     }
   , semesters = [ initialSemesters ]
-  , mandatoryCreditFull = 40
-  , electivesCreditFull = 30
-  , generalCreditFull = 60
-  , mandatoryCreditCurr = 37
-  , electivesCreditCurr = 27
-  , generalCreditCurr = 64
-  , allCreditFull = 130
-  , allCreditCurr = 128
+  , creditResults = initialCreditResults1
   , remainSubjects = [ subject1, subject2 ]
   , newSemester = emptySemester
   }
@@ -106,14 +129,7 @@ initialSimData2 =
     , type_ = Minor
     }
   , semesters = [ initialSemesters2 ]
-  , mandatoryCreditFull = 40
-  , electivesCreditFull = 30
-  , generalCreditFull = 60
-  , mandatoryCreditCurr = 37
-  , electivesCreditCurr = 27
-  , generalCreditCurr = 64
-  , allCreditFull = 130
-  , allCreditCurr = 128
+  , creditResults = initialCreditResults2
   , remainSubjects = []
   , newSemester = emptySemester
   }
