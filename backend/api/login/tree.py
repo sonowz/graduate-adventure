@@ -50,7 +50,7 @@ def _extract_nodes(node, sugang_dict, table, state=None):
         data = {
             'title': node.namespace,
             'category': state['category'],
-            'tooltip': '\n'.join(_list_courses(node))
+            'tooltip': '&#13;'.join(_list_courses(node))
         }
         semester = '미이수'
 
