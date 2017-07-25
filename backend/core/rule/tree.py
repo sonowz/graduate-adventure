@@ -261,6 +261,9 @@ class TreeNode(object):
         self.func = func
         self.namespace = namespace
 
+        # this will be constructed in the head of eval_tree
+        self.replace_codeset = {}
+
         # maybe this variable will be needed for user-friendly interface
         self.false_reason = ''
 
@@ -357,6 +360,12 @@ class TreeNode(object):
             None
         """
 
+        # If replace codeset is empty, construct it first
+        if not self.replace_codeset:
+            for course in taken_list:
+                code = course['code']
+                self.replace_codeset[code] = [replace.to_code for replace in Replace.objects.filter(from_code=code)]
+
         # First, evaluate all children so that itself can be evaluated directly
         for i, child in enumerate(self.children):
             if isinstance(child, TreeNode):
@@ -418,8 +427,9 @@ class TreeNode(object):
                 # fetch code number of taken course
                 code = course['code']
 
+                codeset = [code] + self.replace_codeset[code]
                 # If code matches to self.data, it will be evaluated to True
-                if code == self.data:
+                if self.data in codeset:
                     logger.debug('{data} returns True'.format(data=self.data))
                     self.data = True
                     is_satisfied = True
