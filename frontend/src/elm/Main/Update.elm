@@ -89,12 +89,14 @@ update msg model =
         False ->
           ( model, Cmd.none )
 
-    Response ->
+    Response result ->
       let
         loadingOff =
           Cmd.Extra.perform (Global (Loading False))
       in
-        ( model, loadingOff )
+        case result of
+          Ok success ->
+            ( { model | totalSimData = success.totalSimData, tabNumber = 0 }, loadingOff )
 
 
 getMainData : Cmd Msg

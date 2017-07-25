@@ -6,7 +6,7 @@ import Utils.Major as Utils
 
 
 type alias Decoded = 
-  { disciplines : List SimData
+  { totalSimData : List SimData
   }
 
 type alias SimDataDecoded =
@@ -24,7 +24,7 @@ type alias MajorDecoded =
 
 decoder : Json.Decoder Decoded
 decoder =
-  Json.list simDataDecoderExpend
+  ( Json.field "totalSimData" (Json.list simDataDecoderExpend) )
 
 
 simDataDecoderExpend : (Json.Decoder SimDataDecoded) -> (Json.Decoder Main.SimData)
