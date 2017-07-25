@@ -261,9 +261,6 @@ class TreeNode(object):
         self.func = func
         self.namespace = namespace
 
-        # this will be constructed in the head of eval_tree
-        self.codeset = {}
-
         # maybe this variable will be needed for user-friendly interface
         self.false_reason = ''
 
@@ -355,6 +352,9 @@ class TreeNode(object):
 
         Args:
             taken_list: taken course list
+            codeset: dictionary of list of course code containing
+                    code itself and replacable codes.
+                    Do not set this argument and let it be default.
 
         Returns:
             None
@@ -362,14 +362,18 @@ class TreeNode(object):
 
         # If codeset is empty, construct it first
         if codeset is None:
+            codeset = {}
+            # iterate over taken list, and lookup Replace model
             for course in taken_list:
                 code = course['code']
-                self.codeset[code] = [code] + [replace.to_code for replace in Replace.objects.filter(from_code=code)]
+                # place its code in head of list, so that the replace code
+                # acts as a fallback of original course code
+                codeset[code] = [code] + [replace.to_code for replace in Replace.objects.filter(from_code=code)]
 
         # First, evaluate all children so that itself can be evaluated directly
         for i, child in enumerate(self.children):
             if isinstance(child, TreeNode):
-                child.eval_children(taken_list, self.codeset)
+                child.eval_children(taken_list, codeset)
 
         # If it is not course, which is not course code number, it should be
         # evaluated through `func`, because it is not directly able to be evaluated
@@ -427,7 +431,7 @@ class TreeNode(object):
                 # fetch code number of taken course
                 code = course['code']
 
-                # If code matches to self.data, it will be evaluated to True
+                # If self.data is in preconstructed codeset, it will be evaluated to True
                 if self.data in codeset[code]:
                     logger.debug('{data} returns True'.format(data=self.data))
                     self.data = True
