@@ -80,8 +80,8 @@ semesterDecoder : Json.Decoder Main.Semester
 semesterDecoder =
   Json.map3
     Main.Semester
-    ( Json.field "year" Json.int )
-    ( Json.field "season" Json.int )
+    ( Json.field "year" Json.string )
+    ( Json.field "season" Json.string )
     ( Json.field "subjects" (Json.list subjectDecoder) )
 
 
