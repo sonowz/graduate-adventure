@@ -14,7 +14,7 @@ def main_data(request):
     if tables is None or sugang_list is None:
         return HttpResponseBadRequest()
     json_dict = {
-        'disciplines': tables,
+        'data': tables,
     }
     # TODO: remove 'indent' option when frontend development is done
     return HttpResponse(json.dumps(json_dict, indent=2, ensure_ascii=False), content_type='application/json')
