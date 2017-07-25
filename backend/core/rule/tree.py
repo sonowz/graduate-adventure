@@ -347,7 +347,7 @@ class TreeNode(object):
     def add_children(self, obj):
         self.children.append(obj)
 
-    def eval_children(self, taken_list):
+    def eval_children(self, taken_list, replace_codeset=None):
         """Evaluate children recursively
 
         Evaluate TreeNode and set self.data to its value.
@@ -361,7 +361,7 @@ class TreeNode(object):
         """
 
         # If replace codeset is empty, construct it first
-        if not self.replace_codeset:
+        if replace_codeset is None:
             for course in taken_list:
                 code = course['code']
                 self.replace_codeset[code] = [replace.to_code for replace in Replace.objects.filter(from_code=code)]
@@ -369,7 +369,7 @@ class TreeNode(object):
         # First, evaluate all children so that itself can be evaluated directly
         for i, child in enumerate(self.children):
             if isinstance(child, TreeNode):
-                child.eval_children(taken_list)
+                child.eval_children(taken_list, self.replace_codeset)
 
         # If it is not course, which is not course code number, it should be
         # evaluated through `func`, because it is not directly able to be evaluated
@@ -427,7 +427,7 @@ class TreeNode(object):
                 # fetch code number of taken course
                 code = course['code']
 
-                codeset = [code] + self.replace_codeset[code]
+                codeset = [code] + replace_codeset[code]
                 # If code matches to self.data, it will be evaluated to True
                 if self.data in codeset:
                     logger.debug('{data} returns True'.format(data=self.data))
