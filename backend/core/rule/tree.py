@@ -194,8 +194,17 @@ class TreeLoader(object):
             data of self.base_node
         """
 
+        # First, construct codeset before evaluation process
+        codeset = {}
+        # iterate over taken list, and lookup Replace model
+        for course in taken_list:
+            code = course['code']
+            # place its code in head of list, so that the replace code
+            # acts as a fallback of original course code
+            codeset[code] = [code] + [replace.to_code for replace in Replace.objects.filter(from_code=code)]
+
         # clone taken_list because it's modified
-        self.base_node.eval_children(list(taken_list))
+        self.base_node.eval_children(list(taken_list), codeset)
         return self.base_node.data
 
     def tree_into_str(self):
@@ -344,7 +353,7 @@ class TreeNode(object):
     def add_children(self, obj):
         self.children.append(obj)
 
-    def eval_children(self, taken_list):
+    def eval_children(self, taken_list, codeset=None):
         """Evaluate children recursively
 
         Evaluate TreeNode and set self.data to its value.
@@ -352,6 +361,9 @@ class TreeNode(object):
 
         Args:
             taken_list: taken course list
+            codeset: dictionary of list of course code containing
+                    code itself and replacable codes.
+                    Do not set this argument and let it be default.
 
         Returns:
             None
@@ -360,7 +372,7 @@ class TreeNode(object):
         # First, evaluate all children so that itself can be evaluated directly
         for i, child in enumerate(self.children):
             if isinstance(child, TreeNode):
-                child.eval_children(taken_list)
+                child.eval_children(taken_list, codeset)
 
         # If it is not course, which is not course code number, it should be
         # evaluated through `func`, because it is not directly able to be evaluated
@@ -408,6 +420,7 @@ class TreeNode(object):
                             # if matches, consume it
                             if code == child.data:
                                 del taken_list[i]
+                                del codeset[code]
 
         # If it is just plain course code number, it can be evaluated by
         # looking up course taken list.
@@ -418,8 +431,8 @@ class TreeNode(object):
                 # fetch code number of taken course
                 code = course['code']
 
-                # If code matches to self.data, it will be evaluated to True
-                if code == self.data:
+                # If self.data is in preconstructed codeset, it will be evaluated to True
+                if self.data in codeset[code]:
                     logger.debug('{data} returns True'.format(data=self.data))
                     self.data = True
                     is_satisfied = True
