@@ -420,6 +420,7 @@ class TreeNode(object):
                             # if matches, consume it
                             if code == child.data:
                                 del taken_list[i]
+                                del codeset[code]
 
         # If it is just plain course code number, it can be evaluated by
         # looking up course taken list.
