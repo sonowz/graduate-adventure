@@ -27,7 +27,7 @@ class Command(BaseCommand):
             self.stdout.write('logging in to mysnu...')
             taken_list = crawl_taken_list(username, password)
             if not taken_list:
-                self.stdout.write('error: invalid credential.')
+                self.stderr.write('error: invalid credential.')
                 return
             self.stdout.write('mySNU login elasped time: ' + str(time() - t) + 's')
         else:
