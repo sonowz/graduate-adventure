@@ -194,8 +194,17 @@ class TreeLoader(object):
             data of self.base_node
         """
 
+        # First, construct codeset before evaluation process
+        codeset = {}
+        # iterate over taken list, and lookup Replace model
+        for course in taken_list:
+            code = course['code']
+            # place its code in head of list, so that the replace code
+            # acts as a fallback of original course code
+            codeset[code] = [code] + [replace.to_code for replace in Replace.objects.filter(from_code=code)]
+
         # clone taken_list because it's modified
-        self.base_node.eval_children(list(taken_list))
+        self.base_node.eval_children(list(taken_list), codeset)
         return self.base_node.data
 
     def tree_into_str(self):
@@ -359,16 +368,6 @@ class TreeNode(object):
         Returns:
             None
         """
-
-        # If codeset is empty, construct it first
-        if codeset is None:
-            codeset = {}
-            # iterate over taken list, and lookup Replace model
-            for course in taken_list:
-                code = course['code']
-                # place its code in head of list, so that the replace code
-                # acts as a fallback of original course code
-                codeset[code] = [code] + [replace.to_code for replace in Replace.objects.filter(from_code=code)]
 
         # First, evaluate all children so that itself can be evaluated directly
         for i, child in enumerate(self.children):
