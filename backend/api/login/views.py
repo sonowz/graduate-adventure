@@ -82,10 +82,15 @@ class LoginRequest(APIView):
                 for major, rule in rules:
                     tree = TreeLoader(rule, {})
                     tree.eval_tree(taken_list)
+                    tree_table = tree_to_table(tree, taken_list)
                     tables.append({
-                        'name': major['name'],
-                        'type': major['type'],
-                        'data': tree_to_table(tree, taken_list)
+                        'major': {
+                            'name': major['name'],
+                            'type': major['type'],
+                        },
+                        'semesters': tree_table['semesters'],
+                        'remaining_courses': tree_table['remaining_courses'],
+                        'credit_results': tree_table['point_graph']
                     })
 
             except TreeLoaderException:
