@@ -7,16 +7,22 @@ TOOLTIP_MAX_LINE = 20
 
 
 def tree_to_table(tree, sugang_list):
-    table = {
-        'major': [],
-        'liberal': []
-    }
+    table = []
     sugang_dict = {x['title']: x for x in sugang_list}  # use dictionary for performance
     graph_nodes = _extract_nodes(tree.base_node, sugang_dict, table)
     _add_uncounted_courses(sugang_dict, table)
+
+    # Separate remaining courses
+    remaining_courses = []
+    for entry in table:
+        if entry['year'] == '미이수':
+            remaining_courses = entry
+            table.remove(entry)
+            break
+
     json_dict = dict()
-    json_dict['major_table'] = table['major']
-    json_dict['liberal_table'] = table['liberal']
+    json_dict['semesters'] = table
+    json_dict['remaining_courses'] = remaining_courses
     json_dict['point_graph'] = _build_graph(graph_nodes)
     return json_dict
 
@@ -45,20 +51,15 @@ def _extract_nodes(node, sugang_dict, table, state=None):
             'category': state['category'],
             'tooltip': state['main_node'].namespace
         }
-        semester = _get_semester(node, sugang_dict)
+        year, semester = _get_semester(node, sugang_dict)
+        _insert_entry(table, year, semester, data)
     elif node.main_node and node.data is False:  # not satisfied main nodes
         data = {
             'title': node.namespace,
             'category': state['category'],
             'tooltip': '&#13;'.join(_list_courses(node))
         }
-        semester = '미이수'
-
-    if 'data' in dir():
-        if state['category'] == 'liberal':  # Decide which table to insert
-            _insert_entry(table['liberal'], semester, data)
-        else:
-            _insert_entry(table['major'], semester, data)
+        _insert_entry(table, '미이수', '', data)
 
     graph_nodes_list = ['전필', '전선', '교양']
     graph_nodes = []
@@ -73,22 +74,19 @@ def _build_graph(nodes):
     ret = dict()
     req_sum, acq_sum = 0, 0
     convert_list = {
-        '전필': 'major_required',
-        '전선': 'major_elective',
+        '전필': 'required',
+        '전선': 'elective',
         '교양': 'liberal'
     }
     for node in nodes:
-        ret[convert_list[node.namespace]] = {
-            'req': node.required_credit,
-            'acq': node.credit
-        }
+        name = convert_list[node.namespace]
+        ret['{}_req'.format(name)] = node.required_credit
+        ret['{}_acq'.format(name)] = node.credit
         req_sum += node.required_credit
         acq_sum += node.credit
 
-    ret['total'] = {
-        'req': req_sum,
-        'acq': acq_sum
-    }
+    ret['total_req'] = req_sum
+    ret['total_acq'] = acq_sum
     return ret
 
 
@@ -117,12 +115,13 @@ def _get_leafs(node, max_depth, depth=0):
     return leafs
 
 
+# returns (year, semester)
 def _get_semester(node, sugang_dict):
     course = sugang_dict.get(node.namespace, None)
     if course is None:
         return 'ERROR'
     course['counted'] = True  # for _add_uncounted_courses()
-    return str(course['year']) + '-' + course['semester']
+    return str(course['year']), course['semester']
 
 
 def _add_uncounted_courses(sugang_dict, table):
@@ -133,18 +132,21 @@ def _add_uncounted_courses(sugang_dict, table):
                 'category': 'free',
                 'tooltip': ''
             }
-            semester = str(course['year']) + '-' + course['semester']
+            year = str(course['year'])
+            semester = course['semester']
             # TODO: check cases where courses belong to 'major'
-            _insert_entry(table['liberal'], semester, data)
+            _insert_entry(table, year, semester, data)
 
 
-def _insert_entry(table, semester, data):
+# insert entry divided by semester
+def _insert_entry(table, year, semester, data):
     for entry in table:
-        if entry['semester'] == semester:
-            entry['data'].append(data)
+        if entry['year'] == year and entry['semester'] == semester:
+            entry['courses'].append(data)
             break
     else:
         table.append({
+            'year': year,
             'semester': semester,
-            'data': [data]
+            'courses': [data]
         })

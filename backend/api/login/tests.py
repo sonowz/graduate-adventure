@@ -63,30 +63,28 @@ class TestTreeToTable(TestCase):
 
     def test_tree_to_table(self):
         result = tree_to_table(self.tree, self.sample_sugang_list)
-        self.assertEqual(len(result['liberal_table']), 4)
-        for chunk in result['liberal_table']:
-            if chunk['semester'] == '미이수':
-                self.assertEqual(len(chunk['data']), 4)
-                data = str(chunk['data'])
-                substr_list = [
-                    '외국어',
-                    '공학수학 2',
-                    '정치와 경제'
-                ]
-                if not all(x in data for x in substr_list):
-                    self.fail()
-                exclude_list = [
-                    '공학수학 1',
-                    '역사와 철학'
-                ]
-                if any(x in data for x in exclude_list):
-                    self.fail()
-            elif chunk['semester'] == '2016-1':
-                self.assertEqual(len(chunk['data']), 7)
-        for chunk in result['major_table']:
-            if chunk['semester'] == '미이수':
-                self.assertEqual(len(chunk['data']), 4)  # number of main nodes
+        self.assertEqual(len(result['semesters']), 3)
+        for chunk in result['semesters']:
+            if chunk['year'] == '2016' and chunk['semester'] == '1':
+                self.assertEqual(len(chunk['courses']), 7)
 
-        liberal_graph = result['point_graph']['liberal']
-        self.assertEqual(liberal_graph['req'], 44)
-        self.assertEqual(liberal_graph['acq'], 32)
+        remaining_courses = result['remaining_courses']
+        self.assertEqual(len(remaining_courses), 3)
+        data = str(remaining_courses)
+        substr_list = [
+            '외국어',
+            '공학수학 2',
+            '정치와 경제'
+        ]
+        if not all(x in data for x in substr_list):
+            self.fail()
+        exclude_list = [
+            '공학수학 1',
+            '역사와 철학'
+        ]
+        if any(x in data for x in exclude_list):
+            self.fail()
+
+        point_graph = result['point_graph']
+        self.assertEqual(point_graph['liberal_req'], 44)
+        self.assertEqual(point_graph['liberal_acq'], 32)
