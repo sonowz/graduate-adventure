@@ -90,7 +90,7 @@ class LoginRequest(APIView):
                         },
                         'semesters': tree_table['semesters'],
                         'remaining_courses': tree_table['remaining_courses'],
-                        'credit_info': tree_table['point_graph']
+                        'credit_results': tree_table['point_graph']
                     })
 
             except TreeLoaderException:
