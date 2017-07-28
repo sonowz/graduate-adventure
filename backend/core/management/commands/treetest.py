@@ -41,7 +41,7 @@ class Command(BaseCommand):
         rule = input('rule name: ')
         teps = input('teps: ')
 
-        metadata = {teps: teps}
+        metadata = {'teps': int(teps)}
 
         if not teps:
             metadata = {}
