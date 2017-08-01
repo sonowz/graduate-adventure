@@ -1,7 +1,7 @@
 module Update exposing (..)
 
 import Cmd.Extra exposing (..)
-import Routes exposing (parseLocation)
+import Routes exposing (..)
 import Models exposing (Model)
 import Msgs exposing (Msg(..))
 import GlobalMsgs exposing (GlobalMsg(..))
@@ -17,6 +17,7 @@ update msg model =
       let
         newRoute =
           parseLocation location
+
       in
         ( { model | route = newRoute }, Cmd.none )
 

@@ -5,75 +5,28 @@ import Main.Models as Main
 import Utils.Major as Utils
 
 
-type alias Decoded = 
-  { totalSimData : List SimData
-  }
-
-type alias SimDataDecoded =
-  { major : Utils.Major
-  , semesters : List Main.Semester
-  , remainSubject : List Main.Subject
-  , creditResults : Main.CreditResults
-  }
-
-type alias MajorDecoded =
-  { name : String
-  , type_ : String
-  }
-
-
-decoder : Json.Decoder Decoded
+decoder : Json.Decoder (List Main.SimData)
 decoder =
-  ( Json.field "totalSimData" (Json.list simDataDecoderExpend) )
+    ( Json.at [ "total_simData" ] ( Json.list simDataDecoder ) )
 
 
-simDataDecoderExpend : (Json.Decoder SimDataDecoded) -> (Json.Decoder Main.SimData)
-simDataDecoderExpend inputSimData =
-  case inputSimData of
-    Ok res ->
-      let
-        resExpend =
-          { major = res.major
-          , semesters = res.semesters
-          , remainSubject = res.remainSubject
-          , creditResults = res.creditResults
-          , newSemester = Main.emptySemester
-          }
-      in (Ok resExpend)
-    Err error ->
-      (Err error)
-
-
-simDataDecoder : Json.Decoder SimDataDecoded
+simDataDecoder : Json.Decoder Main.SimData
 simDataDecoder =
-  Json.map4
+  Json.map5
     Main.SimData
-    ( majorTypeConv ( Json.field "major" (Json.list majorDecoder) ) )
+    ( Json.field "major" majorDecoder )
     ( Json.field "semesters" (Json.list semesterDecoder) )
-    ( Json.field "remainSubject" (Json.list subjectDecoder) )
-    ( Json.field "creditResults" (Json.list creditResultsDecoder) )
+    ( Json.field "remaining_courses" (Json.list subjectDecoder) )
+    ( Json.field "credit_results" creditResultsDecoder )
+    ( Json.field "newSemester" ( Json.oneOf [ semesterDecoder, Json.null Main.emptySemester ] ) )
 
 
-majorTypeConv : (Json.Decoder MajorDecoded) -> (Json.Decoder Main.Major)
-majorTypeConv inputMajorDecoder =
-  case inputMajorDecoder of
-    Ok res ->
-      let
-        resConv =
-          { name = res.name
-          , type_ = ( Utils.stringToType res.type_ )
-          }
-      in (Ok resConv)
-    Err error ->
-      (Err error)
-
-
-majorDecoder : Json.Decoder MajorDecoded
+majorDecoder : Json.Decoder Utils.Major
 majorDecoder =
   Json.map2
-    MajorDecoded
+    Utils.Major
     ( Json.field "name" Json.string )
-    ( Json.field "type_" Json.string )
+    ( Json.field "type" (Json.map Utils.stringToTypeNormal Json.string) )
 
 
 semesterDecoder : Json.Decoder Main.Semester
@@ -81,8 +34,8 @@ semesterDecoder =
   Json.map3
     Main.Semester
     ( Json.field "year" Json.string )
-    ( Json.field "season" Json.string )
-    ( Json.field "subjects" (Json.list subjectDecoder) )
+    ( Json.field "semester" Json.string )
+    ( Json.field "courses" (Json.list subjectDecoder) )
 
 
 
@@ -99,11 +52,11 @@ creditResultsDecoder : Json.Decoder Main.CreditResults
 creditResultsDecoder =
   Json.map8
     Main.CreditResults
-    ( Json.field "totalReq" Json.int )
-    ( Json.field "totalAcq" Json.int )
-    ( Json.field "mandatoryReq" Json.int )
-    ( Json.field "mandatoryAcq" Json.int )
-    ( Json.field "electivesReq" Json.int )
-    ( Json.field "electivesAcq" Json.int )
-    ( Json.field "liberalReq" Json.int )
-    ( Json.field "liberalAcq" Json.int )
+    ( Json.field "total_req" Json.int )
+    ( Json.field "total_acq" Json.int )
+    ( Json.field "required_req" Json.int )
+    ( Json.field "required_acq" Json.int )
+    ( Json.field "elective_req" Json.int )
+    ( Json.field "elective_acq" Json.int )
+    ( Json.field "liberal_req" Json.int )
+    ( Json.field "liberal_acq" Json.int )

@@ -12,7 +12,7 @@ import Login.Models exposing (..)
 import Login.Ports as Ports
 import Login.Response as Response
 import Login.MajorForm.Update
-import Main.Update as Main
+import Main.Update
 
 
 update : Login.Msgs.Msg -> Model -> ( Model, Cmd Msg )
@@ -50,15 +50,19 @@ update msg loginForm =
    - handle Response & Responsejs together (after handle filerequest in elm)
    -}
       Response result ->
-        case result of
-          Ok success ->
-            case success of
-              True ->
-                ( loginForm, Cmd.batch [Main.getMainData, load "/"] )
-              False ->
-                ( loginForm, loadingOff )
-          Err error ->
-            ( loginForm, loadingOff )
+        let
+          loadingOff =
+            Cmd.Extra.perform (Global (Loading False))
+        in
+          case result of
+            Ok success ->
+              case success of
+                True ->
+                  ( loginForm, Cmd.batch [ load "/" ] )
+                False ->
+                  ( loginForm, loadingOff )
+            Err error ->
+              ( loginForm, loadingOff )
 
       Responsejs str ->
         let

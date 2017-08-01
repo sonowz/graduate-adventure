@@ -4,8 +4,6 @@ import Result exposing (Result(..))
 import Navigation exposing (load)
 import Http
 import Cmd.Extra
-import Json.Decode as Decode exposing (field)
-import Json.Encode as Encode exposing (object, string)
 import GlobalMsgs exposing (GlobalMsg(..))
 import Array
 import Maybe
@@ -96,10 +94,16 @@ update msg model =
       in
         case result of
           Ok success ->
-            ( { model | totalSimData = success.totalSimData, tabNumber = 0 }, loadingOff )
+            ( { model | totalSimData = success, tabNumber = 0 }, loadingOff )
+          Err _ ->
+            ( model, Cmd.none ) --Cmd.batch [ load "/login" ] )
+
+    Global _ ->
+      ( model, Cmd.none )
 
 
 getMainData : Cmd Msg
 getMainData =
   Http.send Response
   <| Http.get "/api/main"
+    ( Response.decoder )
