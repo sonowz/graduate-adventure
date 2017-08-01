@@ -10,6 +10,7 @@ import Maybe
 import Main.Models exposing (..)
 import Main.Response as Response
 import Main.Msgs exposing (Msg(..))
+import Debug
 
 
 currSimData : Model -> SimData
@@ -91,12 +92,14 @@ update msg model =
       let
         loadingOff =
           Cmd.Extra.perform (Global (Loading False))
+
+        results = Debug.log "result" result
       in
         case result of
           Ok success ->
             ( { model | totalSimData = success, tabNumber = 0 }, loadingOff )
           Err _ ->
-            ( model, Cmd.none ) --Cmd.batch [ load "/login" ] )
+            ( model, Cmd.batch [ load "/login" ] )
 
     Global _ ->
       ( model, Cmd.none )

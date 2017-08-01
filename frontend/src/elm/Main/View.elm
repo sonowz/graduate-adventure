@@ -18,7 +18,7 @@ isMajor subject =
 
 isLiberal : Subject -> Bool
 isLiberal subject =
-  if subject.category == "liberal" then
+  if subject.category == "liberal" || subject.category == "free" then
     True
   else
     False
@@ -80,7 +80,7 @@ semesterRow semester =
   div
   [ class "row" ]
   [ div
-    [ class "cell" ]
+    [ class "cell year" ]
     [ text ( semester.year ++ "-" ++ semester.season ) ]
   , div
     [ class "cell subjects" ] ( List.map subjectBlocks ( List.filter isMajor semester.subjects ) )
@@ -182,7 +182,7 @@ summaryField model =
     currCreditResults = currSimData.creditResults
 
     totalRest =
-      currCreditResults.totalAcq - currCreditResults.totalReq
+      currCreditResults.totalReq - currCreditResults.totalAcq
 
     mandatoryRest =
       currCreditResults.mandatoryReq - currCreditResults.mandatoryAcq
@@ -210,7 +210,7 @@ summaryField model =
           ( [ div
             [ class "header" ]
             [ div [ class "cell year" ][ text "이수학기" ]
-            , div [ class "cell simData" ][ text "전공" ]
+            , div [ class "cell major" ][ text "전공" ]
             , div [ class "cell liberal" ][ text "교양" ]
             ]
           ]

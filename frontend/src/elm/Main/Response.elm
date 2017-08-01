@@ -7,7 +7,7 @@ import Utils.Major as Utils
 
 decoder : Json.Decoder (List Main.SimData)
 decoder =
-    ( Json.at [ "total_simData" ] ( Json.list simDataDecoder ) )
+    ( Json.at [ "total_simdata" ] ( Json.list simDataDecoder ) )
 
 
 simDataDecoder : Json.Decoder Main.SimData
@@ -16,9 +16,9 @@ simDataDecoder =
     Main.SimData
     ( Json.field "major" majorDecoder )
     ( Json.field "semesters" (Json.list semesterDecoder) )
-    ( Json.field "remaining_courses" (Json.list subjectDecoder) )
+    ( Json.at [ "remaining_courses", "courses" ] (Json.list subjectDecoder) )
     ( Json.field "credit_results" creditResultsDecoder )
-    ( Json.field "newSemester" ( Json.oneOf [ semesterDecoder, Json.null Main.emptySemester ] ) )
+    ( Json.succeed Main.emptySemester )
 
 
 majorDecoder : Json.Decoder Utils.Major

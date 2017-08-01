@@ -12,7 +12,6 @@ import Login.Models exposing (..)
 import Login.Ports as Ports
 import Login.Response as Response
 import Login.MajorForm.Update
-import Main.Update
 
 
 update : Login.Msgs.Msg -> Model -> ( Model, Cmd Msg )

@@ -44,22 +44,6 @@ type alias Subject =
   }
 
 
-subject1 : Subject
-subject1 =
-  { title = "프로그래밍 연습"
-  , category = "electives"
-  , tooltip = ""
-  }
-
-
-subject2 : Subject
-subject2 =
-  { title = "수학 및 연습 1"
-  , category = "liberal"
-  , tooltip = ""
-  }
-
-
 emptySemester : Semester
 emptySemester =
   { year = ""
@@ -67,76 +51,33 @@ emptySemester =
   , subjects = [ ]
   }
 
-
-initialSemesters : Semester
-initialSemesters =
-  { year = "2015"
-  , season = "1"
-  , subjects = [ subject1, subject2 ]
+initialCreditResults : CreditResults
+initialCreditResults =
+  { totalReq = 0
+  , totalAcq = 0
+  , mandatoryReq = 0
+  , mandatoryAcq = 0
+  , electivesReq = 0
+  , electivesAcq = 0
+  , liberalReq = 0
+  , liberalAcq = 0
   }
-
-
-initialSemesters2 : Semester
-initialSemesters2 =
-  { year = "2015"
-  , season = "1"
-  , subjects = [ subject1, subject2 ]
-  }
-
-initialCreditResults1 : CreditResults
-initialCreditResults1 =
-  { totalReq = 130
-  , totalAcq = 128
-  , mandatoryReq = 40
-  , mandatoryAcq = 37
-  , electivesReq = 30
-  , electivesAcq = 27
-  , liberalReq = 60
-  , liberalAcq = 64
-  }
-
-
-initialCreditResults2 : CreditResults
-initialCreditResults2 =
-  { totalReq = 130
-  , totalAcq = 128
-  , mandatoryReq = 40
-  , mandatoryAcq = 37
-  , electivesReq = 30
-  , electivesAcq = 27
-  , liberalReq = 60
-  , liberalAcq = 64
-  }
-
 
 initialSimData : SimData
 initialSimData =
   { major =
-    { name = "컴퓨터공학부"
+    { name = ""
     , type_ = MajorMulti
     }
-  , semesters = [ initialSemesters ]
-  , creditResults = initialCreditResults1
-  , remainSubjects = [ subject1, subject2 ]
-  , newSemester = emptySemester
-  }
-
-
-initialSimData2 : SimData
-initialSimData2 =
-  { major =
-    { name = "수리과학부"
-    , type_ = Minor
-    }
-  , semesters = [ initialSemesters2 ]
-  , creditResults = initialCreditResults2
-  , remainSubjects = []
+  , semesters = [ ]
+  , creditResults = initialCreditResults
+  , remainSubjects = [ ]
   , newSemester = emptySemester
   }
 
 
 initialModel : Model
 initialModel =
-  { totalSimData = [ initialSimData, initialSimData2 ]
+  { totalSimData = [ initialSimData ]
   , tabNumber = 0
   }

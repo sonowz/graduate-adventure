@@ -31,7 +31,7 @@ typeToString majorType =
 stringToType : String -> Maybe MajorType
 stringToType input =
   case input of
-    "주전공(단일)" ->
+    "주전공" ->
       Just MajorSingle
     "주전공(복/부)" ->
       Just MajorMulti
