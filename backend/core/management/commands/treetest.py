@@ -48,6 +48,8 @@ class Command(BaseCommand):
 
         t = time()
         tree_node = TreeLoader(rule, metadata)
+        self.stdout.write('TreeLoader elasped time: ' + str(time() - t) + 's')
+        t = time()
         tree_node.eval_tree(taken_list)
         self.stdout.write(tree_node.tree_into_str())
-        self.stdout.write('TreeLoader elasped time: ' + str(time() - t) + 's')
+        self.stdout.write('Tree evaluation elasped time: ' + str(time() - t) + 's')
