@@ -43,11 +43,11 @@ stringToType input =
       Nothing
 
 
-normalization : Maybe MajorType -> MajorType
-normalization type_ = Maybe.withDefault MajorSingle type_
+specify : Maybe MajorType -> MajorType
+specify type_ = Maybe.withDefault MajorSingle type_
 
-stringToTypeNormal : String -> MajorType
-stringToTypeNormal input = normalization (stringToType input)
+stringToTypeSpecific : String -> MajorType
+stringToTypeSpecific input = specify (stringToType input)
 
 
 typeToShort : MajorType -> String

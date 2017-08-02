@@ -1,57 +1,57 @@
 module Main.Response exposing (..)
 
 import Json.Decode as Json
-import Main.Models as Main
-import Utils.Major as Utils
+import Main.Models as Model
+import Utils.Major as Major
 
 
-decoder : Json.Decoder (List Main.SimData)
+decoder : Json.Decoder (List Model.SimData)
 decoder =
     ( Json.at [ "total_simdata" ] ( Json.list simDataDecoder ) )
 
 
-simDataDecoder : Json.Decoder Main.SimData
+simDataDecoder : Json.Decoder Model.SimData
 simDataDecoder =
   Json.map5
-    Main.SimData
+    Model.SimData
     ( Json.field "major" majorDecoder )
     ( Json.field "semesters" (Json.list semesterDecoder) )
     ( Json.at [ "remaining_courses", "courses" ] (Json.list subjectDecoder) )
     ( Json.field "credit_results" creditResultsDecoder )
-    ( Json.succeed Main.emptySemester )
+    ( Json.succeed Model.emptySemester )
 
 
-majorDecoder : Json.Decoder Utils.Major
+majorDecoder : Json.Decoder Major.Major
 majorDecoder =
   Json.map2
-    Utils.Major
+    Major.Major
     ( Json.field "name" Json.string )
-    ( Json.field "type" (Json.map Utils.stringToTypeNormal Json.string) )
+    ( Json.field "type" (Json.map Major.stringToTypeSpecific Json.string) )
 
 
-semesterDecoder : Json.Decoder Main.Semester
+semesterDecoder : Json.Decoder Model.Semester
 semesterDecoder =
   Json.map3
-    Main.Semester
+    Model.Semester
     ( Json.field "year" Json.string )
     ( Json.field "semester" Json.string )
     ( Json.field "courses" (Json.list subjectDecoder) )
 
 
 
-subjectDecoder : Json.Decoder Main.Subject
+subjectDecoder : Json.Decoder Model.Subject
 subjectDecoder =
   Json.map3
-    Main.Subject
+    Model.Subject
     ( Json.field "title" Json.string )
     ( Json.field "category" Json.string )
     ( Json.field "tooltip" Json.string )
 
 
-creditResultsDecoder : Json.Decoder Main.CreditResults
+creditResultsDecoder : Json.Decoder Model.CreditResults
 creditResultsDecoder =
   Json.map8
-    Main.CreditResults
+    Model.CreditResults
     ( Json.field "total_req" Json.int )
     ( Json.field "total_acq" Json.int )
     ( Json.field "required_req" Json.int )

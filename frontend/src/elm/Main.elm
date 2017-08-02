@@ -16,15 +16,15 @@ init location =
     currentRoute =
       Routes.parseLocation location
 
-    commands : Routes.Route -> (Cmd Msg)
-    commands route =
+    initialCommand : Routes.Route -> (Cmd Msg)
+    initialCommand route =
       case route of
         Routes.MainRoute ->
-          Cmd.map MainPageMsg (Cmd.batch [ Main.Update.getMainData ])
+          Cmd.map MainPageMsg (Main.Update.getMainData)
         _ ->
           Cmd.none
   in
-    (initialModel currentRoute, commands currentRoute)
+    (initialModel currentRoute, initialCommand currentRoute)
 
 
 main : Program Never Model Msg
