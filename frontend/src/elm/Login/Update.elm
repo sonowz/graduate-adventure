@@ -57,7 +57,7 @@ update msg loginForm =
             Ok success ->
               case success of
                 True ->
-                  ( loginForm, Cmd.batch [loadingOff, load "/"] )
+                  ( loginForm, Cmd.batch [ load "/" ] )
                 False ->
                   ( loginForm, loadingOff )
             Err error ->

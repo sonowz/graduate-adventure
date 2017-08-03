@@ -1,5 +1,7 @@
 module Utils.Major exposing (..)
 
+import Maybe
+
 
 type alias Major =
   { name : String
@@ -25,6 +27,27 @@ typeToString majorType =
       "부전공"
     DoubleMajor ->
       "복수전공"
+
+stringToType : String -> Maybe MajorType
+stringToType input =
+  case input of
+    "주전공" ->
+      Just MajorSingle
+    "주전공(복/부)" ->
+      Just MajorMulti
+    "부전공" ->
+      Just Minor
+    "복수전공" ->
+      Just DoubleMajor
+    _ ->
+      Nothing
+
+
+specify : Maybe MajorType -> MajorType
+specify type_ = Maybe.withDefault MajorSingle type_
+
+stringToTypeSpecific : String -> MajorType
+stringToTypeSpecific input = specify (stringToType input)
 
 
 typeToShort : MajorType -> String

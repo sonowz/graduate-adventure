@@ -7,6 +7,7 @@ import Msgs exposing (Msg(..))
 import Subscription exposing (subscription)
 import Update exposing (update)
 import View exposing (view)
+import Main.Update
 
 
 init : Location -> (Model, Cmd Msg)
@@ -15,8 +16,15 @@ init location =
     currentRoute =
       Routes.parseLocation location
 
+    initialCommand : Routes.Route -> (Cmd Msg)
+    initialCommand route =
+      case route of
+        Routes.MainRoute ->
+          Cmd.map MainPageMsg (Main.Update.getMainData)
+        _ ->
+          Cmd.none
   in
-    (initialModel currentRoute, Cmd.none)
+    (initialModel currentRoute, initialCommand currentRoute)
 
 
 main : Program Never Model Msg

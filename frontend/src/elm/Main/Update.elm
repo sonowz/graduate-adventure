@@ -1,8 +1,14 @@
 module Main.Update exposing (..)
 
+import Result exposing (Result(..))
+import Navigation exposing (load)
+import Http
+import Cmd.Extra
+import GlobalMsgs exposing (GlobalMsg(..))
 import Array
 import Maybe
 import Main.Models exposing (..)
+import Main.Response as Response
 import Main.Msgs exposing (Msg(..))
 
 
@@ -80,3 +86,25 @@ update msg model =
             ( { model | totalSimData = newTotalSimData }, Cmd.none )
         False ->
           ( model, Cmd.none )
+
+    Response result ->
+      let
+        loadingOff =
+          Cmd.Extra.perform (Global (Loading False))
+          
+      in
+        case result of
+          Ok success ->
+            ( { model | totalSimData = success, tabNumber = 0 }, loadingOff )
+          Err _ ->
+            ( model, Cmd.batch [ load "/login" ] )
+
+    Global _ ->
+      ( model, Cmd.none )
+
+
+getMainData : Cmd Msg
+getMainData =
+  Http.send Response
+  <| Http.get "/api/main"
+    ( Response.decoder )
