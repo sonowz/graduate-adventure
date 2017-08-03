@@ -269,6 +269,7 @@ class TreeNode(object):
         self.metadata = metadata
         self.func = func
         self.namespace = namespace
+        self.course_code = ''
 
         # maybe this variable will be needed for user-friendly interface
         self.false_reason = ''
@@ -418,7 +419,7 @@ class TreeNode(object):
                             code = course['code']
 
                             # if matches, consume it
-                            if code == child.data:
+                            if code == child.course_code:
                                 del taken_list[i]
                                 del codeset[code]
 
@@ -434,6 +435,7 @@ class TreeNode(object):
                 # If self.data is in preconstructed codeset, it will be evaluated to True
                 if self.data in codeset[code]:
                     logger.debug('{data} returns True'.format(data=self.data))
+                    self.course_code = self.data
                     self.data = True
                     is_satisfied = True
 
