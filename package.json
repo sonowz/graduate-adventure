@@ -1,0 +1,39 @@
+{
+  "name": "graduate-adventure",
+  "version": "0.2.1",
+  "description": "Graduate simulator for SNU students",
+  "dependencies": {
+    "nuxt": "^1.0.0-rc11",
+    "element-ui": "^1.4.9"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "cross-env": "^5.0.1",
+    "eslint": "^4.3.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-loader": "^1.9.0",
+    "eslint-plugin-html": "^3.1.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
+  },
+  "scripts": {
+    "dev": "npm run lint && nuxt",
+    "build": "npm run lint && nuxt build",
+    "start": "nuxt start",
+    "generate": "npm run lint && nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dnsdhrj/graduate-adventure.git"
+  },
+  "author": "dnsdhrj <dnsdhrj123@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dnsdhrj/graduate-adventure/issues"
+  },
+  "homepage": "https://github.com/dnsdhrj/graduate-adventure#readme"
+}

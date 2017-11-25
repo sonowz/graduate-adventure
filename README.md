@@ -34,9 +34,16 @@ python backend/manage.py runserver
 
 #### Frontend
 
-```bash
-npm start
-# http://localhost:8080 to access
+``` bash
+# serve with hot reload at localhost:3000
+$ npm run dev
+
+# build for production and launch server
+$ npm run build
+$ npm start
+
+# generate static project
+$ npm run generate
 ```
 
 ==================

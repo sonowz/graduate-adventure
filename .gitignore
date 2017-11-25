@@ -61,6 +61,7 @@ docs/_build
 node_modules
 
 frontend/dist/
+.nuxt
 
 # Log
 **/*.log
