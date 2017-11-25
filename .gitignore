@@ -61,7 +61,6 @@ docs/_build
 node_modules
 
 frontend/dist/
-**/elm-stuff/
 
 # Log
 **/*.log
