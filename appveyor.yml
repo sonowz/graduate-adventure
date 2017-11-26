@@ -21,6 +21,7 @@ init:
 
 install:
   - ps: Install-Product node $env:nodejs_version
+  - cmd: npm install -g nuxt-cli@0.0.1
   - cmd: npm install
   - cmd: pip install -r requirements-dev.txt
 

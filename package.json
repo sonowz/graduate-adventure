@@ -19,6 +19,7 @@
     "eslint-plugin-standard": "^3.0.1"
   },
   "scripts": {
+    "test": "echo 'Test not implemented. Insert test command here'",
     "dev": "npm run lint && nuxt",
     "build": "npm run lint && nuxt build",
     "start": "nuxt start",
