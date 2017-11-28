@@ -4,7 +4,7 @@
   "description": "Graduate simulator for SNU students",
   "dependencies": {
     "nuxt": "^1.0.0-rc11",
-    "element-ui": "^1.4.9"
+    "vuetify": "^0.17.3"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -16,7 +16,9 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.1"
   },
   "scripts": {
     "test": "echo 'Test not implemented. Insert test command here'",
