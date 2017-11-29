@@ -16,23 +16,8 @@ install:
   - pip install -r requirements-dev.txt
   - pip install coveralls
 
-  - | # https://github.com/elm-lang/elm-compiler/issues/1473#issuecomment-245704142
-    if [ ! -d sysconfcpus/bin ];
-    then
-      git clone https://github.com/obmarg/libsysconfcpus.git;
-      cd libsysconfcpus;
-      ./configure --prefix=$TRAVIS_BUILD_DIR/sysconfcpus;
-      make && make install;
-      cd ..;
-    fi
-
   - nvm install 6
-  # https://github.com/rtfeldman/node-elm-compiler/blob/master/.travis.yml#L37-L39
-  - npm install -g elm@0.18.0
-  - mv $(npm config get prefix)/bin/elm-make $(npm config get prefix)/bin/elm-make-old
-  - cat sysconfcpus.sh > $(npm config get prefix)/bin/elm-make
-  - chmod +x $(npm config get prefix)/bin/elm-make
-
+  - npm install -g nuxt-cli@0.0.1
   - npm install
 
 # command to run tests
@@ -44,7 +29,6 @@ cache:
   pip: true
   directories:
     - node_modules  # NPM pachages
-    - sysconfcpus
 
 before_script:
   - flake8 backend --config=backend/flake8
