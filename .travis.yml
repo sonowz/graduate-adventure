@@ -7,12 +7,13 @@ python:
   - "3.5"
 
 env:
-  - "$DJANGO='django<1.9' ELM_MAKE_MAX_CORES=2"
-  - "$DJANGO='django<1.10' ELM_MAKE_MAX_CORES=2"
+  - "$DJANGO='django<1.9' DJANGO_REST='djangorestframework<3.7' ELM_MAKE_MAX_CORES=2"
+  - "$DJANGO='django<1.10' DJANGO_REST='djangorestframework<3.7' ELM_MAKE_MAX_CORES=2"
 
 # command to install dependencies
 install:
   - pip install $DJANGO
+  - pip install $DJANGO_REST
   - pip install -r requirements-dev.txt
   - pip install coveralls
 
