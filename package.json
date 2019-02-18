@@ -4,7 +4,10 @@
   "description": "Graduate simulator for SNU students",
   "dependencies": {
     "nuxt": "^1.0.0-rc11",
-    "vuetify": "^0.17.3"
+    "vuetify": "^0.17.3",
+    "macaddress": ">=0.2.9",
+    "lodash": ">=4.17.11",
+    "randomatic": ">=3.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
